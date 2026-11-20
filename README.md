@@ -21,6 +21,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Sistema inicial de trabalhos: conversar com moradores, cumprir um turno curto e receber pagamento.
 - Carteira na tela que atualiza o dinheiro recebido pelos turnos.
 - Salvamento local automático do dinheiro, posição do personagem e cor da roupa a cada 10 segundos, ao receber pagamento, ao comprar roupa e ao sair do jogo.
+- Ciclo inicial de dia e noite com relógio na tela, mudança gradual da luz solar e iluminação ambiente.
 - Iluminação direcional, materiais e colisões básicas.
 
 ## Próximas etapas
