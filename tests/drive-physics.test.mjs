@@ -21,6 +21,16 @@ test('drive physics accelerates a loaded truck and respects the speed cap', asyn
   assert.ok(next.speed <= 41.7, 'truck must stay below 150 km/h');
 });
 
+
+test('urban speed limit keeps the long city route at 30 km/h', async () => {
+  const { stepTruckPhysics } = await loadPhysics();
+  const next = stepTruckPhysics(
+    { speed: 12, heading: 0 },
+    { throttle: 1, brake: 0, turn: 0, gear: 'D', dt: 0.1, offRoad: false, speedLimit: 8.33 }
+  );
+  assert.ok(next.speed <= 8.33, 'urban speed must respect the 30 km/h limit');
+});
+
 test('brake reduces forward speed without reversing the truck', async () => {
   const { stepTruckPhysics } = await loadPhysics();
   const next = stepTruckPhysics(
