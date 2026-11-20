@@ -52,7 +52,8 @@ const ground=new THREE.Mesh(new THREE.PlaneGeometry(320,320),mat(0x667b68));grou
 const roadMat=mat(0x30383e),lineMat=mat(0xe8dca7),sideMat=mat(0x9a9b8c);
 for(let i=-5;i<=5;i++){let x=i*24;let road=new THREE.Mesh(new THREE.PlaneGeometry(9,320),roadMat);road.rotation.x=-Math.PI/2;road.position.set(x,.005,0);scene.add(road);let road2=new THREE.Mesh(new THREE.PlaneGeometry(320,9),roadMat);road2.rotation.x=-Math.PI/2;road2.position.set(0,.006,x);scene.add(road2);for(let k=-13;k<14;k++){let dash=new THREE.Mesh(new THREE.PlaneGeometry(.16,3),lineMat);dash.rotation.x=-Math.PI/2;dash.position.set(x,.02,k*12);scene.add(dash);let dash2=new THREE.Mesh(new THREE.PlaneGeometry(3,.16),lineMat);dash2.rotation.x=-Math.PI/2;dash2.position.set(k*12,.02,x);scene.add(dash2)}}
 const buildingMats=[0xb7a997,0x8d9ba1,0xc2b7a5,0x747f87,0xd0c7b4,0x9b765f,0x687d79,0xc0a47c].map(c=>mat(c));
-const glassMat=mat(0x294b5c,.28), trimMat=mat(0x39434a,.7);\nconst buildingColliders=[];
+const glassMat=mat(0x294b5c,.28), trimMat=mat(0x39434a,.7);
+const buildingColliders=[];
 let seed=8;function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
 for(let gx=-5;gx<5;gx++)for(let gz=-5;gz<5;gz++){
  if(rand()<.10)continue;
@@ -112,7 +113,22 @@ for(const x of [-.19,.19]){
  const shoe=new THREE.Mesh(new THREE.BoxGeometry(.27,.14,.42),shoes);
  shoe.position.set(x,.13,.09);shoe.castShadow=true;player.add(shoe);
 }
-scene.add(player);player.position.set(0,0,0);\n// Colisão simples e sólida contra as fachadas: personagem e carro não atravessam prédios.\nfunction blockedAt(x,z,rx,rz){\n if(Math.abs(x)>157-rx||Math.abs(z)>157-rz)return true;\n for(const b of buildingColliders){\n  const nearX=THREE.MathUtils.clamp(x,b.minX,b.maxX),nearZ=THREE.MathUtils.clamp(z,b.minZ,b.maxZ);\n  const dx=(x-nearX)/rx,dz=(z-nearZ)/rz;\n  if(dx*dx+dz*dz<1)return true;\n }\n return false;\n}\nfunction moveWithCollisions(object,dx,dz,rx,rz){\n const nextX=object.position.x+dx;\n if(!blockedAt(nextX,object.position.z,rx,rz))object.position.x=nextX;\n const nextZ=object.position.z+dz;\n if(!blockedAt(object.position.x,nextZ,rx,rz))object.position.z=nextZ;\n}
+scene.add(player);player.position.set(0,0,0);\n// Colisão simples e sólida contra as fachadas: personagem e carro não atravessam prédios.
+function blockedAt(x,z,rx,rz){
+ if(Math.abs(x)>157-rx||Math.abs(z)>157-rz)return true;
+ for(const b of buildingColliders){
+  const nearX=THREE.MathUtils.clamp(x,b.minX,b.maxX),nearZ=THREE.MathUtils.clamp(z,b.minZ,b.maxZ);
+  const dx=(x-nearX)/rx,dz=(z-nearZ)/rz;
+  if(dx*dx+dz*dz<1)return true;
+ }
+ return false;
+}
+function moveWithCollisions(object,dx,dz,rx,rz){
+ const nextX=object.position.x+dx;
+ if(!blockedAt(nextX,object.position.z,rx,rz))object.position.x=nextX;
+ const nextZ=object.position.z+dz;
+ if(!blockedAt(object.position.x,nextZ,rx,rz))object.position.z=nextZ;
+}
 camera.position.set(0,5.5,8);camera.lookAt(0,1,0);
 
 const marker=new THREE.Group();let ring=new THREE.Mesh(new THREE.TorusGeometry(1.2,.12,8,28),mat(0x4affad));ring.rotation.x=Math.PI/2;ring.position.y=.15;marker.add(ring);let beam=new THREE.Mesh(new THREE.CylinderGeometry(.12,.35,3,12,1,true),new THREE.MeshBasicMaterial({color:0x4affad,transparent:true,opacity:.25}));beam.position.y=1.5;marker.add(beam);marker.position.set(34,0,-30);scene.add(marker);
