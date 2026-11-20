@@ -68,7 +68,7 @@
 <button class="truck-choice" id="truck-scania" data-model="scania"><img class="truck-photo" src="https://www.truck1.com.ar/img/xxl/1954/Cabeza-tractora-Scania-R460-NGS-4x2-SUPER-RETARDER-325-TKM-PARK-AIRCO-ACC-NAVI-2-x-FUEL-TANKS-TOP-CONDITION-Paises-Bajos_1954_8936992844837.jpg" alt="Foto real de um Scania R" loading="lazy" referrerpolicy="no-referrer"><b>Scania R</b></button>
 <button class="truck-choice" id="truck-iveco" data-model="iveco"><img class="truck-photo" src="https://api.rodonavesiveco.com.br/v1/media/1538/branco-iveco" alt="Foto real de um Iveco S-Way" loading="lazy" referrerpolicy="no-referrer"><b>Iveco S-Way</b></button>
 </div><div class="customize"><div><div id="truckSelected">Mercedes Actros branco</div><label for="truckColor">Escolha qualquer cor:</label></div><input id="truckColor" type="color" value="#f2f2ed" aria-label="Cor do caminhão"></div><button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o motor 3D...</p></div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
-<div id="load">Preparando seu caminhão...</div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
+<div id="load">Preparando seu caminhão...</div><div id="runtimeError" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:2000;padding:12px 14px;border:2px solid #ff6258;border-radius:12px;background:#241416;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:35vh;overflow:auto"></div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
  <div id="minimap" aria-label="Minimapa da rodovia"></div>
  <div id="mission" class="panel">ENTREGA 01<br>Leve a carga até o posto marcado.</div>
@@ -458,7 +458,7 @@ document.querySelectorAll('#dpad button').forEach(btn=>{const dir=btn.dataset.di
 // Arrastar na tela permite olhar para os lados e para cima/baixo.
 // Câmera presa ao eixo do caminhão: acompanha curvas sem ficar virando de lado ao toque.
 const cameraYaw=0,cameraPitch=0;
-let last=performance.now();function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-last)/1000,.04);last=now;
+let last=performance.now();function loop(now){requestAnimationFrame(loop);try{const dt=Math.min((now-last)/1000,.04);last=now;
 const dayPhase=now*.000035,orbit=dayPhase%(Math.PI*2),sunY=Math.sin(orbit)*150+20,night=THREE.MathUtils.clamp((35-sunY)/100,0,1);
 sunDisc.position.set(Math.cos(orbit)*190,sunY,-260);moonDisc.position.set(-Math.cos(orbit)*190,-sunY+20,-260);sun.position.copy(sunDisc.position);sun.target.position.set(0,0,0);scene.add(sun.target);sun.intensity=.25+2.0*(1-night);starField.visible=night>.55;scene.background.setRGB(.62*(1-night)+.035*night,.77*(1-night)+.055*night,.84*(1-night)+.12*night);scene.fog.color.copy(scene.background);renderer.setClearColor(scene.background);
 if(gameEnded){renderer.render(scene,camera);return;}
@@ -482,7 +482,7 @@ for(const car of traffic){car.position.z+=car.userData.dir*dt*(14+Math.sin(now*.
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
-updateStats();renderer.render(scene,camera)}
+updateStats();renderer.render(scene,camera)}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
 camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
