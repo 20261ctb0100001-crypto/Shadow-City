@@ -96,3 +96,9 @@ test('3D canvas is layered above the page background', async () => {
   assert.ok(html.includes("renderer.domElement.style.zIndex='1'"));
   assert.ok(html.includes('z-index:1!important;pointer-events:none'));
 });
+
+test('Ponta Grossa has a visible entrance landmark near the start', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('PONTA GROSSA'));
+  assert.ok(html.includes('cityGate.position.set(cx,0,centerZ+160)'));
+});
