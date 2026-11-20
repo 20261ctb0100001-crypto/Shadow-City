@@ -196,6 +196,7 @@ for(let i=0;i<38;i++){const z=-590+i*31,side=i%2?1:-1;buildHouse(roadCenter(z)+s
 for(let i=0;i<8;i++){const z=-540+i*145,side=i%2?1:-1,g=new THREE.Group(),w=15,h=5,d=11;const facade=mat(i%2?0xd8d2bd:0xbfc9c8),roof=mat(i%2?0x9a3f32:0x4b555a),windowMat=mat(0x426674,.22,.15);const add=(geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;g.add(o)};add(new THREE.BoxGeometry(w,h,d),facade,0,h/2,0);add(new THREE.BoxGeometry(w+1,.35,d+1),roof,0,h+.15,0);add(new THREE.BoxGeometry(8,2.2,.15),windowMat,0,2.2,-d/2-.1);add(new THREE.BoxGeometry(2,2.8,.18),mat(0x654833),-5,1.4,-d/2-.12);add(new THREE.BoxGeometry(17,.18,3),mat(0xaaa99f),0,.09,-d/2-2);g.position.set(roadCenter(z)+side*66,0,z);scene.add(g);townBuildings.push(g)}
 
 // Quatro cidades inspiradas em referências urbanas reais do Sul e do litoral brasileiro.
+const cityHousePlacements=[];
 function buildCity(name,centerZ,style){
  const city=new THREE.Group();scene.add(city);
  const palettes=[
@@ -252,26 +253,28 @@ function buildCity(name,centerZ,style){
    const lot=new THREE.Mesh(new THREE.BoxGeometry(outer-inner-15,.12,112),mat(0x71815f));
    lot.position.set(x,.015,z);city.add(lot);
    // Pequenos jardins internos, árvores e estacionamentos entre edifícios.
-   const isTower=style===1||style===3||(style===0&&row%4===0);
+   const isTower=(style===1||style===3)?row%3!==0:(style===0&&row%4===0);
+   const isModelHouse=!isTower&&row%10===0;
    const h=isTower?22+((row*11+band*17+side*3+style*7)%54):7+((row*5+band*9)%10);
    const width=isTower?27:24+(row%2)*5,depth=isTower?34:28;
    const body=new THREE.Mesh(new THREE.BoxGeometry(width,h,depth),mat(colors[(row+band+style)%colors.length],.78,.08));
-   body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;city.add(body);
+   body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;body.visible=!isModelHouse;city.add(body);
+   if(isModelHouse)cityHousePlacements.push({x,z,side,style});
    const roof=isTower?new THREE.Mesh(new THREE.BoxGeometry(width+.7,.55,depth+.7),roofCity):new THREE.Mesh(new THREE.ConeGeometry(Math.max(width,depth)*.72,3.8,4),houseRoofMat);
-   roof.position.set(x,isTower?h+.25:h+1.9,z);roof.rotation.y=Math.PI/4;roof.castShadow=true;city.add(roof);
+   roof.position.set(x,isTower?h+.25:h+1.9,z);roof.rotation.y=Math.PI/4;roof.castShadow=true;roof.visible=!isModelHouse;city.add(roof);
    // Janelas repetidas em instâncias para manter a cidade leve no celular.
    const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
    for(let floor=0;floor<floors;floor++)for(let col=0;col<cols;col++){
     const wx=x-width/2+2.2+col*4.1,wy=2+floor*3.15;
-    if(windowCount<18000){
+    if(!isModelHouse&&windowCount<18000){
      windowDummy.position.set(wx,wy,z-depth/2-.08);windowDummy.rotation.set(0,0,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount,windowDummy.matrix);windowFrames.setMatrixAt(windowCount,windowDummy.matrix);windowCount++;
     }
-    if(isTower&&windowCount<18000){
+    if(isTower&&!isModelHouse&&windowCount<18000){
      windowDummy.position.set(x+width/2+.08,wy,z-depth/2+2+col*4.1);windowDummy.rotation.set(0,Math.PI/2,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount,windowDummy.matrix);windowFrames.setMatrixAt(windowCount,windowDummy.matrix);windowCount++;
     }
    }
    // Garagens e portas para casas de bairro.
-   if(!isTower){
+   if(!isTower&&!isModelHouse){
     const door=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.7,.12),mat(0x55453a));
     door.position.set(x-width/2+4,1.35,z-depth/2-.1);city.add(door);
     garageDummy.position.set(x+width/2-4,1.28,z-depth/2-.13);garageDummy.rotation.set(0,0,0);garageDummy.scale.set(1,1,1);garageDummy.updateMatrix();if(garageCount<240)garageDoors.setMatrixAt(garageCount++,garageDummy.matrix);
@@ -356,6 +359,32 @@ buildCity('Ponta Grossa',-4000,0);
 buildCity('Curitiba',-19000,1);
 buildCity('Florianópolis',-34000,2);
 buildCity('Santos',-49000,3);
+ 
+// Casas completas em GLB: fachadas, telhados, portas, janelas e materiais próprios.
+const cityHouseModelUrls=[
+ 'https://cdn.3dassets.dev/assets/37064/v1/model.glb',
+ 'https://cdn.3dassets.dev/assets/37063/v1/model.glb',
+ 'https://cdn.3dassets.dev/assets/37062/v1/model.glb',
+ 'https://cdn.3dassets.dev/assets/37065/v1/model.glb'
+];
+async function loadCityHouseModels(){
+ document.getElementById('garageStatus').textContent='Carregando casas 3D e bairros...';
+ const results=await Promise.allSettled(cityHouseModelUrls.map(url=>vehicleLoader.loadAsync(url)));
+ const housePool=results.filter(r=>r.status==='fulfilled').map(r=>r.value.scene);
+ if(!housePool.length){window.cityHouseModelsReady=false;return}
+ for(let i=0;i<cityHousePlacements.length;i++){
+  const spot=cityHousePlacements[i],house=housePool[(i+spot.style)%housePool.length].clone(true);
+  house.scale.setScalar(1);house.rotation.y=spot.side===1?-Math.PI/2:Math.PI/2;house.updateMatrixWorld(true);
+  const bounds=new THREE.Box3().setFromObject(house),size=bounds.getSize(new THREE.Vector3());
+  const scale=9.5/Math.max(1,size.y);house.scale.setScalar(scale);house.updateMatrixWorld(true);
+  const scaledBounds=new THREE.Box3().setFromObject(house),center=scaledBounds.getCenter(new THREE.Vector3());
+  house.position.set(spot.x-center.x,-scaledBounds.min.y,spot.z-center.z);
+  house.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
+  scene.add(house);
+ }
+ window.cityHouseModelsReady=true;
+}
+
 
 // Cordilheiras dos dois lados, com picos irregulares e camadas de profundidade.
 const mountainMats=[mat(0x65766f,1),mat(0x78847b,1),mat(0x596b68,1),mat(0x8a9188,1)];
@@ -622,7 +651,7 @@ const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();drawMinimap();renderer.render(scene,camera)}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha um dos 50 veículos e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');await loadCityHouseModels();renderer.render(scene,camera);drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha um dos 50 veículos e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
