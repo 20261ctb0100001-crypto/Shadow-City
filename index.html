@@ -13,7 +13,7 @@
 <title>Truck Simulator — Estradas do Brasil</title>
 <!-- Truck Simulator update: terrain, camera modes, traffic, refueling and cruise control -->
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#8eb4c5;color:#fff;font-family:Arial,sans-serif;touch-action:none}canvas{display:block}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#8eb4c5;color:#fff;font-family:Arial,sans-serif;touch-action:none}canvas{display:block}body>canvas{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;z-index:0!important;pointer-events:none}#hud{z-index:2}#controls{z-index:5}#garage{z-index:50}#rotateNotice{z-index:1000}
 #hud{position:fixed;inset:0;pointer-events:none}.panel{background:#101820d9;border:1px solid #ffffff30;border-radius:13px;padding:10px 13px;backdrop-filter:blur(8px);box-shadow:0 4px 18px #0003}#brand{position:absolute;top:12px;left:12px;font-weight:900;letter-spacing:1.5px;font-size:14px}#mission{position:absolute;top:12px;right:12px;text-align:right;font-size:12px;max-width:58%}#stats{position:absolute;left:12px;top:62px;font-size:12px;line-height:1.6}#help{position:absolute;bottom:12px;left:12px;font-size:11px;color:#e3edf1}
 #minimap{position:absolute;top:12px;left:12px;width:118px;height:104px;border:2px solid #ffffffa0;border-radius:10px;background:#18231dcc;box-shadow:0 4px 15px #0008;overflow:hidden}
 #minimap:before{content:'';position:absolute;width:30px;height:150px;left:43px;top:-22px;background:#555e60;transform:rotate(19deg);border-left:2px solid #eee8d6;border-right:2px solid #eee8d6}
@@ -114,7 +114,7 @@ let THREE;
 try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e2){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível baixar o motor 3D. Confira a conexão e atualize a página.';load.textContent='Falha ao carregar o motor 3D';throw e2}}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,150,900);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1200);
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<700?1.5:2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;document.body.appendChild(renderer.domElement);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<700?1.5:2));renderer.setSize(innerWidth,innerHeight);renderer.domElement.style.position='fixed';renderer.domElement.style.inset='0';renderer.domElement.style.width='100vw';renderer.domElement.style.height='100vh';renderer.domElement.style.zIndex='0';renderer.domElement.style.pointerEvents='none';renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;document.body.appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.35);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<700?1024:2048,innerWidth<700?1024:2048);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
 const sunDisc=new THREE.Mesh(new THREE.SphereGeometry(8,24,16),new THREE.MeshBasicMaterial({color:0xffd477}));scene.add(sunDisc);
 const moonDisc=new THREE.Mesh(new THREE.SphereGeometry(5.5,24,16),new THREE.MeshBasicMaterial({color:0xe7efff}));scene.add(moonDisc);
@@ -128,7 +128,8 @@ const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanva
 const edgeMat=mat(0xe6e1d0),yellow=mat(0xf1c84b);
 // Rodovia sinuosa em malha contínua: a pista acompanha curvas suaves pelo vale.
 // Rodovia longa de 30 km, com curvas suaves e sem teleporte do caminhão.
-function roadCenter(z){return 18*Math.sin(z*.00035)+7*Math.sin(z*.0014)}
+// Pista principal reta: o caminhão só muda de direção quando o jogador segura esquerda/direita.
+function roadCenter(z){return 0}
 function roadRibbon(offset,width,material,y=-.12){
  const positions=[],indices=[],steps=6000,startZ=-30000,endZ=700;
  for(let i=0;i<=steps;i++){const z=startZ+i*((endZ-startZ)/steps),x=roadCenter(z)+offset;positions.push(x-width/2,y,z,x+width/2,y,z);if(i<steps){const a=i*2;indices.push(a,a+2,a+1,a+1,a+2,a+3)}}
@@ -482,7 +483,7 @@ const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();renderer.render(scene,camera)}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);window.gameReady=true;document.documentElement.dataset.gameReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
