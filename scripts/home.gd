@@ -2,7 +2,7 @@ extends Node3D
 
 var occupant: Node3D
 var is_occupied := false
-var interior_origin := Vector3(120.0, 0.0, 120.0)
+var interior_origin := Vector3(101.0, 0.0, 103.0)
 
 func _ready() -> void:
 	add_to_group("homes")
