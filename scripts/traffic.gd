@@ -1,4 +1,4 @@
-extends Node3D
+extends CharacterBody3D
 
 @export var travel_axis: Vector3 = Vector3.FORWARD
 @export var travel_speed: float = 7.0
@@ -17,6 +17,7 @@ func _ready() -> void:
 	route_position = global_position.dot(travel_axis)
 	rotation.y = atan2(-travel_axis.x, -travel_axis.z)
 	_build_vehicle()
+	_add_vehicle_collision()
 	var signals := get_tree().get_nodes_in_group("traffic_signals")
 	if not signals.is_empty():
 		signal_controller = signals[0]
@@ -45,6 +46,22 @@ func _build_vehicle() -> void:
 			for axle in [-1.15, 1.15]:
 				_add_wheel(side * 0.98, 0.34, axle, 0.32)
 
+func _add_vehicle_collision() -> void:
+	var collision := CollisionShape3D.new()
+	collision.name = "TrafficCollision"
+	var shape := BoxShape3D.new()
+	if vehicle_type == "bus":
+		shape.size = Vector3(2.35, 2.45, 7.8)
+		collision.position.y = 1.35
+	elif vehicle_type == "motorcycle":
+		shape.size = Vector3(0.8, 1.3, 1.75)
+		collision.position.y = 0.88
+	else:
+		shape.size = Vector3(1.9, 1.2, 3.8)
+		collision.position.y = 0.72
+	collision.shape = shape
+	add_child(collision)
+
 func _add_wheel(x: float, y: float, z: float, radius: float) -> void:
 	var wheel := MeshInstance3D.new()
 	var mesh := CylinderMesh.new()
@@ -72,7 +89,7 @@ func _add_part(part_name: String, part_position: Vector3, dimensions: Vector3, c
 	part.material_override = material
 	add_child(part)
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	var stopped_at_red := false
 	if is_instance_valid(signal_controller) and absf(route_position) <= 7.0:
 		var green: bool = signal_controller.call("is_axis_green", travel_axis)
@@ -85,10 +102,18 @@ func _process(delta: float) -> void:
 				stopped_at_red = route_position >= -7.0 and route_position < 0.0
 			else:
 				stopped_at_red = route_position <= 7.0 and route_position > 0.0
+
+	velocity = Vector3.ZERO
 	if not stopped_at_red:
-		route_position += travel_speed * delta
+		velocity = travel_axis * travel_speed
+	move_and_slide()
+
+	# A posição real da física, não uma posição teletransportada a cada frame,
+	# controla o avanço. Colisões com paredes e outros veículos são respeitadas.
+	route_position = global_position.dot(travel_axis)
 	if route_position > route_max:
+		global_position = lane_offset + travel_axis * route_min
 		route_position = route_min
 	elif route_position < route_min:
+		global_position = lane_offset + travel_axis * route_max
 		route_position = route_max
-	global_position = lane_offset + travel_axis * route_position
