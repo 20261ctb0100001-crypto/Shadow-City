@@ -90,3 +90,9 @@ test('all four Brazilian city stops remain in the route', async () => {
     assert.ok(html.includes(city), city + ' must remain on the route');
   }
 });
+
+test('3D canvas is layered above the page background', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes("renderer.domElement.style.zIndex='1'"));
+  assert.ok(html.includes('z-index:1!important;pointer-events:none'));
+});
