@@ -4,11 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="screen-orientation" content="landscape">
 <style>
-#rotateNotice{display:none;position:fixed;inset:0;z-index:1000;background:#ffd43b;color:#17212a;align-items:center;justify-content:center;text-align:center;padding:24px;font:900 20px Arial}
-#rotateNotice .inner{max-width:340px;padding:26px 22px;border:3px solid #17212a;border-radius:20px;background:#ffe36a;box-shadow:0 12px 36px #0005}
-#rotateNotice .phone{font-size:58px;display:block;margin-bottom:18px}
-#rotateNotice small{color:#27333a!important;font-weight:700!important}
-@media (orientation:portrait){#rotateNotice{display:flex}#gameover{z-index:1001}}
+#rotateNotice{display:none!important}
 </style>
 <title>Truck Simulator — Estradas do Brasil</title>
 <!-- Truck Simulator update: terrain, camera modes, traffic, refueling and cruise control -->
@@ -90,9 +86,14 @@ window.selectedTruckChoice='mercedes';
   if(typeof window.applyTruckChoice==='function')window.applyTruckChoice(key);
  }
  document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{window.selectedTruckChoice=b.dataset.model;sync()}));
- color.addEventListener('input',sync);
- document.getElementById('playTruck').addEventListener('click',()=>{
+ color.addEventListener('input',()=>{window.selectedTruckColor=color.value;sync()});
+ document.getElementById('playTruck').addEventListener('click',async()=>{
   if(!window.gameReady){status.textContent='O motor 3D ainda está iniciando. Aguarde alguns segundos.';return}
+  if(typeof window.applyTruckChoice==='function')window.applyTruckChoice(window.selectedTruckChoice);
+  const colorInput=document.getElementById('truckColor');
+  if(colorInput)window.selectedTruckColor=colorInput.value;
+  try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}
+  try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape')}catch(_){}
   document.getElementById('garage').style.display='none';
  });
  window.addEventListener('error',e=>{
@@ -371,10 +372,11 @@ let speed=0,steer=0,throttle=0,brake=0,delivered=false,fuel=100,joy={x:0,y:0},ke
 let firstPerson=false,cruiseOn=false,cruiseSpeed=0,gameEnded=false;
 let selectedTruck=window.selectedTruckChoice||'mercedes';
 const colorPicker=document.getElementById('truckColor');
+window.selectedTruckColor=colorPicker.value;
 function applySelectedTruck(key){
  if(!truckStyles[key])return;
  selectedTruck=key;
- truckPaint.color.set(colorPicker.value);
+ truckPaint.color.set(window.selectedTruckColor||colorPicker.value);
  applyTruckStyle(selectedTruck);
 }
 window.applyTruckChoice=applySelectedTruck;
@@ -463,7 +465,7 @@ const dayPhase=now*.000035,orbit=dayPhase%(Math.PI*2),sunY=Math.sin(orbit)*150+2
 sunDisc.position.set(Math.cos(orbit)*190,sunY,-260);moonDisc.position.set(-Math.cos(orbit)*190,-sunY+20,-260);sun.position.copy(sunDisc.position);sun.target.position.set(0,0,0);scene.add(sun.target);sun.intensity=.25+2.0*(1-night);starField.visible=night>.55;scene.background.setRGB(.62*(1-night)+.035*night,.77*(1-night)+.055*night,.84*(1-night)+.12*night);scene.fog.color.copy(scene.background);renderer.setClearColor(scene.background);
 if(gameEnded){renderer.render(scene,camera);return;}
 const forwardInput=(keys.w||keys.arrowup||dpadState.up)?1:0;const reverseInput=(keys.s||keys.arrowdown||dpadState.down)?1:0;const turn=(keys.d||keys.arrowright||dpadState.right?1:0)-(keys.a||keys.arrowleft||dpadState.left?1:0);const gasInput=gear==='D'?Math.max(throttle,forwardInput):gear==='R'?Math.max(throttle,reverseInput):0;const brakeInput=Math.max(brake,keys[' ' ]?1:0,gear==='D'&&dpadState.down?1:0);
-if(brakeInput>0){const decel=32*brakeInput*dt;speed=Math.sign(speed)*Math.max(0,Math.abs(speed)-decel);if(brakeInput>.3)cruiseOn=false}else if(gear==='R'&&gasInput>0){if(speed>0)speed=Math.max(0,speed-18*dt);else speed-=5.5*dt;cruiseOn=false}else if(cruiseOn&&gear==='D'){if(gasInput>0)speed+=gasInput*5.5*dt;else speed*=Math.pow(.985,dt*60);speed=Math.min(speed,cruiseSpeed/3.6)}else if(gear==='D'&&gasInput>0){speed+=gasInput*5.5*dt}else{speed*=Math.pow(.985,dt*60)}speed=THREE.MathUtils.clamp(speed,-5,31);
+if(brakeInput>0){const decel=32*brakeInput*dt;speed=Math.sign(speed)*Math.max(0,Math.abs(speed)-decel);if(brakeInput>.3)cruiseOn=false}else if(gear==='R'&&gasInput>0){if(speed>0)speed=Math.max(0,speed-18*dt);else speed-=9*dt;cruiseOn=false}else if(cruiseOn&&gear==='D'){if(gasInput>0)speed+=gasInput*11.5*dt;else speed*=Math.pow(.985,dt*60);speed=Math.min(speed,cruiseSpeed/3.6)}else if(gear==='D'&&gasInput>0){speed+=gasInput*5.5*dt}else{speed*=Math.pow(.985,dt*60)}speed=THREE.MathUtils.clamp(speed,-7,38);
 steer=THREE.MathUtils.damp(steer,THREE.MathUtils.clamp(turn,-1,1),7,dt);
 const laneOffset=truck.position.x-roadCenter(truck.position.z);
 truck.position.z-=speed*dt;
