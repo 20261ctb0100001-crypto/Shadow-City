@@ -8,12 +8,16 @@ var body_collision: CollisionShape3D
 var outfit_material: StandardMaterial3D
 var money: int = 250
 var money_label: Label
+var save_timer: float = 0.0
+const SAVE_PATH := "user://shadow_city_save.cfg"
 
 func _ready() -> void:
 	_create_placeholder_character()
 	_create_camera()
 	_create_mobile_controls()
+	_load_progress()
 	_create_money_display()
+	tree_exiting.connect(_save_progress)
 
 func _create_placeholder_character() -> void:
 	var visual := MeshInstance3D.new()
@@ -66,6 +70,30 @@ func add_money(amount: int) -> void:
 	money += amount
 	if money_label != null:
 		money_label.text = "DINHEIRO: $" + str(money)
+
+func _load_progress() -> void:
+	var config := ConfigFile.new()
+	if config.load(SAVE_PATH) != OK:
+		return
+	money = int(config.get_value("player", "money", money))
+	global_position = config.get_value("player", "position", global_position)
+	var saved_color: Color = config.get_value("player", "outfit_color", Color(0.16, 0.30, 0.58))
+	outfit_material.albedo_color = saved_color
+
+func _save_progress() -> void:
+	var config := ConfigFile.new()
+	config.set_value("player", "money", money)
+	config.set_value("player", "position", global_position)
+	config.set_value("player", "outfit_color", outfit_material.albedo_color)
+	var error := config.save(SAVE_PATH)
+	if error != OK:
+		push_warning("Não foi possível salvar o progresso do Shadow City.")
+
+func _process(delta: float) -> void:
+	save_timer += delta
+	if save_timer >= 10.0:
+		save_timer = 0.0
+		_save_progress()
 
 func _create_mobile_controls() -> void:
 	var layer := CanvasLayer.new()
@@ -205,4 +233,5 @@ func buy_outfit(price: int) -> bool:
 		return false
 	money -= price
 	outfit_material.albedo_color = Color(0.12, 0.42, 0.28)
+	_save_progress()
 	return true
