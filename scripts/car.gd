@@ -39,7 +39,7 @@ func _build_vehicle() -> void:
 	var shape := BoxShape3D.new()
 	shape.size = Vector3(2.0, 1.0, 4.0)
 	collision.shape = shape
-	collision.position.y = 0.72
+	collision.position.y = 0.5
 	add_child(collision)
 
 func _add_part(label: String, part_position: Vector3, dimensions: Vector3, color: Color) -> void:
