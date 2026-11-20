@@ -4,9 +4,10 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="screen-orientation" content="landscape">
 <style>
-#rotateNotice{display:none;position:fixed;inset:0;z-index:1000;background:#101820;color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px;font:700 20px Arial}
-#rotateNotice .inner{max-width:320px}
+#rotateNotice{display:none;position:fixed;inset:0;z-index:1000;background:#ffd43b;color:#17212a;align-items:center;justify-content:center;text-align:center;padding:24px;font:900 20px Arial}
+#rotateNotice .inner{max-width:340px;padding:26px 22px;border:3px solid #17212a;border-radius:20px;background:#ffe36a;box-shadow:0 12px 36px #0005}
 #rotateNotice .phone{font-size:58px;display:block;margin-bottom:18px}
+#rotateNotice small{color:#27333a!important;font-weight:700!important}
 @media (orientation:portrait){#rotateNotice{display:flex}#gameover{z-index:1001}}
 </style>
 <title>Truck Simulator — Estradas do Brasil</title>
@@ -45,10 +46,12 @@
 .garage-card{width:min(900px,96vw);max-height:94vh;overflow:auto;padding:clamp(16px,3vw,30px);border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#263943f2,#111b22f5);box-shadow:0 18px 70px #000b;text-align:center}
 .garage-card h1{margin:0 0 7px;font-size:clamp(19px,3vw,30px);letter-spacing:1.5px}
 .garage-card .sub{margin:0 0 17px;color:#c5d3d9;font-size:clamp(11px,1.5vw,14px)}
-#truckChoices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-.truck-choice{min-width:0;min-height:100px;padding:10px 6px;border:1px solid #ffffff35;border-radius:13px;background:#0c151dcc;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:clamp(10px,1.5vw,13px)}
+#truckChoices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.truck-choice{min-width:0;min-height:172px;padding:8px;border:1px solid #ffffff35;border-radius:13px;background:#0c151dcc;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;font-size:clamp(10px,1.5vw,13px);overflow:hidden}
 .truck-choice.selected{border:2px solid #50d5a4;background:#1b493f;box-shadow:0 0 0 2px #50d5a433}
-.truck-art{font-size:clamp(27px,5vw,42px);line-height:1.2}
+.truck-photo{width:100%;height:126px;display:block;object-fit:cover;object-position:center;border-radius:8px;background:linear-gradient(135deg,#35434b,#11191e)}
+.truck-choice b{padding:2px 0 3px}
+@media(max-width:650px){.truck-choice{min-height:120px;padding:5px;gap:5px}.truck-photo{height:82px}}
 .customize{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:15px 0;padding:12px 14px;border-radius:12px;background:#0b141bbd;text-align:left;font-size:13px}
 #truckSelected{font-weight:800;margin-bottom:5px}
 .customize label{color:#c5d3d9}
@@ -60,10 +63,10 @@
 @media(max-width:650px){.garage-card{padding:13px;border-radius:16px}#truckChoices{gap:5px}.truck-choice{min-height:82px;padding:6px 3px}.customize{margin:10px 0;padding:9px}}
 </style></head>
 <body><div id="garage"><div class="garage-card"><h1>ESCOLHA SEU CAMINHÃO</h1><p class="sub">Selecione o modelo, personalize a cor e depois toque em JOGAR.</p><div id="truckChoices">
-<button class="truck-choice selected" id="truck-mercedes" data-model="mercedes"><span class="truck-art">🚛</span><b>Mercedes Actros</b></button>
-<button class="truck-choice" id="truck-volvo" data-model="volvo"><span class="truck-art">🚚</span><b>Volvo FH</b></button>
-<button class="truck-choice" id="truck-scania" data-model="scania"><span class="truck-art">🚛</span><b>Scania R</b></button>
-<button class="truck-choice" id="truck-iveco" data-model="iveco"><span class="truck-art">🚚</span><b>Iveco S-Way</b></button>
+<button class="truck-choice selected" id="truck-mercedes" data-model="mercedes"><img class="truck-photo" src="https://m.atcdn.co.uk/a/media/b039821313c045a9b24170f2709a8719.jpg" alt="Foto real de um Mercedes-Benz Actros" loading="lazy" referrerpolicy="no-referrer"><b>Mercedes Actros</b></button>
+<button class="truck-choice" id="truck-volvo" data-model="volvo"><img class="truck-photo" src="https://3.bp.blogspot.com/-rFzVMVb_I4A/WPibdUV7oiI/AAAAAAAAR0g/CMv-6xNTRdMo3TuPvGXBkusUAW9LlPsbACLcB/s1600/xFH%2B01%2B%255B1280x768%255D.jpg" alt="Foto real de um Volvo FH" loading="lazy" referrerpolicy="no-referrer"><b>Volvo FH</b></button>
+<button class="truck-choice" id="truck-scania" data-model="scania"><img class="truck-photo" src="https://www.truck1.com.ar/img/xxl/1954/Cabeza-tractora-Scania-G360-HL-4x2-euro-6-647-tkm-airco-700-liter-fuel-tank-top-condition-paises-bajos_1954_8936992844837.jpg" alt="Foto real de um Scania R" loading="lazy" referrerpolicy="no-referrer"><b>Scania R</b></button>
+<button class="truck-choice" id="truck-iveco" data-model="iveco"><img class="truck-photo" src="https://api.rodonavesiveco.com.br/v1/media/1538/branco-iveco" alt="Foto real de um Iveco S-Way" loading="lazy" referrerpolicy="no-referrer"><b>Iveco S-Way</b></button>
 </div><div class="customize"><div><div id="truckSelected">Mercedes Actros branco</div><label for="truckColor">Escolha qualquer cor:</label></div><input id="truckColor" type="color" value="#f2f2ed" aria-label="Cor do caminhão"></div><button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o motor 3D...</p></div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
 <div id="load">Preparando seu caminhão...</div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
@@ -111,8 +114,8 @@ let THREE;
 try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e2){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível baixar o motor 3D. Confira a conexão e atualize a página.';load.textContent='Falha ao carregar o motor 3D';throw e2}}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,100,430);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,600);
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,1.8));const sun=new THREE.DirectionalLight(0xffe5bd,2.1);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<700?1.5:2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.35);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<700?1024:2048,innerWidth<700?1024:2048);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
 const sunDisc=new THREE.Mesh(new THREE.SphereGeometry(8,24,16),new THREE.MeshBasicMaterial({color:0xffd477}));scene.add(sunDisc);
 const moonDisc=new THREE.Mesh(new THREE.SphereGeometry(5.5,24,16),new THREE.MeshBasicMaterial({color:0xe7efff}));scene.add(moonDisc);
 const starField=new THREE.Group();for(let i=0;i<120;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.35,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));star.position.set((Math.random()-.5)*850,100+Math.random()*180,(Math.random()-.5)*850);starField.add(star)}scene.add(starField);
