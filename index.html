@@ -40,13 +40,31 @@
 #dpad .up{grid-column:2;grid-row:1}#dpad .left{grid-column:1;grid-row:2}#dpad .right{grid-column:3;grid-row:2}#dpad .down{grid-column:2;grid-row:3}
 @media(max-width:520px){#dpad{left:12px;bottom:14px;width:116px;height:104px;grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,30px);gap:2px}#dpad button{font-size:18px}.pedals{right:10px;bottom:14px}}
 </style>
-</head>
+<style>
+#garage{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:14px;overflow:auto;background:radial-gradient(ellipse at 50% 20%,#354b55 0%,#17242c 52%,#0b1116 100%)}
+.garage-card{width:min(900px,96vw);max-height:94vh;overflow:auto;padding:clamp(16px,3vw,30px);border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#263943f2,#111b22f5);box-shadow:0 18px 70px #000b;text-align:center}
+.garage-card h1{margin:0 0 7px;font-size:clamp(19px,3vw,30px);letter-spacing:1.5px}
+.garage-card .sub{margin:0 0 17px;color:#c5d3d9;font-size:clamp(11px,1.5vw,14px)}
+#truckChoices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.truck-choice{min-width:0;min-height:100px;padding:10px 6px;border:1px solid #ffffff35;border-radius:13px;background:#0c151dcc;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:clamp(10px,1.5vw,13px)}
+.truck-choice.selected{border:2px solid #50d5a4;background:#1b493f;box-shadow:0 0 0 2px #50d5a433}
+.truck-art{font-size:clamp(27px,5vw,42px);line-height:1.2}
+.customize{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:15px 0;padding:12px 14px;border-radius:12px;background:#0b141bbd;text-align:left;font-size:13px}
+#truckSelected{font-weight:800;margin-bottom:5px}
+.customize label{color:#c5d3d9}
+#truckColor{width:62px;height:42px;border:0;background:transparent;cursor:pointer}
+#playTruck{width:min(340px,100%);padding:14px 24px;border:0;border-radius:13px;background:linear-gradient(100deg,#35c58f,#8be0b4);color:#092219;font-size:18px;font-weight:1000;letter-spacing:1.5px}
+#playTruck:active{transform:scale(.98)}
+#garageStatus{min-height:18px;margin:10px 0 0;color:#c5d3d9;font-size:12px}
+#load{z-index:30}
+@media(max-width:650px){.garage-card{padding:13px;border-radius:16px}#truckChoices{gap:5px}.truck-choice{min-height:82px;padding:6px 3px}.customize{margin:10px 0;padding:9px}}
+</style></head>
 <body><div id="garage"><div class="garage-card"><h1>ESCOLHA SEU CAMINHÃO</h1><p class="sub">Selecione o modelo, personalize a cor e depois toque em JOGAR.</p><div id="truckChoices">
 <button class="truck-choice selected" data-model="mercedes"><span class="truck-art">🚛</span><b>Mercedes Actros</b></button>
 <button class="truck-choice" data-model="volvo"><span class="truck-art">🚚</span><b>Volvo FH</b></button>
 <button class="truck-choice" data-model="scania"><span class="truck-art">🚛</span><b>Scania R</b></button>
 <button class="truck-choice" data-model="iveco"><span class="truck-art">🚚</span><b>Iveco S-Way</b></button>
-</div><div class="customize"><div><div id="truckSelected">Mercedes Actros branco</div><label for="truckColor">Escolha qualquer cor:</label></div><input id="truckColor" type="color" value="#f2f2ed" aria-label="Cor do caminhão"></div><button id="playTruck">JOGAR</button></div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
+</div><div class="customize"><div><div id="truckSelected">Mercedes Actros branco</div><label for="truckColor">Escolha qualquer cor:</label></div><input id="truckColor" type="color" value="#f2f2ed" aria-label="Cor do caminhão"></div><button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o motor 3D...</p></div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
 <div id="load">Preparando seu caminhão...</div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
  <div id="minimap" aria-label="Minimapa da rodovia"></div>
@@ -55,14 +73,45 @@
  <div id="help" class="panel">WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão</div>
 </div>
 <div id="controls"><div id="dpad" aria-label="Direção do caminhão"><button class="up" data-dir="up" aria-label="Frente">▲</button><button class="left" data-dir="left" aria-label="Esquerda">◀</button><button class="right" data-dir="right" aria-label="Direita">▶</button><button class="down" data-dir="down" aria-label="Ré">▼</button></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><div id="cameraModes" aria-label="Modos de câmera"><button id="camera2" class="cameraMode" title="Visão interna">2</button><button id="camera3" class="cameraMode active" title="Visão externa">3</button></div><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
+<script>
+window.gameReady=false;
+window.selectedTruckChoice='mercedes';
+(function(){
+ const names={mercedes:'Mercedes Actros',volvo:'Volvo FH',scania:'Scania R',iveco:'Iveco S-Way'};
+ const status=document.getElementById('garageStatus');
+ const color=document.getElementById('truckColor');
+ function sync(){
+  const key=window.selectedTruckChoice;
+  document.getElementById('truckSelected').textContent=names[key]+' — '+color.value.toUpperCase();
+  document.querySelectorAll('.truck-choice').forEach(b=>b.classList.toggle('selected',b.dataset.model===key));
+ }
+ document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{window.selectedTruckChoice=b.dataset.model;sync()}));
+ color.addEventListener('input',sync);
+ document.getElementById('playTruck').addEventListener('click',()=>{
+  if(!window.gameReady){status.textContent='O motor 3D ainda está iniciando. Aguarde alguns segundos.';return}
+  document.getElementById('garage').style.display='none';
+ });
+ window.addEventListener('error',e=>{
+  if(window.gameReady)return;
+  status.textContent='Não foi possível iniciar o jogo: '+(e.message||'erro de inicialização')+'. Atualize a página para tentar novamente.';
+  const load=document.getElementById('load');if(load)load.textContent='Falha ao iniciar o motor 3D';
+ });
+ window.addEventListener('unhandledrejection',e=>{
+  if(window.gameReady)return;
+  status.textContent='Falha ao carregar o motor 3D. Verifique a conexão e atualize a página.';
+  const load=document.getElementById('load');if(load)load.textContent='Falha ao carregar o motor 3D';
+ });
+ sync();
+})();
+</script>
 <script type="module">
 const load=document.getElementById('load');
 let THREE;
-try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}
+try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e2){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível baixar o motor 3D. Confira a conexão e atualize a página.';load.textContent='Falha ao carregar o motor 3D';throw e2}}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,100,430);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,600);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.1);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.1);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
 const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});\nconst truckPaint=mat(0xf2f2ed,.42,.18);
 const asphaltCanvas=document.createElement('canvas');asphaltCanvas.width=512;asphaltCanvas.height=512;const asphaltCtx=asphaltCanvas.getContext('2d');asphaltCtx.fillStyle='#34393d';asphaltCtx.fillRect(0,0,512,512);for(let i=0;i<26000;i++){const x=Math.random()*512,y=Math.random()*512,v=35+Math.floor(Math.random()*35);asphaltCtx.fillStyle='rgba('+v+','+(v+3)+','+(v+5)+','+(.12+Math.random()*.2)+')';asphaltCtx.fillRect(x,y,1+Math.random()*2,1+Math.random()*2)}const asphaltTex=new THREE.CanvasTexture(asphaltCanvas);asphaltTex.wrapS=asphaltTex.wrapT=THREE.RepeatWrapping;asphaltTex.repeat.set(3,48);asphaltTex.colorSpace=THREE.SRGBColorSpace;const asphalt=new THREE.MeshStandardMaterial({map:asphaltTex,roughness:.96});const grass=mat(0x587b50),line=mat(0xe9e3c8),white=mat(0xe8e8df),rubber=mat(0x141719),glass=mat(0x243f4b,.22,.25);
 // Textura procedural de terra e capim em vez de um plano verde liso.
@@ -79,7 +128,7 @@ for(let x=-340;x<=340;x+=18){const d=new THREE.Mesh(new THREE.PlaneGeometry(6,.2
 const barkMat=mat(0x59402c,1),leafMats=[mat(0x294f32,1),mat(0x37633a,1),mat(0x4c7440,1),mat(0x607c43,1)];
 const broadLeafGeo=new THREE.IcosahedronGeometry(1,1),pineGeo=new THREE.ConeGeometry(1,1,7);
 function branchBetween(group,a,b,r,material){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),v=B.clone().sub(A);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r*.55,r,v.length(),6),material);mesh.position.copy(A).add(B).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());mesh.castShadow=true;group.add(mesh)}
-for(let i=0;i<105;i++){
+for(let i=0;i<65;i++){
  const x=(Math.random()-.5)*650,z=(Math.random()-.5)*900;if(Math.abs(x)<19)continue;
  const h=7+Math.random()*15,tree=new THREE.Group(),conifer=i%4===0;
  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.2,.48,h*.48,8),barkMat);trunk.position.y=h*.24;trunk.castShadow=true;tree.add(trunk);
@@ -91,19 +140,19 @@ for(let i=0;i<105;i++){
    const angle=k*Math.PI*2/5+Math.random()*.45,rad=.9+Math.random()*1.1,cy=h*.57+Math.random()*h*.2;
    const px=Math.cos(angle)*rad*.72,pz=Math.sin(angle)*rad*.72;
    branchBetween(tree,[0,h*.35,0],[px,cy-.3,pz],.16,barkMat);
-   const crown=new THREE.Mesh(broadLeafGeo,crownMat);crown.position.set(px,cy,pz);crown.scale.set(rad*(.85+Math.random()*.35),rad*(.7+Math.random()*.45),rad*(.8+Math.random()*.4));crown.rotation.set(Math.random()*.5,Math.random()*Math.PI,Math.random()*.5);crown.castShadow=true;tree.add(crown);
+   const crown=new THREE.Mesh(broadLeafGeo,crownMat);crown.castShadow=false;crown.position.set(px,cy,pz);crown.scale.set(rad*(.85+Math.random()*.35),rad*(.7+Math.random()*.45),rad*(.8+Math.random()*.4));crown.rotation.set(Math.random()*.5,Math.random()*Math.PI,Math.random()*.5);crown.castShadow=true;tree.add(crown);
   }
-  const top=new THREE.Mesh(broadLeafGeo,leafMats[(i+1)%leafMats.length]);top.position.y=h*.82;top.scale.set(1.5,1.8,1.4);top.castShadow=true;tree.add(top);
+  const top=new THREE.Mesh(broadLeafGeo,leafMats[(i+1)%leafMats.length]);top.castShadow=false;top.position.y=h*.82;top.scale.set(1.5,1.8,1.4);top.castShadow=true;tree.add(top);
  }
  tree.position.set(x,0,z);tree.rotation.y=Math.random()*Math.PI*2;scene.add(tree);
 }
 // Capim em pequenos tufos distribuídos pelo terreno; mantém a pista e o acostamento livres.
 const grassBladeGeo=new THREE.ConeGeometry(.055,.42,4),grassBladeMat=mat(0x78934b,1);
-const grassBlades=new THREE.InstancedMesh(grassBladeGeo,grassBladeMat,4200);const bladeDummy=new THREE.Object3D();
-for(let i=0;i<4200;i++){let x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<12)x+=(x<0?-1:1)*14;bladeDummy.position.set(x,.02,z);bladeDummy.rotation.set((Math.random()-.5)*.25,Math.random()*Math.PI*2,(Math.random()-.5)*.25);const s=.45+Math.random()*.9;bladeDummy.scale.set(s,s,s);bladeDummy.updateMatrix();grassBlades.setMatrixAt(i,bladeDummy.matrix)}
+const grassBlades=new THREE.InstancedMesh(grassBladeGeo,grassBladeMat,2400);const bladeDummy=new THREE.Object3D();
+for(let i=0;i<2400;i++){let x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<12)x+=(x<0?-1:1)*14;bladeDummy.position.set(x,.02,z);bladeDummy.rotation.set((Math.random()-.5)*.25,Math.random()*Math.PI*2,(Math.random()-.5)*.25);const s=.45+Math.random()*.9;bladeDummy.scale.set(s,s,s);bladeDummy.updateMatrix();grassBlades.setMatrixAt(i,bladeDummy.matrix)}
 grassBlades.instanceMatrix.needsUpdate=true;grassBlades.castShadow=false;grassBlades.receiveShadow=true;scene.add(grassBlades);
 // Arbustos baixos com formas variadas, evitando copas perfeitamente circulares.
-for(let i=0;i<130;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<16)continue;const shrub=new THREE.Mesh(broadLeafGeo,leafMats[i%leafMats.length]);shrub.position.set(x,.48,z);shrub.scale.set(.8+Math.random()*1.3,.45+Math.random()*.45,.7+Math.random());shrub.rotation.y=Math.random()*Math.PI;shrub.castShadow=true;scene.add(shrub)}
+for(let i=0;i<75;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<16)continue;const shrub=new THREE.Mesh(broadLeafGeo,leafMats[i%leafMats.length]);shrub.position.set(x,.48,z);shrub.scale.set(.8+Math.random()*1.3,.45+Math.random()*.45,.7+Math.random());shrub.rotation.y=Math.random()*Math.PI;shrub.castShadow=true;scene.add(shrub)}
 for(let i=0;i<28;i++){const x=(Math.random()-.5)*520,z=(Math.random()-.5)*850;if(Math.abs(x)<18)continue;const w=12+Math.random()*20,h=5+Math.random()*14,d=12+Math.random()*20;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat([0xb4a28b,0x9babae,0xc4bba7,0x8d9992][i%4]));b.position.set(x,h/2,z);b.castShadow=true;b.receiveShadow=true;scene.add(b);const roof=new THREE.Mesh(new THREE.BoxGeometry(w+.5,.45,d+.5),mat(0x454b4a));roof.position.set(x,h+.2,z);scene.add(roof)}
 // Posto de combustível na lateral da estrada.
 const station=new THREE.Group();const shop=new THREE.Mesh(new THREE.BoxGeometry(16,5,10),mat(0xe2dfd2));shop.position.y=2.5;station.add(shop);const roof=new THREE.Mesh(new THREE.BoxGeometry(20,.6,13),mat(0xb83e32));roof.position.set(0,5.2,0);station.add(roof);for(let x of [-6,6]){const col=new THREE.Mesh(new THREE.BoxGeometry(.45,5,.45),white);col.position.set(x,2.5,5);station.add(col)}station.position.set(27,0,-105);scene.add(station);
@@ -175,19 +224,10 @@ const cargo=new THREE.Group();for(let i=0;i<10;i++){const c=new THREE.Mesh(new T
 const marker=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry(4,.35,10,40),mat(0x43ffc0,.35));ring.rotation.x=Math.PI/2;ring.position.y=.2;marker.add(ring);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.35,1.1,12,16,1,true),new THREE.MeshBasicMaterial({color:0x43ffc0,transparent:true,opacity:.17}));beam.position.y=6;marker.add(beam);marker.position.set(27,0,-105);scene.add(marker);
 let speed=0,steer=0,throttle=0,brake=0,delivered=false,fuel=100,joy={x:0,y:0},keys={};
 let firstPerson=false,cruiseOn=false,cruiseSpeed=0,gameEnded=false;
-let selectedTruck='mercedes';
+let selectedTruck=window.selectedTruckChoice||'mercedes';
 const colorPicker=document.getElementById('truckColor');
-function updateTruckSelection(){
- const style=truckStyles[selectedTruck];
- truckPaint.color.set(colorPicker.value);
- applyTruckStyle(selectedTruck);
- document.getElementById('truckSelected').textContent=style.name+' — '+colorPicker.value.toUpperCase();
- document.querySelectorAll('.truck-choice').forEach(b=>b.classList.toggle('selected',b.dataset.model===selectedTruck));
-}
-document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{selectedTruck=b.dataset.model;updateTruckSelection()}));
-colorPicker.addEventListener('input',updateTruckSelection);
-updateTruckSelection();
-document.getElementById('playTruck').addEventListener('click',()=>{document.getElementById('garage').style.display='none';});
+truckPaint.color.set(colorPicker.value);
+applyTruckStyle(selectedTruck);
 
 const traffic=[];
 function makeTrafficCar(x,z,color,dir=1){const car=new THREE.Group();box(car,1.9,.75,4,mat(color,.45,.12),0,1,0);box(car,1.75,.65,1.5,glass,0,1.65,-.25);for(const zz of [-1.25,1.25])for(const xx of [-1.02,1.02])wheel(car,xx,.55,zz,.43,.28);car.position.set(x,0,z);car.userData.dir=dir;scene.add(car);traffic.push(car)}
@@ -225,7 +265,7 @@ const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();renderer.render(scene,camera)}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);load.remove();requestAnimationFrame(loop);
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);window.gameReady=true;document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
