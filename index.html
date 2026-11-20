@@ -75,11 +75,35 @@ const edgeMat=mat(0xe6e1d0);for(const x of [-10.2,10.2]){const edge=new THREE.Me
 const yellow=mat(0xf1c84b);for(const x of [-.22,.22]){const center=new THREE.Mesh(new THREE.PlaneGeometry(.12,1000),yellow);center.rotation.x=-Math.PI/2;center.position.set(x,-.098,0);scene.add(center)}
 
 for(let x=-340;x<=340;x+=18){const d=new THREE.Mesh(new THREE.PlaneGeometry(6,.22),line);d.rotation.x=-Math.PI/2;d.position.set(x,-.105,-190);scene.add(d);const d2=d.clone();d2.position.z=190;scene.add(d2)}
-// Paisagem rural, morros suaves e árvores variadas.
-for(let i=0;i<90;i++){const x=(Math.random()-.5)*650,z=(Math.random()-.5)*900;if(Math.abs(x)<17)continue;const h=8+Math.random()*20;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.35,.55,h*.28,7),mat(0x59432f));trunk.position.set(x,h*.14,z);trunk.castShadow=true;scene.add(trunk);const crown=new THREE.Mesh(new THREE.SphereGeometry(h*.32,9,7),mat([0x315f3b,0x426e42,0x567c48][i%3]));crown.position.set(x,h*.56,z);crown.scale.set(1,1.2,1);crown.castShadow=true;scene.add(crown)}
-// Arbustos, capim alto e pequenas pedras nas margens para dar profundidade à paisagem.
-for(let i=0;i<320;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<15)continue;const g=new THREE.Group();const stem=new THREE.Mesh(new THREE.ConeGeometry(.12,.8+Math.random()*1.1,5),mat([0x557b3e,0x6c8b48,0x87934f][i%3]));stem.position.y=.4;g.add(stem);for(let j=0;j<3;j++){const leaf=new THREE.Mesh(new THREE.ConeGeometry(.12,.65,5),stem.material);leaf.position.set((Math.random()-.5)*.3,.25+Math.random()*.35,(Math.random()-.5)*.3);leaf.rotation.z=(Math.random()-.5)*.7;g.add(leaf)}g.position.set(x,0,z);scene.add(g)}
-for(let i=0;i<95;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<17)continue;const shrub=new THREE.Mesh(new THREE.SphereGeometry(.8+Math.random()*1.2,7,5),mat([0x355d36,0x466b39,0x647c43][i%3]));shrub.position.set(x,.55,z);shrub.scale.y=.65;shrub.castShadow=true;scene.add(shrub)}
+// Paisagem rural: árvores com troncos, galhos e copas irregulares (sem bolas redondas).
+const barkMat=mat(0x59402c,1),leafMats=[mat(0x294f32,1),mat(0x37633a,1),mat(0x4c7440,1),mat(0x607c43,1)];
+const broadLeafGeo=new THREE.IcosahedronGeometry(1,1),pineGeo=new THREE.ConeGeometry(1,1,7);
+function branchBetween(group,a,b,r,material){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),v=B.clone().sub(A);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r*.55,r,v.length(),6),material);mesh.position.copy(A).add(B).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());mesh.castShadow=true;group.add(mesh)}
+for(let i=0;i<105;i++){
+ const x=(Math.random()-.5)*650,z=(Math.random()-.5)*900;if(Math.abs(x)<19)continue;
+ const h=7+Math.random()*15,tree=new THREE.Group(),conifer=i%4===0;
+ const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.2,.48,h*.48,8),barkMat);trunk.position.y=h*.24;trunk.castShadow=true;tree.add(trunk);
+ const crownMat=leafMats[i%leafMats.length];
+ if(conifer){
+  for(let k=0;k<4;k++){const level=h*.35+k*h*.145,rad=(1-k*.16)*(1.7+Math.random()*.45);const crown=new THREE.Mesh(pineGeo,crownMat);crown.position.set((Math.random()-.5)*.3,level, (Math.random()-.5)*.3);crown.scale.set(rad, h*.34, rad);crown.rotation.y=Math.random()*Math.PI;crown.castShadow=true;tree.add(crown)}
+ }else{
+  for(let k=0;k<5;k++){
+   const angle=k*Math.PI*2/5+Math.random()*.45,rad=.9+Math.random()*1.1,cy=h*.57+Math.random()*h*.2;
+   const px=Math.cos(angle)*rad*.72,pz=Math.sin(angle)*rad*.72;
+   branchBetween(tree,[0,h*.35,0],[px,cy-.3,pz],.16,barkMat);
+   const crown=new THREE.Mesh(broadLeafGeo,crownMat);crown.position.set(px,cy,pz);crown.scale.set(rad*(.85+Math.random()*.35),rad*(.7+Math.random()*.45),rad*(.8+Math.random()*.4));crown.rotation.set(Math.random()*.5,Math.random()*Math.PI,Math.random()*.5);crown.castShadow=true;tree.add(crown);
+  }
+  const top=new THREE.Mesh(broadLeafGeo,leafMats[(i+1)%leafMats.length]);top.position.y=h*.82;top.scale.set(1.5,1.8,1.4);top.castShadow=true;tree.add(top);
+ }
+ tree.position.set(x,0,z);tree.rotation.y=Math.random()*Math.PI*2;scene.add(tree);
+}
+// Capim em pequenos tufos distribuídos pelo terreno; mantém a pista e o acostamento livres.
+const grassBladeGeo=new THREE.ConeGeometry(.055,.42,4),grassBladeMat=mat(0x78934b,1);
+const grassBlades=new THREE.InstancedMesh(grassBladeGeo,grassBladeMat,4200);const bladeDummy=new THREE.Object3D();
+for(let i=0;i<4200;i++){let x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<12)x+=(x<0?-1:1)*14;bladeDummy.position.set(x,.02,z);bladeDummy.rotation.set((Math.random()-.5)*.25,Math.random()*Math.PI*2,(Math.random()-.5)*.25);const s=.45+Math.random()*.9;bladeDummy.scale.set(s,s,s);bladeDummy.updateMatrix();grassBlades.setMatrixAt(i,bladeDummy.matrix)}
+grassBlades.instanceMatrix.needsUpdate=true;grassBlades.castShadow=false;grassBlades.receiveShadow=true;scene.add(grassBlades);
+// Arbustos baixos com formas variadas, evitando copas perfeitamente circulares.
+for(let i=0;i<130;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<16)continue;const shrub=new THREE.Mesh(broadLeafGeo,leafMats[i%leafMats.length]);shrub.position.set(x,.48,z);shrub.scale.set(.8+Math.random()*1.3,.45+Math.random()*.45,.7+Math.random());shrub.rotation.y=Math.random()*Math.PI;shrub.castShadow=true;scene.add(shrub)}
 for(let i=0;i<28;i++){const x=(Math.random()-.5)*520,z=(Math.random()-.5)*850;if(Math.abs(x)<18)continue;const w=12+Math.random()*20,h=5+Math.random()*14,d=12+Math.random()*20;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat([0xb4a28b,0x9babae,0xc4bba7,0x8d9992][i%4]));b.position.set(x,h/2,z);b.castShadow=true;b.receiveShadow=true;scene.add(b);const roof=new THREE.Mesh(new THREE.BoxGeometry(w+.5,.45,d+.5),mat(0x454b4a));roof.position.set(x,h+.2,z);scene.add(roof)}
 // Posto de combustível na lateral da estrada.
 const station=new THREE.Group();const shop=new THREE.Mesh(new THREE.BoxGeometry(16,5,10),mat(0xe2dfd2));shop.position.y=2.5;station.add(shop);const roof=new THREE.Mesh(new THREE.BoxGeometry(20,.6,13),mat(0xb83e32));roof.position.set(0,5.2,0);station.add(roof);for(let x of [-6,6]){const col=new THREE.Mesh(new THREE.BoxGeometry(.45,5,.45),white);col.position.set(x,2.5,5);station.add(col)}station.position.set(27,0,-105);scene.add(station);
