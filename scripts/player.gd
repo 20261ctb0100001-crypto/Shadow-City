@@ -104,7 +104,14 @@ func _physics_process(delta: float) -> void:
 	if input_vector.length() > 1.0:
 		input_vector = input_vector.normalized()
 
-	var direction := Vector3(input_vector.x, 0.0, input_vector.y)
+	var camera_forward := -camera.global_basis.z
+	camera_forward.y = 0.0
+	camera_forward = camera_forward.normalized()
+	var camera_right := camera.global_basis.x
+	camera_right.y = 0.0
+	camera_right = camera_right.normalized()
+	var direction := (camera_right * input_vector.x) + (camera_forward * -input_vector.y)
+	direction = direction.normalized()
 	velocity.x = direction.x * move_speed
 	velocity.z = direction.z * move_speed
 
