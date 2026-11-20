@@ -17,6 +17,7 @@ var mission_active := false
 var mission_target := Vector3.ZERO
 var mission_marker: Node3D
 var mission_status: Label
+var mission_hud_layer: CanvasLayer
 var active_player: Node
 
 func _ready() -> void:
@@ -160,15 +161,28 @@ func _start_mission(player: Node, status: Label, work_button: Button) -> void:
 	working = true
 	mission_active = true
 	active_player = player
-	mission_status = status
 	work_button.disabled = true
 	work_button.text = "Trabalho em andamento"
 	var offset := Vector3(0, 0, -14)
 	mission_target = player.global_position + offset
 	mission_target.y = 0.12
 	_create_mission_marker()
-	status.text = "Entrega iniciada! Siga o marcador dourado no mapa."
 	_close_dialogue()
+	_create_mission_hud()
+
+func _create_mission_hud() -> void:
+	mission_hud_layer = CanvasLayer.new()
+	mission_hud_layer.name = "JobMissionHUD"
+	get_tree().root.add_child(mission_hud_layer)
+	mission_status = Label.new()
+	mission_status.position = Vector2(18, 58)
+	mission_status.add_theme_font_size_override("font_size", 22)
+	mission_status.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42))
+	mission_status.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 1))
+	mission_status.add_theme_constant_override("shadow_offset_x", 2)
+	mission_status.add_theme_constant_override("shadow_offset_y", 2)
+	mission_status.text = "Trabalho: siga o marcador dourado."
+	mission_hud_layer.add_child(mission_status)
 
 func _create_mission_marker() -> void:
 	mission_marker = Node3D.new()
@@ -218,7 +232,19 @@ func _complete_mission() -> void:
 	if is_instance_valid(active_player):
 		active_player.call("add_money", shift_reward)
 	if is_instance_valid(mission_status):
-		mission_status.text = "Objetivo concluído! Você recebeu $" + str(shift_reward) + "."
+		mission_status.text = "Trabalho concluído! +$" + str(shift_reward)
+	if is_instance_valid(mission_hud_layer):
+		var clear_timer := Timer.new()
+		mission_hud_layer.add_child(clear_timer)
+		clear_timer.one_shot = true
+		clear_timer.wait_time = 4.0
+		clear_timer.timeout.connect(func() -> void:
+			if is_instance_valid(mission_hud_layer):
+				mission_hud_layer.queue_free()
+			mission_hud_layer = null
+			mission_status = null
+		)
+		clear_timer.start()
 	if is_instance_valid(mission_marker):
 		mission_marker.queue_free()
 	active_player = null
