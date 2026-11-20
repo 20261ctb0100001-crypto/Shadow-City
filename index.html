@@ -41,7 +41,12 @@
 @media(max-width:520px){#dpad{left:12px;bottom:14px;width:116px;height:104px;grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,30px);gap:2px}#dpad button{font-size:18px}.pedals{right:10px;bottom:14px}}
 </style>
 </head>
-<body><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
+<body><div id="garage"><div class="garage-card"><h1>ESCOLHA SEU CAMINHÃO</h1><p class="sub">Selecione o modelo, personalize a cor e depois toque em JOGAR.</p><div id="truckChoices">
+<button class="truck-choice selected" data-model="mercedes"><span class="truck-art">🚛</span><b>Mercedes Actros</b></button>
+<button class="truck-choice" data-model="volvo"><span class="truck-art">🚚</span><b>Volvo FH</b></button>
+<button class="truck-choice" data-model="scania"><span class="truck-art">🚛</span><b>Scania R</b></button>
+<button class="truck-choice" data-model="iveco"><span class="truck-art">🚚</span><b>Iveco S-Way</b></button>
+</div><div class="customize"><div><div id="truckSelected">Mercedes Actros branco</div><label for="truckColor">Escolha qualquer cor:</label></div><input id="truckColor" type="color" value="#f2f2ed" aria-label="Cor do caminhão"></div><button id="playTruck">JOGAR</button></div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
 <div id="load">Preparando seu caminhão...</div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
  <div id="minimap" aria-label="Minimapa da rodovia"></div>
@@ -58,7 +63,7 @@ const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.f
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,600);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.1);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
-const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});\nconst truckPaint=mat(0xf2f2ed,.42,.18);
 const asphaltCanvas=document.createElement('canvas');asphaltCanvas.width=512;asphaltCanvas.height=512;const asphaltCtx=asphaltCanvas.getContext('2d');asphaltCtx.fillStyle='#34393d';asphaltCtx.fillRect(0,0,512,512);for(let i=0;i<26000;i++){const x=Math.random()*512,y=Math.random()*512,v=35+Math.floor(Math.random()*35);asphaltCtx.fillStyle='rgba('+v+','+(v+3)+','+(v+5)+','+(.12+Math.random()*.2)+')';asphaltCtx.fillRect(x,y,1+Math.random()*2,1+Math.random()*2)}const asphaltTex=new THREE.CanvasTexture(asphaltCanvas);asphaltTex.wrapS=asphaltTex.wrapT=THREE.RepeatWrapping;asphaltTex.repeat.set(3,48);asphaltTex.colorSpace=THREE.SRGBColorSpace;const asphalt=new THREE.MeshStandardMaterial({map:asphaltTex,roughness:.96});const grass=mat(0x587b50),line=mat(0xe9e3c8),white=mat(0xe8e8df),rubber=mat(0x141719),glass=mat(0x243f4b,.22,.25);
 // Textura procedural de terra e capim em vez de um plano verde liso.
 const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanvas.height=512;const ctx=turfCanvas.getContext('2d');ctx.fillStyle='#637d4b';ctx.fillRect(0,0,512,512);for(let i=0;i<18000;i++){const x=Math.random()*512,y=Math.random()*512;ctx.fillStyle=['#3f653e','#78905a','#8a8759','#a08c65','#526f42'][Math.floor(Math.random()*5)];ctx.globalAlpha=.18+Math.random()*.32;ctx.fillRect(x,y,1+Math.random()*3,1+Math.random()*2)}ctx.globalAlpha=1;const turfTex=new THREE.CanvasTexture(turfCanvas);turfTex.wrapS=turfTex.wrapT=THREE.RepeatWrapping;turfTex.repeat.set(34,34);turfTex.colorSpace=THREE.SRGBColorSpace;const groundMat=new THREE.MeshStandardMaterial({map:turfTex,roughness:1});const ground=new THREE.Mesh(new THREE.PlaneGeometry(1200,1200),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
@@ -82,13 +87,34 @@ function box(parent,w,h,d,material,x,y,z){const o=new THREE.Mesh(new THREE.BoxGe
 function wheel(parent,x,y,z,r=.72,width=.48){const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,width,18),rubber);o.rotation.z=Math.PI/2;o.position.set(x,y,z);o.castShadow=true;parent.add(o);const hub=new THREE.Mesh(new THREE.CylinderGeometry(r*.48,r*.48,width+.02,16),mat(0x9ba3a4,.35,.7));hub.rotation.z=Math.PI/2;hub.position.copy(o.position);parent.add(hub)}
 // Cavalo mecânico com cabine, para-brisa, retrovisores, grade e semirreboque.
 const truck=new THREE.Group(),tractor=new THREE.Group(),trailer=new THREE.Group();truck.add(tractor);truck.add(trailer);
-box(tractor,2.8,1.15,4.4,mat(0xb72f2b,.42,.18),0,1.15,.35);
+let truckStyleParts=null;
+const truckStyles={
+ mercedes:{name:'Mercedes Actros',grille:0x30383d,visor:0xe6e8e8,bumper:0x30383d,detail:'Actros'},
+ volvo:{name:'Volvo FH',grille:0x253747,visor:0xd7e2e9,bumper:0x263947,detail:'VOLVO'},
+ scania:{name:'Scania R',grille:0x25292d,visor:0xd9d9d9,bumper:0x292d31,detail:'SCANIA'},
+ iveco:{name:'Iveco S-Way',grille:0x303b42,visor:0xe1e1d8,bumper:0x34434a,detail:'IVECO'}
+};
+function applyTruckStyle(key){
+ const s=truckStyles[key];if(!s)return;
+ if(truckStyleParts)tractor.remove(truckStyleParts);
+ truckStyleParts=new THREE.Group();
+ const grilleMat=mat(s.grille,.5,.25),visorMat=mat(s.visor,.38,.25),bumperMat=mat(s.bumper,.55,.2);
+ box(truckStyleParts,1.55,.72,.12,grilleMat,0,2.05,-2.22);
+ for(let y=1.82;y<=2.3;y+=.12)box(truckStyleParts,1.34,.025,.035,mat(0x899398,.4,.6),0,y,-2.30);
+ box(truckStyleParts,2.5,.16,.48,bumperMat,0,1.42,-2.12);
+ box(truckStyleParts,2.7,.18,.48,visorMat,0,3.83,-1.05);
+ if(key==='volvo'){box(truckStyleParts,1.05,.16,.06,visorMat,0,3.55,-2.29);for(const x of [-1.36,1.36])box(truckStyleParts,.12,.75,.16,visorMat,x,2.65,-1.1)}
+ if(key==='scania'){box(truckStyleParts,2.35,.22,.28,visorMat,0,3.98,-.95);for(const x of [-1.35,1.35])box(truckStyleParts,.16,.5,.18,bumperMat,x,2.5,-2.08)}
+ if(key==='iveco'){box(truckStyleParts,2.25,.12,.28,visorMat,0,3.75,-2.08);box(truckStyleParts,.32,.6,.18,bumperMat,0,2.58,-2.31)}
+ tractor.add(truckStyleParts);
+}
+box(tractor,2.8,1.15,4.4,truckPaint,0,1.15,.35);
 // Cabine aberta por dentro: teto, laterais e pilares deixam o para-brisa livre.
-box(tractor,2.65,.28,2.35,mat(0xc83a32,.38,.15),0,3.92,-1.05);
-box(tractor,.18,1.95,2.25,mat(0xc83a32,.38,.15),-1.24,2.55,-1.05);
-box(tractor,.18,1.95,2.25,mat(0xc83a32,.38,.15),1.24,2.55,-1.05);
-box(tractor,2.45,.24,.18,mat(0xc83a32,.38,.15),0,1.62,-2.12);
-box(tractor,2.45,.22,.18,mat(0xc83a32,.38,.15),0,3.68,-2.12);
+box(tractor,2.65,.28,2.35,truckPaint,0,3.92,-1.05);
+box(tractor,.18,1.95,2.25,truckPaint,-1.24,2.55,-1.05);
+box(tractor,.18,1.95,2.25,truckPaint,1.24,2.55,-1.05);
+box(tractor,2.45,.24,.18,truckPaint,0,1.62,-2.12);
+box(tractor,2.45,.22,.18,truckPaint,0,3.68,-2.12);
 box(tractor,2.42,1.15,.12,glass,0,3.05,.15);box(tractor,2.48,1.05,.12,glass,0,3.05,-2.24);
 box(tractor,2.7,.25,.18,mat(0x262c30),0,1.55,1.5);box(tractor,2.1,.8,.12,mat(0x292f32),0,2.1,1.57);
 box(tractor,.16,.9,.18,mat(0xd8d8cf),-1.42,2.25,-1.15);box(tractor,.16,.9,.18,mat(0xd8d8cf),1.42,2.25,-1.15);
@@ -125,6 +151,20 @@ const cargo=new THREE.Group();for(let i=0;i<10;i++){const c=new THREE.Mesh(new T
 const marker=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry(4,.35,10,40),mat(0x43ffc0,.35));ring.rotation.x=Math.PI/2;ring.position.y=.2;marker.add(ring);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.35,1.1,12,16,1,true),new THREE.MeshBasicMaterial({color:0x43ffc0,transparent:true,opacity:.17}));beam.position.y=6;marker.add(beam);marker.position.set(27,0,-105);scene.add(marker);
 let speed=0,steer=0,throttle=0,brake=0,delivered=false,fuel=100,joy={x:0,y:0},keys={};
 let firstPerson=false,cruiseOn=false,cruiseSpeed=0,gameEnded=false;
+let selectedTruck='mercedes';
+const colorPicker=document.getElementById('truckColor');
+function updateTruckSelection(){
+ const style=truckStyles[selectedTruck];
+ truckPaint.color.set(colorPicker.value);
+ applyTruckStyle(selectedTruck);
+ document.getElementById('truckSelected').textContent=style.name+' — '+colorPicker.value.toUpperCase();
+ document.querySelectorAll('.truck-choice').forEach(b=>b.classList.toggle('selected',b.dataset.model===selectedTruck));
+}
+document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{selectedTruck=b.dataset.model;updateTruckSelection()}));
+colorPicker.addEventListener('input',updateTruckSelection);
+updateTruckSelection();
+document.getElementById('playTruck').addEventListener('click',()=>{document.getElementById('garage').style.display='none';});
+
 const traffic=[];
 function makeTrafficCar(x,z,color,dir=1){const car=new THREE.Group();box(car,1.9,.75,4,mat(color,.45,.12),0,1,0);box(car,1.75,.65,1.5,glass,0,1.65,-.25);for(const zz of [-1.25,1.25])for(const xx of [-1.02,1.02])wheel(car,xx,.55,zz,.43,.28);car.position.set(x,0,z);car.userData.dir=dir;scene.add(car);traffic.push(car)}
 for(let i=0;i<13;i++){const z=-440+i*68;makeTrafficCar(i%2? -4.8:4.8,z,[0x2d6eaa,0xd9d5c9,0x383c43,0x9a342c,0x8d9d4c][i%5],i%2?1:-1)}
