@@ -3,11 +3,14 @@ extends Node3D
 const PLAYER_SCRIPT = preload("res://scripts/player.gd")
 const CAR_SCRIPT = preload("res://scripts/car.gd")
 const SHOP_SCRIPT = preload("res://scripts/shop.gd")
+const ANIMAL_SCRIPT = preload("res://scripts/animal.gd")
 
 func _ready() -> void:
 	_build_environment()
 	_build_city()
 	_build_street_details()
+	_spawn_city_identity()
+	_spawn_animals()
 	_spawn_market_interaction()
 	_spawn_player()
 
@@ -135,3 +138,26 @@ func _spawn_market_interaction() -> void:
 	shop.position = Vector3(-19, 0, 17)
 	shop.set_script(SHOP_SCRIPT)
 	add_child(shop)
+
+func _spawn_city_identity() -> void:
+	var city_sign := Label3D.new()
+	city_sign.text = "PONTA GROSSA  •  PARANÁ  •  BRASIL"
+	city_sign.position = Vector3(0, 3.2, -7.5)
+	city_sign.font_size = 42
+	city_sign.modulate = Color(0.82, 0.90, 1.0)
+	city_sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	add_child(city_sign)
+
+func _spawn_animals() -> void:
+	_spawn_animal("dog", Vector3(6, 0.0, 12), 1.7)
+	_spawn_animal("cat", Vector3(-5, 0.0, 16), 1.1)
+	_spawn_animal("parrot", Vector3(10, 2.4, -5), 1.5)
+	_spawn_animal("horse", Vector3(27, 0.0, -18), 1.2)
+
+func _spawn_animal(species: String, spawn_position: Vector3, speed: float) -> void:
+	var animal := CharacterBody3D.new()
+	animal.position = spawn_position
+	animal.set_script(ANIMAL_SCRIPT)
+	animal.set("species", species)
+	animal.set("walk_speed", speed)
+	add_child(animal)
