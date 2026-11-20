@@ -37,12 +37,20 @@ func _build_environment() -> void:
 	environment.tonemap_white = 6.0
 	environment.fog_enabled = true
 	environment.fog_light_color = Color(0.62, 0.70, 0.80)
-	environment.fog_density = 0.0018
+	environment.fog_density = 0.0012
 	environment.background_mode = Environment.BG_SKY
-	environment.sky = Sky.new()
-	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = Color(0.62, 0.70, 0.82)
-	environment.ambient_light_energy = 0.65
+	var sky := Sky.new()
+	var sky_material := ProceduralSkyMaterial.new()
+	sky_material.sky_top_color = Color(0.12, 0.25, 0.43)
+	sky_material.sky_horizon_color = Color(0.62, 0.72, 0.82)
+	sky_material.ground_bottom_color = Color(0.12, 0.14, 0.13)
+	sky_material.ground_horizon_color = Color(0.48, 0.52, 0.50)
+	sky_material.sun_angle_max = 18.0
+	sky_material.sun_curve = 0.18
+	sky.sky_material = sky_material
+	environment.sky = sky
+	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	environment.ambient_light_energy = 0.8
 	world.environment = environment
 	add_child(world)
 
@@ -50,7 +58,14 @@ func _build_environment() -> void:
 	sun.name = "Sun"
 	sun.rotation_degrees = Vector3(-48, -32, 0)
 	sun.light_energy = 1.2
+	sun.light_color = Color(1.0, 0.94, 0.82)
 	sun.shadow_enabled = true
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	sun.directional_shadow_max_distance = 110.0
+	sun.directional_shadow_blend_splits = true
+	sun.shadow_bias = 0.035
+	sun.shadow_normal_bias = 1.2
+	sun.light_angular_distance = 0.35
 	add_child(sun)
 
 func _build_city() -> void:
@@ -85,9 +100,21 @@ func _add_building_facade(x: float, z: float, height: float) -> void:
 	for floor_index in range(floors):
 		var window_y := 1.8 + float(floor_index) * 3.0
 		for window_x in [-3.1, 0.0, 3.1]:
-			_add_visual_box("Building window", Vector3(x + window_x, window_y, z - 6.08), Vector3(2.0, 1.45, 0.10), glass)
-			_add_visual_box("Window sill", Vector3(x + window_x, window_y - 0.78, z - 6.12), Vector3(2.15, 0.10, 0.16), frame)
-		_add_visual_box("Floor facade trim", Vector3(x, window_y + 1.05, z - 6.03), Vector3(9.8, 0.10, 0.12), frame)
+			_add_visual_box("Front building window", Vector3(x + window_x, window_y, z - 6.08), Vector3(2.0, 1.45, 0.10), glass)
+			_add_visual_box("Back building window", Vector3(x + window_x, window_y, z + 6.08), Vector3(2.0, 1.45, 0.10), glass)
+			_add_visual_box("Front window sill", Vector3(x + window_x, window_y - 0.78, z - 6.12), Vector3(2.15, 0.10, 0.16), frame)
+			_add_visual_box("Back window sill", Vector3(x + window_x, window_y - 0.78, z + 6.12), Vector3(2.15, 0.10, 0.16), frame)
+		for window_z in [-3.2, 0.0, 3.2]:
+			_add_visual_box("Left building window", Vector3(x - 5.08, window_y, z + window_z), Vector3(0.10, 1.45, 2.0), glass)
+			_add_visual_box("Right building window", Vector3(x + 5.08, window_y, z + window_z), Vector3(0.10, 1.45, 2.0), glass)
+		_add_visual_box("Front floor facade trim", Vector3(x, window_y + 1.05, z - 6.03), Vector3(9.8, 0.10, 0.12), frame)
+		_add_visual_box("Back floor facade trim", Vector3(x, window_y + 1.05, z + 6.03), Vector3(9.8, 0.10, 0.12), frame)
+		_add_visual_box("Left floor facade trim", Vector3(x - 5.03, window_y + 1.05, z), Vector3(0.12, 0.10, 11.8), frame)
+		_add_visual_box("Right floor facade trim", Vector3(x + 5.03, window_y + 1.05, z), Vector3(0.12, 0.10, 11.8), frame)
+	_add_visual_box("Roof parapet front", Vector3(x, height + 0.18, z - 5.95), Vector3(10.0, 0.36, 0.28), frame)
+	_add_visual_box("Roof parapet back", Vector3(x, height + 0.18, z + 5.95), Vector3(10.0, 0.36, 0.28), frame)
+	_add_visual_box("Roof parapet left", Vector3(x - 4.9, height + 0.18, z), Vector3(0.28, 0.36, 12.0), frame)
+	_add_visual_box("Roof parapet right", Vector3(x + 4.9, height + 0.18, z), Vector3(0.28, 0.36, 12.0), frame)
 
 func _build_outer_districts() -> void:
 	_add_district_building("ESCOLA MUNICIPAL", Vector3(-65, 3.2, -62), Vector3(18, 6.4, 14), Color(0.72, 0.62, 0.38))
@@ -181,9 +208,10 @@ func _add_street_lamp(position: Vector3) -> void:
 	var lamp := OmniLight3D.new()
 	lamp.position = position + Vector3(0.92, 4.85, 0)
 	lamp.light_color = Color(1.0, 0.82, 0.58)
-	lamp.light_energy = 0.75
+	lamp.light_energy = 0.9
 	lamp.omni_range = 13.0
-	lamp.shadow_enabled = false
+	lamp.shadow_enabled = true
+	lamp.shadow_bias = 0.08
 	add_child(lamp)
 
 func _build_street_details() -> void:
