@@ -69,7 +69,25 @@ func _build_city() -> void:
 			if (i + j) % 3 == 0:
 				building_color = Color(0.48, 0.34, 0.24)
 			_add_box("Building", Vector3(x, height * 0.5, z), Vector3(10, height, 12), building_color)
+			_add_building_facade(x, z, height)
 
+
+
+func _add_building_facade(x: float, z: float, height: float) -> void:
+	var glass := StandardMaterial3D.new()
+	glass.albedo_color = Color(0.10, 0.22, 0.30)
+	glass.metallic = 0.28
+	glass.roughness = 0.22
+	var frame := StandardMaterial3D.new()
+	frame.albedo_color = Color(0.72, 0.70, 0.64)
+	frame.roughness = 0.88
+	var floors := int(height / 3.0)
+	for floor_index in range(floors):
+		var window_y := 1.8 + float(floor_index) * 3.0
+		for window_x in [-3.1, 0.0, 3.1]:
+			_add_visual_box("Building window", Vector3(x + window_x, window_y, z - 6.08), Vector3(2.0, 1.45, 0.10), glass)
+			_add_visual_box("Window sill", Vector3(x + window_x, window_y - 0.78, z - 6.12), Vector3(2.15, 0.10, 0.16), frame)
+		_add_visual_box("Floor facade trim", Vector3(x, window_y + 1.05, z - 6.03), Vector3(9.8, 0.10, 0.12), frame)
 
 func _build_outer_districts() -> void:
 	_add_district_building("ESCOLA MUNICIPAL", Vector3(-65, 3.2, -62), Vector3(18, 6.4, 14), Color(0.72, 0.62, 0.38))
