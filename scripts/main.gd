@@ -6,9 +6,11 @@ const SHOP_SCRIPT = preload("res://scripts/shop.gd")
 const ANIMAL_SCRIPT = preload("res://scripts/animal.gd")
 const CITIZEN_SCRIPT = preload("res://scripts/citizen.gd")
 const TRAFFIC_SCRIPT = preload("res://scripts/traffic.gd")
+const WORLD_CLOCK_SCRIPT = preload("res://scripts/world_clock.gd")
 
 func _ready() -> void:
 	_build_environment()
+	_spawn_world_clock()
 	_build_city()
 	_build_street_details()
 	_spawn_city_identity()
