@@ -115,3 +115,9 @@ test('delivery mission text matches the coastal destination marker', async () =>
   assert.ok(html.includes('Leve a carga até o terminal no litoral.'));
   assert.ok(!html.includes('Leve a carga até o posto marcado.'));
 });
+
+test('Pages deployment waits for artifact metadata propagation', async () => {
+  const workflow = await readFile(new URL('../.github/workflows/deploy-pages.yml', import.meta.url), 'utf8');
+  assert.ok(workflow.includes('name: Wait for Pages artifact metadata'));
+  assert.ok(workflow.includes('run: sleep 10'));
+});
