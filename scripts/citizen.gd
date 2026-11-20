@@ -9,6 +9,13 @@ extends CharacterBody3D
 @export var favorite_color: Color = Color(0.3, 0.5, 0.8)
 
 var home_position := Vector3.ZERO
+var work_position := Vector3.ZERO
+var leisure_position := Vector3.ZERO
+var routine_target := Vector3.ZERO
+var routine_state := "Casa"
+var routine_refresh := 0.0
+var world_clock: Node
+var name_label: Label3D
 var direction := Vector3.ZERO
 var decision_time := 0.0
 var menu_layer: CanvasLayer
@@ -23,6 +30,10 @@ var active_player: Node
 func _ready() -> void:
 	add_to_group("citizens")
 	home_position = global_position
+	routine_target = home_position
+	work_position = home_position + Vector3(5, 0, 0)
+	leisure_position = home_position + Vector3(0, 0, 7)
+	world_clock = get_tree().current_scene.find_child("WorldClock", true, false)
 	_build_person()
 	_choose_direction()
 
@@ -58,30 +69,41 @@ func _build_person() -> void:
 	collision.position.y = 0.85
 	add_child(collision)
 
-	var label := Label3D.new()
-	label.text = display_name + " • " + profession
-	label.position.y = 2.35
-	label.font_size = 25
-	label.modulate = Color(1, 1, 1, 0.9)
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	add_child(label)
+	name_label = Label3D.new()
+	name_label.text = display_name + " • " + profession
+	name_label.position.y = 2.35
+	name_label.font_size = 25
+	name_label.modulate = Color(1, 1, 1, 0.9)
+	name_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	add_child(name_label)
 
 func _choose_direction() -> void:
-	var angle := randf_range(0.0, TAU)
-	direction = Vector3(cos(angle), 0, sin(angle))
-	decision_time = randf_range(2.0, 5.0)
+	_choose_local_direction()
 
 func _physics_process(delta: float) -> void:
 	if working or menu_layer != null:
-		velocity.x = move_toward(velocity.x, 0.0, 5.0 * delta)
-		velocity.z = move_toward(velocity.z, 0.0, 5.0 * delta)
+		_stop_horizontal(delta)
 		move_and_slide()
 		return
-	decision_time -= delta
-	if decision_time <= 0.0 or global_position.distance_to(home_position) > 10.0:
-		_choose_direction()
-	velocity.x = direction.x * walk_speed
-	velocity.z = direction.z * walk_speed
+
+	routine_refresh -= delta
+	if routine_refresh <= 0.0:
+		_update_daily_routine()
+		routine_refresh = 4.0
+
+	var offset := routine_target - global_position
+	offset.y = 0.0
+	if offset.length() > 2.0:
+		direction = offset.normalized()
+		velocity.x = direction.x * walk_speed
+		velocity.z = direction.z * walk_speed
+	else:
+		decision_time -= delta
+		if decision_time <= 0.0:
+			_choose_local_direction()
+		velocity.x = direction.x * walk_speed * 0.35
+		velocity.z = direction.z * walk_speed * 0.35
+
 	if not is_on_floor():
 		velocity.y -= 9.8 * delta
 	else:
@@ -89,6 +111,33 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	if Vector2(velocity.x, velocity.z).length() > 0.1:
 		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), delta * 3.0)
+
+func _stop_horizontal(delta: float) -> void:
+	velocity.x = move_toward(velocity.x, 0.0, 5.0 * delta)
+	velocity.z = move_toward(velocity.z, 0.0, 5.0 * delta)
+
+func _update_daily_routine() -> void:
+	if world_clock == null or not is_instance_valid(world_clock):
+		return
+	var hour := float(world_clock.get("time_of_day"))
+	var next_state := "Casa"
+	var next_target := home_position
+	if hour >= 8.0 and hour < 17.0:
+		next_state = "Trabalhando"
+		next_target = work_position
+	elif hour >= 17.0 and hour < 21.0:
+		next_state = "Lazer"
+		next_target = leisure_position
+	if next_state != routine_state:
+		routine_state = next_state
+		routine_target = next_target
+		if is_instance_valid(name_label):
+			name_label.text = display_name + " • " + profession + " • " + routine_state
+
+func _choose_local_direction() -> void:
+	var angle := randf_range(0.0, TAU)
+	direction = Vector3(cos(angle), 0, sin(angle))
+	decision_time = randf_range(1.5, 3.5)
 
 func _process(_delta: float) -> void:
 	if not mission_active or not is_instance_valid(active_player):
