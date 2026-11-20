@@ -262,6 +262,21 @@ function buildCity(name,centerZ,style){
   const roof=new THREE.Mesh(new THREE.ConeGeometry(15,8,4),mat(0x7c4940));roof.position.y=19;roof.rotation.y=Math.PI/4;landmark.add(roof);
   for(let x of [-7,7]){const tower=new THREE.Mesh(new THREE.BoxGeometry(4,23,5),mat(0xe7e2d5));tower.position.set(x,11,0);landmark.add(tower)}
   landmark.position.set(cx-75,0,centerZ+35);city.add(landmark);
+  // Portal urbano visível na chegada a Ponta Grossa, com altura livre para caminhões.
+  const cityGate=new THREE.Group(),gateStone=mat(0xd8d2c5,.82),gateBlue=mat(0x24485b,.58,.12);
+  for(const side of [-1,1]){
+   const pillar=new THREE.Mesh(new THREE.BoxGeometry(2.2,9,2.2),gateStone);pillar.position.set(side*15,4.5,0);pillar.castShadow=true;cityGate.add(pillar);
+   const cap=new THREE.Mesh(new THREE.BoxGeometry(3.1,.65,3.1),gateBlue);cap.position.set(side*15,9.1,0);cityGate.add(cap);
+  }
+  const lintel=new THREE.Mesh(new THREE.BoxGeometry(32,1.25,2.1),gateStone);lintel.position.set(0,9.4,0);lintel.castShadow=true;cityGate.add(lintel);
+  const gateCanvas=document.createElement('canvas');gateCanvas.width=768;gateCanvas.height=128;
+  const gateCtx=gateCanvas.getContext('2d');gateCtx.fillStyle='#17394a';gateCtx.fillRect(0,0,768,128);
+  gateCtx.strokeStyle='#d8bd83';gateCtx.lineWidth=8;gateCtx.strokeRect(5,5,758,118);
+  gateCtx.fillStyle='#fff7e8';gateCtx.font='bold 58px Arial';gateCtx.textAlign='center';gateCtx.fillText('PONTA GROSSA',384,83);
+  const gateTex=new THREE.CanvasTexture(gateCanvas);gateTex.colorSpace=THREE.SRGBColorSpace;
+  const gateSign=new THREE.Mesh(new THREE.PlaneGeometry(19,3.2),new THREE.MeshBasicMaterial({map:gateTex,side:THREE.DoubleSide}));
+  gateSign.position.set(0,9.4,1.12);cityGate.add(gateSign);
+  cityGate.position.set(cx,0,centerZ+160);scene.add(cityGate);
  }else if(style===1){
   const park=new THREE.Mesh(new THREE.BoxGeometry(42,.2,300),mat(0x4d7548));park.position.set(cx+190,.05,centerZ);city.add(park);
   for(let i=0;i<18;i++){const t=new THREE.Mesh(new THREE.IcosahedronGeometry(3,1),mat(0x426d43));t.position.set(cx+174+(i%2)*30,3,centerZ-140+i*16);city.add(t)}
