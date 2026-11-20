@@ -7,7 +7,7 @@
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101820;font-family:Arial,sans-serif;color:#fff}canvas{display:block;touch-action:none}
 #hud{position:fixed;inset:0;pointer-events:none}.panel{background:#101820cc;border:1px solid #ffffff25;border-radius:12px;padding:10px 13px;backdrop-filter:blur(8px)}#brand{position:absolute;top:12px;left:12px;font-weight:800;letter-spacing:2px}#mission{position:absolute;top:12px;right:12px;max-width:55%;font-size:12px;text-align:right}#help{position:absolute;left:12px;bottom:12px;font-size:11px;color:#d9e2e8}
 #controls{position:fixed;inset:0;z-index:10;pointer-events:none}.joy{position:absolute;bottom:26px;left:24px;width:116px;height:116px;border-radius:50%;background:#ffffff20;border:2px solid #ffffff60;pointer-events:auto;touch-action:none}.knob{position:absolute;width:48px;height:48px;left:32px;top:32px;border-radius:50%;background:#ffffffaa}.btn{position:absolute;right:22px;bottom:35px;width:66px;height:66px;border-radius:50%;border:1px solid #ffffff80;background:#142c3ddd;color:white;font-weight:bold;pointer-events:auto;touch-action:none}.btn2{right:98px;bottom:105px;width:54px;height:54px;font-size:11px}.btn3{right:24px;bottom:115px;width:54px;height:54px;font-size:11px}
-@media(max-width:799px){#help{display:none}.joy{left:max(16px,env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));width:112px;height:112px}.knob{left:30px;top:30px;width:48px;height:48px}.btn{right:max(16px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom));width:64px;height:64px;font-size:11px}.btn2{right:calc(92px + env(safe-area-inset-right));bottom:calc(94px + env(safe-area-inset-bottom));width:54px;height:54px}.btn3{right:max(16px,env(safe-area-inset-right));bottom:calc(102px + env(safe-area-inset-bottom));width:54px;height:54px}}\n@media(min-width:800px){.joy{width:130px;height:130px}.knob{left:39px;top:39px}#help{font-size:13px}}
+.btn.active{background:#1f9b77;border-color:#b8ffe9;box-shadow:0 0 18px #39d6a366}@media(max-width:799px){#help{display:none}.joy{left:max(16px,env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));width:112px;height:112px}.knob{left:30px;top:30px;width:48px;height:48px}.btn{right:max(16px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom));width:64px;height:64px;font-size:11px}.btn2{right:calc(92px + env(safe-area-inset-right));bottom:calc(94px + env(safe-area-inset-bottom));width:54px;height:54px}.btn3{right:max(16px,env(safe-area-inset-right));bottom:calc(102px + env(safe-area-inset-bottom));width:54px;height:54px}}\n@media(min-width:800px){.joy{width:130px;height:130px}.knob{left:39px;top:39px}#help{font-size:13px}}
 </style>
 </head>
 <body>
@@ -59,8 +59,10 @@ for(let gx=-5;gx<5;gx++)for(let gz=-5;gz<5;gz++){
  if(rand()<.10)continue;
  const x=gx*24+12,z=gz*24+12,w=7+rand()*7,d=7+rand()*7;
  const style=Math.floor(rand()*5),floors=style===0?1+Math.floor(rand()*2):2+Math.floor(rand()*8),h=floors*(style===0?3.2:3.5);
- const b=new THREE.Mesh(style===4?new THREE.CylinderGeometry(w*.48,w*.58,h,6):new THREE.BoxGeometry(w,h,d),buildingMats[Math.floor(rand()*buildingMats.length)]);
- b.position.set(x,h/2,z);b.castShadow=true;b.receiveShadow=true;scene.add(b);\n buildingColliders.push({minX:x-w/2-.35,maxX:x+w/2+.35,minZ:z-d/2-.35,maxZ:z+d/2+.35});
+ const facadeColor=new THREE.Color().setHSL(rand(),.13+rand()*.24,.43+rand()*.22);const facadeMat=new THREE.MeshStandardMaterial({color:facadeColor,roughness:.84});
+ const b=new THREE.Mesh(style===4?new THREE.CylinderGeometry(w*.48,w*.58,h,6):new THREE.BoxGeometry(w,h,d),facadeMat);
+ b.position.set(x,h/2,z);b.castShadow=true;b.receiveShadow=true;scene.add(b);
+ buildingColliders.push({minX:x-w/2-.35,maxX:x+w/2+.35,minZ:z-d/2-.35,maxZ:z+d/2+.35});
  const roof=new THREE.Mesh(new THREE.BoxGeometry(w+.35,.32,d+.35),trimMat);roof.position.set(x,h+.12,z);scene.add(roof);
  if(style===0){
   const awning=new THREE.Mesh(new THREE.BoxGeometry(w+.5,.22,1.1),mat([0x9b493c,0x386b70,0xc49a45][Math.floor(rand()*3)]));awning.position.set(x,2.5,z+d/2+.25);scene.add(awning);
@@ -82,7 +84,7 @@ const car=makeCar();car.position.set(4,0,7);scene.add(car);
 
 // Jogador com silhueta clara e membros separados para ficar visível de longe.
 const player=new THREE.Group();
-const jacket=mat(0xe07a32,.72),pants=mat(0x24364c,.88),skin=mat(0xc88f6a,.85),hair=mat(0x211b18,.95),shoes=mat(0x171b20,.95);
+const jacket=mat(0x354a50,.78),pants=mat(0x30343a,.9),skin=mat(0xb98261,.88),hair=mat(0x211b18,.96),shoes=mat(0x171b20,.95),shirt=mat(0xbfc4c3,.9),eyeMat=mat(0x171719,.45);
 // Capsule construída com geometrias básicas do Three.js (sem addon externo).
 function makeCapsule(radius,length,material){
  const group=new THREE.Group();
@@ -98,6 +100,12 @@ const torso=makeCapsule(.34,.72,jacket);
 torso.position.y=1.13;player.add(torso);
 const head=new THREE.Mesh(new THREE.SphereGeometry(.255,20,16),skin);
 head.position.y=1.88;head.castShadow=true;player.add(head);
+const neck=new THREE.Mesh(new THREE.CylinderGeometry(.105,.12,.18,12),skin);neck.position.y=1.59;player.add(neck);
+const shirtFront=new THREE.Mesh(new THREE.BoxGeometry(.27,.48,.035),shirt);shirtFront.position.set(0,1.18,.326);player.add(shirtFront);
+for(const ex of [-.085,.085]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),eyeMat);eye.position.set(ex,1.91,.225);player.add(eye)}
+const nose=new THREE.Mesh(new THREE.SphereGeometry(.035,8,8),skin);nose.position.set(0,1.84,.255);player.add(nose);
+for(const hx of [-.43,.43]){const hand=new THREE.Mesh(new THREE.SphereGeometry(.105,10,8),skin);hand.position.set(hx,1.02,0);player.add(hand)}
+const belt=new THREE.Mesh(new THREE.BoxGeometry(.57,.09,.38),mat(0x171b20));belt.position.y=.84;player.add(belt);
 const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.26,16,10,0,Math.PI*2,0,Math.PI*.55),hair);
 hairCap.position.set(0,1.99,-.015);player.add(hairCap);
 const makeLimb=(x,y,length,radius,material)=>{
@@ -113,7 +121,8 @@ for(const x of [-.19,.19]){
  const shoe=new THREE.Mesh(new THREE.BoxGeometry(.27,.14,.42),shoes);
  shoe.position.set(x,.13,.09);shoe.castShadow=true;player.add(shoe);
 }
-scene.add(player);player.position.set(0,0,0);\n// Colisão simples e sólida contra as fachadas: personagem e carro não atravessam prédios.
+scene.add(player);player.position.set(0,0,0);
+// Colisão simples e sólida contra as fachadas: personagem e carro não atravessam prédios.
 function blockedAt(x,z,rx,rz){
  if(Math.abs(x)>157-rx||Math.abs(z)>157-rz)return true;
  for(const b of buildingColliders){
@@ -135,9 +144,12 @@ const marker=new THREE.Group();let ring=new THREE.Mesh(new THREE.TorusGeometry(1
 let inCar=false,speed=0,angle=0,joy={x:0,y:0},smoothInput={x:0,y:0},keys={};let run=false,braking=false;
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();keys[k]=true;if(k==='e')toggleCar();if(e.code==='Space')braking=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;if(e.code==='Space')braking=false});
 function toggleCar(){if(inCar){inCar=false;player.position.copy(car.position).add(new THREE.Vector3(2,0,0));player.visible=true;document.querySelector('#action').textContent='ENTRAR'}else if(player.position.distanceTo(car.position)<5){inCar=true;player.visible=false;document.querySelector('#action').textContent='SAIR'}}
-document.querySelector('#action').onclick=toggleCar;for(const [id,setter] of [['run',v=>run=v],['brake',v=>braking=v]]){const el=document.querySelector('#'+id);el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);setter(true)});el.addEventListener('pointerup',()=>setter(false));el.addEventListener('pointercancel',()=>setter(false));}
+document.querySelector('#action').addEventListener('click',toggleCar);
+for(const [id,key] of [['run','run'],['brake','braking']]){const el=document.querySelector('#'+id);el.addEventListener('click',()=>{if(key==='run')run=!run;else braking=!braking;el.classList.toggle('active',key==='run'?run:braking)});}
 const joyEl=document.querySelector('#joy'),knob=document.querySelector('#knob');let active=false;
 joyEl.addEventListener('pointerdown',e=>{active=true;joyEl.setPointerCapture(e.pointerId);moveJoy(e)});joyEl.addEventListener('pointermove',e=>{if(active)moveJoy(e)});function moveJoy(e){let r=joyEl.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),m=Math.min(42,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);const rawX=Math.cos(a)*m/42,rawY=Math.sin(a)*m/42,dead=.14;joy.x=Math.abs(rawX)<dead?0:Math.sign(rawX)*Math.pow((Math.abs(rawX)-dead)/(1-dead),1.35);joy.y=Math.abs(rawY)<dead?0:Math.sign(rawY)*Math.pow((Math.abs(rawY)-dead)/(1-dead),1.35);knob.style.transform='translate('+rawX*42+'px,'+rawY*42+'px)'}function endJoy(){active=false;joy={x:0,y:0};knob.style.transform='translate(0,0)'}joyEl.addEventListener('pointerup',endJoy);joyEl.addEventListener('pointercancel',endJoy);
+// Controles por arrasto em qualquer área livre da tela, além do joystick.
+let screenTouch=null;function screenTouchMove(e){if(screenTouch===null)return;const dx=(e.clientX-screenTouch.x)/58,dy=(e.clientY-screenTouch.y)/58;joy.x=THREE.MathUtils.clamp(dx,-1,1);joy.y=THREE.MathUtils.clamp(dy,-1,1)}renderer.domElement.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;screenTouch={x:e.clientX,y:e.clientY};renderer.domElement.setPointerCapture(e.pointerId);screenTouchMove(e)});renderer.domElement.addEventListener('pointermove',e=>{if(screenTouch!==null)screenTouchMove(e)});function endScreenTouch(){if(screenTouch!==null){screenTouch=null;joy={x:0,y:0}}}renderer.domElement.addEventListener('pointerup',endScreenTouch);renderer.domElement.addEventListener('pointercancel',endScreenTouch);
 const clock=new THREE.Clock();function loop(){requestAnimationFrame(loop);try{let dt=Math.min(clock.getDelta(),.04);let forward=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0)-joy.y;let turn=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+joy.x;smoothInput.x=THREE.MathUtils.damp(smoothInput.x,turn,9,dt);smoothInput.y=THREE.MathUtils.damp(smoothInput.y,forward,9,dt);turn=smoothInput.x;forward=smoothInput.y;
 if(inCar){speed+=forward*12*dt;speed*=Math.pow(braking?.04:.985,dt*60);car.rotation.y-=turn*dt*(.48+Math.min(Math.abs(speed)/18,.65));let dir=new THREE.Vector3(Math.sin(car.rotation.y),0,Math.cos(car.rotation.y));const carStep=dir.clone().multiplyScalar(speed*dt);moveWithCollisions(car,carStep.x,carStep.z,1.25,2.15);speed=Math.max(-10,Math.min(24,speed));}
 else{let move=new THREE.Vector3(turn,0,-forward);if(move.length()>1)move.normalize();if(move.lengthSq()>0){angle=Math.atan2(move.x,move.z);player.rotation.y=angle;const step=move.clone().multiplyScalar(dt*(run?5.8:3.1));moveWithCollisions(player,step.x,step.z,.43,.43);leftArm.rotation.x=Math.sin(performance.now()*.012)*.45;rightArm.rotation.x=-leftArm.rotation.x;leftLeg.rotation.x=-leftArm.rotation.x*.8;rightLeg.rotation.x=leftArm.rotation.x*.8;}else{leftArm.rotation.x*=.82;rightArm.rotation.x*=.82;leftLeg.rotation.x*=.82;rightLeg.rotation.x*=.82;}if(player.position.distanceTo(car.position)<4)document.querySelector('#action').textContent='ENTRAR';}
