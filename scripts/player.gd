@@ -349,6 +349,18 @@ func _try_enter_vehicle() -> void:
 		closest_shop.call("open_shop", self)
 		return
 
+	var closest_civic: Node3D = null
+	var civic_distance := 8.0
+	for item in get_tree().get_nodes_in_group("civic_buildings"):
+		if item is Node3D:
+			var distance := global_position.distance_to(item.global_position)
+			if distance < civic_distance or item.get("occupant") == self:
+				civic_distance = distance
+				closest_civic = item
+	if closest_civic != null:
+		closest_civic.call("interact_with", self)
+		return
+
 	var closest_citizen: Node3D = null
 	var citizen_distance := 4.5
 	for item in get_tree().get_nodes_in_group("citizens"):
@@ -395,6 +407,39 @@ func use_home_object(object_name: String) -> void:
 			_update_needs_display()
 			_save_progress()
 			_show_home_feedback("Banho tomado. Higiene restaurada.")
+
+func use_city_service(service: String) -> void:
+	match service:
+		"restaurant":
+			if money < 15:
+				_show_city_feedback("Você precisa de $15 para comprar uma refeição.")
+				return
+			money -= 15
+			hunger = minf(100.0, hunger + 45.0)
+			_update_money_display()
+			_show_city_feedback("Refeição comprada! Sua fome melhorou.")
+		"hospital":
+			energy = minf(100.0, energy + 35.0)
+			hygiene = minf(100.0, hygiene + 10.0)
+			_show_city_feedback("Atendimento concluído. Você recuperou energia.")
+		"school":
+			energy = maxf(0.0, energy - 8.0)
+			_show_city_feedback("Você participou de uma aula e aprendeu algo novo!")
+		"mall":
+			if money < 50:
+				_show_city_feedback("Junte $50 para comprar uma roupa nova.")
+				return
+			money -= 50
+			outfit_material.albedo_color = Color(randf_range(0.15, 0.8), randf_range(0.15, 0.8), randf_range(0.15, 0.8))
+			_update_money_display()
+			_show_city_feedback("Roupa nova comprada por $50!")
+	_update_needs_display()
+	_save_progress()
+
+func _show_city_feedback(message: String) -> void:
+	var building := get_tree().get_first_node_in_group("civic_buildings")
+	if building != null:
+		building.call("_message", message)
 
 func _show_home_feedback(message: String) -> void:
 	var home := get_tree().get_first_node_in_group("homes")
