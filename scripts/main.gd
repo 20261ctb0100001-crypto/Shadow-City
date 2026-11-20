@@ -426,7 +426,7 @@ func _spawn_traffic_car(spawn_position: Vector3, axis: Vector3, speed: float, pa
 	_spawn_traffic_vehicle(spawn_position, axis, speed, paint, "car")
 
 func _spawn_traffic_vehicle(spawn_position: Vector3, axis: Vector3, speed: float, paint: Color, kind: String) -> void:
-	var traffic_vehicle := Node3D.new()
+	var traffic_vehicle := CharacterBody3D.new()
 	traffic_vehicle.position = spawn_position
 	traffic_vehicle.set_script(TRAFFIC_SCRIPT)
 	traffic_vehicle.set("travel_axis", axis)
