@@ -114,7 +114,7 @@ func _process(delta: float) -> void:
 		energy = maxf(0.0, energy - 0.025)
 		hygiene = maxf(0.0, hygiene - 0.018)
 		_update_needs_display()
-
+		_update_life_menu_status()
 
 func _create_needs_display() -> void:
 	needs_label = Label.new()
