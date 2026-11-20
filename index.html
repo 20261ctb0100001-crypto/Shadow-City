@@ -456,7 +456,7 @@ window.prepareSelectedVehicle=async function(id){
   const gltf=await new Promise((resolve,reject)=>vehicleLoader.load(item.model,resolve,undefined,reject)),model=gltf.scene;
   model.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
   if(!Number.isFinite(size.z)||size.z<.2)throw new Error('Modelo 3D inválido.');
-  const targetLength=item.id.startsWith('car-')?4.9:(item.trailer?6.1:7.7),scale=targetLength/size.z;
+  const targetLength=item.length||(item.id.startsWith('car-')?4.9:(item.trailer?6.1:7.7)),scale=targetLength/size.z;
   model.scale.setScalar(scale);model.updateMatrixWorld(true);
   const scaledBounds=new THREE.Box3().setFromObject(model),scaledCenter=scaledBounds.getCenter(new THREE.Vector3());
   model.position.set(-scaledCenter.x,-scaledBounds.min.y,-scaledCenter.z);
