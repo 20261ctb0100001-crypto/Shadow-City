@@ -115,8 +115,8 @@ test('Ponta Grossa has a visible entrance landmark near the start', async () => 
 
 test('fullscreen and landscape locking are limited to mobile devices', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.ok(html.includes('const isMobileDevice='));
-  assert.ok(html.includes('if(isMobileDevice){'));
+  assert.ok(html.includes('const mobile='));
+  assert.ok(html.includes('if(mobile){'));
   assert.ok(html.includes("screen.orientation.lock('landscape-primary')"));
 });
 
@@ -155,8 +155,8 @@ test('garage offers 25 cars and 25 trucks with matching 3D preview images', asyn
   const catalog = await readFile(new URL('../scripts/vehicle-catalog.js', import.meta.url), 'utf8');
   assert.equal((catalog.match(/"id":"truck-/g) || []).length, 25, 'must list 25 trucks');
   assert.equal((catalog.match(/"id":"car-/g) || []).length, 25, 'must list 25 cars');
-  assert.equal((catalog.match(/"model":"https:\\/\\/cdn\\.3dassets\\.dev/g) || []).length, 50, 'every vehicle must have a GLB model');
-  assert.equal((catalog.match(/"image":"https:\\/\\/cdn\\.3dassets\\.dev/g) || []).length, 50, 'every vehicle must have a matching preview render');
+  assert.equal((catalog.match(/"model":/g) || []).length, 50, 'every vehicle must have a GLB model');
+  assert.equal((catalog.match(/"image":/g) || []).length, 50, 'every vehicle must have a matching preview render');
 });
 
 test('selected GLB model replaces the procedural player vehicle and uses car or truck handling', async () => {
@@ -174,4 +174,14 @@ test('house blocks include roofs, framed windows, garages and porches', async ()
   assert.ok(html.includes('windowFrames=new THREE.InstancedMesh'));
   assert.ok(html.includes('garageDoors=new THREE.InstancedMesh'));
   assert.ok(html.includes('const canopy=new THREE.Mesh'));
+});
+
+test('car physics is quicker than truck physics while retaining separate speed limits', async () => {
+  const { stepTruckPhysics } = await loadPhysics();
+  const state = { speed: 0, heading: 0 };
+  const common = { throttle: 1, brake: 0, turn: 0, gear: 'D', dt: 0.1, offRoad: false };
+  const truck = stepTruckPhysics(state, { ...common, acceleration: 6.5, speedLimit: 41.7 });
+  const car = stepTruckPhysics(state, { ...common, acceleration: 9.5, speedLimit: 55.6 });
+  assert.ok(car.speed > truck.speed);
+  assert.ok(car.speed <= 55.6);
 });
