@@ -10,8 +10,8 @@ var clock_label: Label
 
 func _ready() -> void:
 	time_of_day = starting_hour
-	sun = get_tree().current_scene.find_child("*", true, false) as DirectionalLight3D
-	world_environment = get_tree().current_scene.find_child("*", true, false) as WorldEnvironment
+	sun = get_tree().current_scene.find_child("Sun", true, false) as DirectionalLight3D
+	world_environment = get_tree().current_scene.find_child("WorldEnvironment", true, false) as WorldEnvironment
 	_create_clock_display()
 	_update_world()
 
