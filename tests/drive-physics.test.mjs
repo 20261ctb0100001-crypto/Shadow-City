@@ -185,3 +185,13 @@ test('car physics is quicker than truck physics while retaining separate speed l
   assert.ok(car.speed > truck.speed);
   assert.ok(car.speed <= 55.6);
 });
+
+
+test('city neighborhoods place complete GLB house models in the street grid', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('const cityHousePlacements=[]'));
+  assert.ok(html.includes('cityHouseModelUrls'));
+  assert.ok(html.includes('await loadCityHouseModels()'));
+  assert.ok(html.includes('housePool[(i+spot.style)%housePool.length].clone(true)'));
+  assert.ok(html.includes('window.cityHouseModelsReady=true'));
+});
