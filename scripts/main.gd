@@ -1,6 +1,7 @@
 extends Node3D
 
 const PLAYER_SCRIPT = preload("res://scripts/player.gd")
+const CAR_SCRIPT = preload("res://scripts/car.gd")
 
 func _ready() -> void:
 	_build_environment()
@@ -119,3 +120,9 @@ func _spawn_player() -> void:
 	player.position = Vector3(0, 1.2, 18)
 	player.set_script(PLAYER_SCRIPT)
 	add_child(player)
+
+	var car := CharacterBody3D.new()
+	car.name = "PlayerCar"
+	car.position = Vector3(3.5, 0.0, 18)
+	car.set_script(CAR_SCRIPT)
+	add_child(car)
