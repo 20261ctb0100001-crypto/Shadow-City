@@ -34,6 +34,15 @@ jobs:
       - name: Import project resources
         run: godot --headless --editor --path . --quit
 
+      - name: Run the game scene in headless mode
+        run: |
+          set -o pipefail
+          godot --headless --path . --quit-after 5 2>&1 | tee /tmp/shadow-city-runtime.log
+          if grep -E "SCRIPT ERROR|Parse Error|ERROR:" /tmp/shadow-city-runtime.log; then
+            echo "Runtime errors detected while starting the main scene."
+            exit 1
+          fi
+
       - name: Export game for the browser
         run: |
           mkdir -p build
