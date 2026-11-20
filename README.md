@@ -21,10 +21,11 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeira área identificada como Ponta Grossa, Paraná, Brasil.
 - Primeiros animais ambientais: cachorro, gato, papagaio e cavalo, com movimento autônomo simples.
 - Quatro moradores com nomes, profissões, personalidades, falas, aparência e velocidades diferentes.
-- Primeiros veículos de trânsito autônomo circulando continuamente pelas duas avenidas, em faixas e velocidades diferentes.
+- Primeiros veículos de trânsito autônomo circulando pelas avenidas e semáforo central com fases alternadas; carros param no sinal vermelho antes do cruzamento.
 - Sistema inicial de trabalhos com objetivo físico: aceitar uma tarefa, seguir um marcador dourado pelo bairro e receber pagamento ao chegar ao destino.
 - Carteira na tela que atualiza o dinheiro recebido pelos turnos.
-- Salvamento local automático do dinheiro, posição do personagem e cor da roupa a cada 10 segundos, ao receber pagamento, ao comprar roupa e ao sair do jogo.
+- Sistema de necessidades com fome, energia e higiene, menu VIDA para comer, descansar e tomar banho.
+- Salvamento local automático de dinheiro, posição, roupa e necessidades.
 - Ciclo inicial de dia e noite com relógio na tela, mudança gradual da luz solar e iluminação ambiente.
 - Iluminação direcional, materiais e colisões básicas.
 
