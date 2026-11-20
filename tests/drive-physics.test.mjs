@@ -109,3 +109,9 @@ test('fullscreen and landscape locking are limited to mobile devices', async () 
   assert.ok(html.includes('if(isMobileDevice){'));
   assert.ok(html.includes("screen.orientation.lock('landscape-primary')"));
 });
+
+test('delivery mission text matches the coastal destination marker', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('Leve a carga até o terminal no litoral.'));
+  assert.ok(!html.includes('Leve a carga até o posto marcado.'));
+});
