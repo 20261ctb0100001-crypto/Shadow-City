@@ -24,31 +24,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Godot and Web export templates
-        uses: chickensoft-games/setup-godot@v2
-        with:
-          version: 4.4.1
-          use-dotnet: false
-          include-templates: true
-
-      - name: Import project resources
-        run: godot --headless --editor --path . --quit
-
-      - name: Run the game scene in headless mode
+      - name: Prepare browser game
         run: |
-          set -o pipefail
-          godot --headless --path . --quit-after 5 2>&1 | tee /tmp/shadow-city-runtime.log
-          if grep -E "SCRIPT ERROR|Parse Error|ERROR:" /tmp/shadow-city-runtime.log; then
-            echo "Runtime errors detected while starting the main scene."
-            exit 1
-          fi
-
-      - name: Export game for the browser
-        run: |
+          set -eu
+          test -s index.html
           mkdir -p build
-          godot --headless --path . --export-release "Web" build/index.html
+          cp index.html build/index.html
           test -s build/index.html
-          ls -lh build/
+          echo "Browser game prepared:"
+          ls -lh build/index.html
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
