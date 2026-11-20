@@ -80,8 +80,8 @@ test('the main Three.js module has valid JavaScript syntax', async () => {
 
 test('delivery and refueling targets are ahead on the negative-Z route', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.ok(html.includes('marker.position.set(roadCenter(-29400)+7,0,-29400)'));
-  assert.ok(html.includes('station.position.set(roadCenter(-3000)+27,0,-3000)'));
+  assert.ok(html.includes('marker.position.set(roadCenter(-64400)+7,0,-64400)'));
+  assert.ok(html.includes('station.position.set(roadCenter(-10000)+27,0,-10000)'));
 });
 
 test('all four Brazilian city stops remain in the route', async () => {
@@ -112,7 +112,7 @@ test('fullscreen and landscape locking are limited to mobile devices', async () 
 
 test('delivery mission text matches the coastal destination marker', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.ok(html.includes('Leve a carga até o terminal no litoral.'));
+  assert.ok(html.includes('Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.'));
   assert.ok(!html.includes('Leve a carga até o posto marcado.'));
 });
 
@@ -124,10 +124,14 @@ test('Pages deployment waits for artifact metadata propagation', async () => {
 
 test('all four cities have a large connected street grid and dense blocks', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.ok(html.includes('const cityLength=1680'));
-  assert.ok(html.includes('parallelOffsets=[48,132,216,300,384]'));
-  assert.ok(html.includes('for(let row=0;row<13;row++)'));
-  assert.ok(html.includes('for(let band=0;band<4;band++)for(let row=0;row<12;row++)'));
+  assert.ok(html.includes('const cityLength=8000'));
+  assert.ok(html.includes('parallelOffsets=[48,132,216]'));
+  assert.ok(html.includes('for(let row=0;row<61;row++)'));
+  assert.ok(html.includes('for(let band=0;band<2;band++)for(let row=0;row<60;row++)'));
+  assert.ok(html.includes('steps=13000,startZ=-65000,endZ=700'));
+  assert.ok(html.includes('speedLimit:inCity?8.33:41.7'));
+  assert.ok(html.includes('function makeTrafficTruck'));
+  assert.ok(html.includes('for(let i=0;i<8;i++)makeTrafficTruck'));
   assert.ok(html.includes('new THREE.InstancedMesh(windowGeo,glassCity,18000)'));
   for (const city of ["buildCity('Ponta Grossa'", "buildCity('Curitiba'", "buildCity('Florianópolis'", "buildCity('Santos'"]) {
     assert.ok(html.includes(city), city + ' must use the expanded city builder');
