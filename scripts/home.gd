@@ -12,17 +12,37 @@ func interact_with(player: Node3D) -> void:
 	if is_occupied and occupant != player:
 		return
 	if occupant == player:
-		player.global_position = Vector3(19.0, 1.2, 10.5)
-		occupant = null
-		is_occupied = false
-		player.set("velocity", Vector3.ZERO)
-		_show_message("Você saiu de casa.")
+		var room_center := global_position + interior_origin
+		var local_player_position: Vector3 = player.global_position - room_center
+		if local_player_position.z > 4.0 and absf(local_player_position.x) < 2.4:
+			player.global_position = Vector3(19.0, 1.2, 10.5)
+			occupant = null
+			is_occupied = false
+			player.set("velocity", Vector3.ZERO)
+			_show_message("Você saiu de casa.")
+			return
+		var furniture := {
+			"cama": Vector3(-3.5, 0.0, -2.5),
+			"geladeira": Vector3(-4.5, 0.0, 3.8),
+			"chuveiro": Vector3(4.5, 0.0, 3.5)
+		}
+		var nearest_action := ""
+		var nearest_distance := 2.8
+		for action_name in furniture:
+			var distance: float = local_player_position.distance_to(furniture[action_name])
+			if distance < nearest_distance:
+				nearest_distance = distance
+				nearest_action = action_name
+		if nearest_action == "":
+			_show_message("Chegue perto da cama, geladeira ou chuveiro para usar.")
+		else:
+			player.call("use_home_object", nearest_action)
 	else:
 		occupant = player
 		is_occupied = true
-		player.global_position = interior_origin + Vector3(0.0, 1.2, 2.5)
+		player.global_position = global_position + interior_origin + Vector3(0.0, 1.2, 2.5)
 		player.set("velocity", Vector3.ZERO)
-		_show_message("Casa inicial: AÇÃO para sair. VIDA para cuidar das necessidades.")
+		_show_message("Bem-vindo à sua casa! AÇÃO perto dos móveis para interagir; perto da porta para sair.")
 
 func _show_message(message: String) -> void:
 	var hint := Label3D.new()
