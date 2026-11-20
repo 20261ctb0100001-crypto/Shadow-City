@@ -20,7 +20,7 @@
  <div id="stats" class="panel">Velocidade: <b id="speed">0</b> km/h<br>Marcha: <b id="gear">N</b><br>Combustível: <b id="fuel">100</b>%</div>
  <div id="help" class="panel">WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão</div>
 </div>
-<div id="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><button id="viewBtn" class="panel" style="color:white;border:1px solid #ffffff66">1ª PESSOA</button><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
+<div id="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><button id="viewBtn" class="panel" style="color:white;border:1px solid #ffffff66">CÂMERA: 3ª PESSOA</button><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
 <script type="module">
 const load=document.getElementById('load');
 let THREE;
@@ -75,7 +75,7 @@ function updateStats(){document.getElementById('speed').textContent=Math.round(M
 function setHold(id,fn){const el=document.getElementById(id);el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture(e.pointerId);fn(true);el.classList.add('active')});const end=()=>{fn(false);el.classList.remove('active')};el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);el.addEventListener('lostpointercapture',end)}
 setHold('gas',v=>throttle=v?1:0);setHold('brake',v=>brake=v?1:0);
 const viewBtn=document.getElementById('viewBtn'),cruiseBtn=document.getElementById('cruiseBtn'),refuelBtn=document.getElementById('refuelBtn');
-viewBtn.addEventListener('click',()=>{firstPerson=!firstPerson;viewBtn.textContent=firstPerson?'3ª PESSOA':'1ª PESSOA'});
+viewBtn.addEventListener('click',()=>{firstPerson=!firstPerson;viewBtn.textContent=firstPerson?'CÂMERA: 1ª PESSOA':'CÂMERA: 3ª PESSOA'});
 cruiseBtn.addEventListener('click',()=>{cruiseOn=!cruiseOn;cruiseSpeed=cruiseOn?Math.max(8,Math.abs(speed)):0;cruiseBtn.textContent=cruiseOn?'LIMITE: '+Math.round(cruiseSpeed*3.6)+' KM/H':'LIMITADOR: OFF';cruiseBtn.style.background=cruiseOn?'#176c54':'#101820d9'});
 refuelBtn.addEventListener('click',()=>{if(truck.position.distanceTo(station.position)<24&&Math.abs(speed)<.7){fuel=100;document.getElementById('mission').innerHTML='TANQUE CHEIO<br>Boa viagem!';refuelBtn.style.display='none'}});
 
