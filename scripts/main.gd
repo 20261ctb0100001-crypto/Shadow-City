@@ -123,12 +123,17 @@ func _build_city() -> void:
 
 func _add_building_facade(x: float, z: float, height: float) -> void:
 	var glass := StandardMaterial3D.new()
-	glass.albedo_color = Color(0.10, 0.22, 0.30)
-	glass.metallic = 0.28
-	glass.roughness = 0.22
+	glass.albedo_color = Color(0.055, 0.15, 0.22)
+	glass.metallic = 0.42
+	glass.roughness = 0.16
+	glass.clearcoat_enabled = true
+	glass.clearcoat = 0.55
 	var frame := StandardMaterial3D.new()
 	frame.albedo_color = Color(0.72, 0.70, 0.64)
-	frame.roughness = 0.88
+	frame.roughness = 0.82
+	var dark_frame := StandardMaterial3D.new()
+	dark_frame.albedo_color = Color(0.12, 0.15, 0.17)
+	dark_frame.roughness = 0.62
 	var floors := int(height / 3.0)
 	for floor_index in range(floors):
 		var window_y := 1.8 + float(floor_index) * 3.0
@@ -137,17 +142,37 @@ func _add_building_facade(x: float, z: float, height: float) -> void:
 			_add_visual_box("Back building window", Vector3(x + window_x, window_y, z + 6.08), Vector3(2.0, 1.45, 0.10), glass)
 			_add_visual_box("Front window sill", Vector3(x + window_x, window_y - 0.78, z - 6.12), Vector3(2.15, 0.10, 0.16), frame)
 			_add_visual_box("Back window sill", Vector3(x + window_x, window_y - 0.78, z + 6.12), Vector3(2.15, 0.10, 0.16), frame)
+			_add_visual_box("Front window mullion", Vector3(x + window_x, window_y, z - 6.145), Vector3(0.055, 1.42, 0.035), dark_frame)
+			_add_visual_box("Back window mullion", Vector3(x + window_x, window_y, z + 6.145), Vector3(0.055, 1.42, 0.035), dark_frame)
 		for window_z in [-3.2, 0.0, 3.2]:
 			_add_visual_box("Left building window", Vector3(x - 5.08, window_y, z + window_z), Vector3(0.10, 1.45, 2.0), glass)
 			_add_visual_box("Right building window", Vector3(x + 5.08, window_y, z + window_z), Vector3(0.10, 1.45, 2.0), glass)
+			_add_visual_box("Left window mullion", Vector3(x - 5.145, window_y, z + window_z), Vector3(0.035, 1.42, 0.055), dark_frame)
+			_add_visual_box("Right window mullion", Vector3(x + 5.145, window_y, z + window_z), Vector3(0.035, 1.42, 0.055), dark_frame)
 		_add_visual_box("Front floor facade trim", Vector3(x, window_y + 1.05, z - 6.03), Vector3(9.8, 0.10, 0.12), frame)
 		_add_visual_box("Back floor facade trim", Vector3(x, window_y + 1.05, z + 6.03), Vector3(9.8, 0.10, 0.12), frame)
 		_add_visual_box("Left floor facade trim", Vector3(x - 5.03, window_y + 1.05, z), Vector3(0.12, 0.10, 11.8), frame)
 		_add_visual_box("Right floor facade trim", Vector3(x + 5.03, window_y + 1.05, z), Vector3(0.12, 0.10, 11.8), frame)
+		# Pequenas sacadas com guarda-corpo metálico para quebrar a repetição das fachadas.
+		if floor_index > 0 and floor_index % 2 == 0:
+			for balcony_x in [-3.1, 3.1]:
+				_add_visual_box("Balcony slab", Vector3(x + balcony_x, window_y - 0.82, z - 6.32), Vector3(2.25, 0.12, 0.62), dark_frame)
+				_add_visual_box("Balcony rail", Vector3(x + balcony_x, window_y - 0.35, z - 6.58), Vector3(2.20, 0.72, 0.055), frame)
+	# Base comercial, rodapé e detalhes de cobertura.
+	_add_visual_box("Building base band", Vector3(x, 0.38, z - 6.10), Vector3(10.0, 0.42, 0.22), dark_frame)
+	_add_visual_box("Building base band back", Vector3(x, 0.38, z + 6.10), Vector3(10.0, 0.42, 0.22), dark_frame)
 	_add_visual_box("Roof parapet front", Vector3(x, height + 0.18, z - 5.95), Vector3(10.0, 0.36, 0.28), frame)
 	_add_visual_box("Roof parapet back", Vector3(x, height + 0.18, z + 5.95), Vector3(10.0, 0.36, 0.28), frame)
 	_add_visual_box("Roof parapet left", Vector3(x - 4.9, height + 0.18, z), Vector3(0.28, 0.36, 12.0), frame)
 	_add_visual_box("Roof parapet right", Vector3(x + 4.9, height + 0.18, z), Vector3(0.28, 0.36, 12.0), frame)
+	# Equipamentos de ar-condicionado e ventilação no topo.
+	for roof_x in [-3.0, 3.0]:
+		_add_visual_box("Rooftop HVAC unit", Vector3(x + roof_x, height + 0.48, z + 2.8), Vector3(1.35, 0.62, 1.0), dark_frame)
+		_add_visual_box("Rooftop HVAC top", Vector3(x + roof_x, height + 0.81, z + 2.8), Vector3(1.42, 0.08, 1.06), frame)
+	# Marquise na entrada e pilares laterais da fachada principal.
+	_add_visual_box("Ground floor canopy", Vector3(x, 3.05, z - 6.55), Vector3(9.6, 0.18, 1.0), dark_frame)
+	for column_x in [-4.45, 4.45]:
+		_add_visual_box("Facade entrance column", Vector3(x + column_x, 1.55, z - 6.18), Vector3(0.28, 3.1, 0.32), frame)
 
 func _build_outer_districts() -> void:
 	_add_district_building("ESCOLA MUNICIPAL", Vector3(-65, 3.2, -62), Vector3(18, 6.4, 14), Color(0.72, 0.62, 0.38))
