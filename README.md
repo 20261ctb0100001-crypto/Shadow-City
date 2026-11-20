@@ -14,6 +14,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeiro carro provisório com entrada/saída e condução básica usando os mesmos controles.
 - Primeira loja de roupas interativa, com saldo inicial e compra de uma jaqueta de teste.
 - Primeiras construções, uma casa de madeira, fachada de mercado e árvores.
+- Casa inicial com interior mobiliado em área própria do mapa; o jogador pode entrar e sair pelo botão AÇÃO.
 - Mapa ampliado com quatro zonas de referência: escola, hospital, bairro gastronômico e centro comercial.
 - Necessidades e dinheiro incluídos no salvamento local.
 - Ajustes iniciais de apresentação com tonemapping cinematográfico, neblina leve, calçadas, faixas de pedestres e postes com iluminação.
@@ -38,7 +39,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 7. Expandir a loja com mais roupas, barbearia e personalização.
 8. Substituir blocos provisórios por modelos 3D e materiais mais detalhados.
 9. Criar novas regiões inspiradas em cidades reais, começando por bairros e pontos reconhecíveis.
-10. Criar interiores acessíveis e interações funcionais para escola, hospital, restaurante e centro comercial.
+10. Criar interiores acessíveis e interações funcionais para escola, hospital, restaurante e centro comercial; ampliar a casa inicial com objetos interativos.
 11. Adicionar modelos 3D profissionais, animações, sons e otimização gráfica.
 12. Instalar Godot 4, testar o projeto, configurar exportação Android e gerar APK/AAB (ainda não realizado).
 
