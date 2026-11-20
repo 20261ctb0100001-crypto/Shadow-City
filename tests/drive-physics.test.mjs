@@ -121,3 +121,15 @@ test('Pages deployment waits for artifact metadata propagation', async () => {
   assert.ok(workflow.includes('name: Wait for Pages artifact metadata'));
   assert.ok(workflow.includes('run: sleep 10'));
 });
+
+test('all four cities have a large connected street grid and dense blocks', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('const cityLength=1680'));
+  assert.ok(html.includes('parallelOffsets=[48,132,216,300,384]'));
+  assert.ok(html.includes('for(let row=0;row<13;row++)'));
+  assert.ok(html.includes('for(let band=0;band<4;band++)for(let row=0;row<12;row++)'));
+  assert.ok(html.includes('new THREE.InstancedMesh(windowGeo,glassCity,18000)'));
+  for (const city of ["buildCity('Ponta Grossa'", "buildCity('Curitiba'", "buildCity('Florianópolis'", "buildCity('Santos'"]) {
+    assert.ok(html.includes(city), city + ' must use the expanded city builder');
+  }
+});
