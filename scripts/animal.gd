@@ -8,6 +8,10 @@ var wander_direction := Vector3.ZERO
 var change_direction_in := 0.0
 var home_position := Vector3.ZERO
 var body_material: StandardMaterial3D
+var leg_pivots: Array[Node3D] = []
+var gait_time: float = 0.0
+var head_node: MeshInstance3D
+var tail_node: MeshInstance3D
 
 func _ready() -> void:
 	name = species.capitalize()
@@ -23,13 +27,15 @@ func _build_animal() -> void:
 		"dog":
 			body_material.albedo_color = Color(0.55, 0.31, 0.16)
 			_add_ellipsoid("Body", Vector3(0, 0.62, 0), Vector3(0.48, 0.38, 0.78), body_material)
-			_add_ellipsoid("Head", Vector3(0, 0.9, -0.62), Vector3(0.32, 0.32, 0.34), body_material)
+			head_node = _add_ellipsoid("Head", Vector3(0, 0.9, -0.62), Vector3(0.32, 0.32, 0.34), body_material)
+			tail_node = _add_ellipsoid("Tail", Vector3(0, 0.78, 0.72), Vector3(0.10, 0.10, 0.42), body_material)
 			_add_ellipsoid("Snout", Vector3(0, 0.78, -0.91), Vector3(0.19, 0.16, 0.22), body_material)
 			_add_legs(0.52, 0.25, Color(0.32, 0.19, 0.12))
 		"cat":
 			body_material.albedo_color = Color(0.58, 0.58, 0.54)
 			_add_ellipsoid("Body", Vector3(0, 0.48, 0), Vector3(0.34, 0.31, 0.62), body_material)
-			_add_ellipsoid("Head", Vector3(0, 0.83, -0.48), Vector3(0.29, 0.29, 0.29), body_material)
+			head_node = _add_ellipsoid("Head", Vector3(0, 0.83, -0.48), Vector3(0.29, 0.29, 0.29), body_material)
+			tail_node = _add_ellipsoid("Tail", Vector3(0, 0.55, 0.58), Vector3(0.09, 0.09, 0.52), body_material)
 			_add_ellipsoid("Ear L", Vector3(-0.17, 1.08, -0.53), Vector3(0.10, 0.17, 0.09), body_material)
 			_add_ellipsoid("Ear R", Vector3(0.17, 1.08, -0.53), Vector3(0.10, 0.17, 0.09), body_material)
 			_add_legs(0.42, 0.22, Color(0.42, 0.42, 0.40))
@@ -37,7 +43,8 @@ func _build_animal() -> void:
 			body_material.albedo_color = Color(0.34, 0.18, 0.10)
 			_add_ellipsoid("Body", Vector3(0, 1.05, 0), Vector3(0.52, 0.58, 1.0), body_material)
 			_add_ellipsoid("Neck", Vector3(0, 1.55, -0.68), Vector3(0.27, 0.65, 0.30), body_material)
-			_add_ellipsoid("Head", Vector3(0, 1.92, -0.86), Vector3(0.24, 0.36, 0.25), body_material)
+			head_node = _add_ellipsoid("Head", Vector3(0, 1.92, -0.86), Vector3(0.24, 0.36, 0.25), body_material)
+			tail_node = _add_ellipsoid("Tail", Vector3(0, 1.15, 0.92), Vector3(0.10, 0.12, 0.55), body_material)
 			_add_legs(1.0, 0.72, Color(0.20, 0.12, 0.08))
 		"parrot":
 			body_material.albedo_color = Color(0.08, 0.62, 0.28)
@@ -67,7 +74,7 @@ func _build_animal() -> void:
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	add_child(label)
 
-func _add_ellipsoid(part_name: String, part_position: Vector3, dimensions: Vector3, material: Material) -> void:
+func _add_ellipsoid(part_name: String, part_position: Vector3, dimensions: Vector3, material: Material) -> MeshInstance3D:
 	var part := MeshInstance3D.new()
 	part.name = part_name
 	var mesh := SphereMesh.new()
@@ -78,21 +85,26 @@ func _add_ellipsoid(part_name: String, part_position: Vector3, dimensions: Vecto
 	part.position = part_position
 	part.material_override = material
 	add_child(part)
+	return part
 
 func _add_legs(body_height: float, leg_length: float, color: Color) -> void:
 	var leg_material := StandardMaterial3D.new()
 	leg_material.albedo_color = color
+	leg_material.roughness = 0.92
 	for x in [-0.25, 0.25]:
 		for z in [-0.48, 0.48]:
+			var pivot := Node3D.new()
+			pivot.position = Vector3(x, body_height - leg_length * 0.35, z)
+			add_child(pivot)
 			var leg := MeshInstance3D.new()
-			var mesh := CylinderMesh.new()
-			mesh.top_radius = 0.07
-			mesh.bottom_radius = 0.09
-			mesh.height = leg_length
+			var mesh := CapsuleMesh.new()
+			mesh.radius = 0.075 if species != "horse" else 0.095
+			mesh.height = leg_length * 0.82
 			leg.mesh = mesh
-			leg.position = Vector3(x, body_height - leg_length * 0.5, z)
+			leg.position.y = -leg_length * 0.40
 			leg.material_override = leg_material
-			add_child(leg)
+			pivot.add_child(leg)
+			leg_pivots.append(pivot)
 
 func _pick_direction() -> void:
 	var angle := randf_range(0.0, TAU)
@@ -118,5 +130,16 @@ func _physics_process(delta: float) -> void:
 			velocity.y = 0.0
 		move_and_slide()
 
-	if Vector2(velocity.x, velocity.z).length() > 0.1:
-		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), delta * 3.0)
+	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
+	if horizontal_speed > 0.08:
+		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), delta * 4.5)
+		gait_time += delta * (6.0 + horizontal_speed * 2.0)
+	for i in range(leg_pivots.size()):
+		var phase := gait_time + (PI if (i % 2) == 0 else 0.0)
+		if species == "horse":
+			phase = gait_time + (PI if (i == 1 or i == 2) else 0.0)
+		leg_pivots[i].rotation.x = lerpf(leg_pivots[i].rotation.x, sin(phase) * 0.42, delta * 8.0)
+	if is_instance_valid(tail_node):
+		tail_node.rotation.x = sin(Time.get_ticks_msec() * 0.002) * 0.12
+	if is_instance_valid(head_node):
+		head_node.rotation.x = sin(gait_time * 2.0) * 0.025
