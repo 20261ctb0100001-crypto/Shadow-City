@@ -13,6 +13,7 @@ func _ready() -> void:
 	_build_environment()
 	_spawn_world_clock()
 	_build_city()
+	_build_road_details()
 	_build_street_details()
 	_build_outer_districts()
 	_spawn_city_identity()
@@ -94,6 +95,66 @@ func _add_district_sign(label: String, position: Vector3) -> void:
 	sign.modulate = Color(1.0, 0.88, 0.58)
 	sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	add_child(sign)
+
+func _build_road_details() -> void:
+	var sidewalk_material := StandardMaterial3D.new()
+	sidewalk_material.albedo_color = Color(0.42, 0.43, 0.42)
+	sidewalk_material.roughness = 0.95
+	_add_visual_box("Sidewalk west", Vector3(-7.4, 0.10, 0), Vector3(2.4, 0.20, 180), sidewalk_material)
+	_add_visual_box("Sidewalk east", Vector3(7.4, 0.10, 0), Vector3(2.4, 0.20, 180), sidewalk_material)
+	_add_visual_box("Sidewalk north", Vector3(0, 0.10, -7.4), Vector3(180, 0.20, 2.4), sidewalk_material)
+	_add_visual_box("Sidewalk south", Vector3(0, 0.10, 7.4), Vector3(180, 0.20, 2.4), sidewalk_material)
+
+	var stripe_material := StandardMaterial3D.new()
+	stripe_material.albedo_color = Color(0.88, 0.88, 0.82)
+	for stripe_x in [-5.0, -3.0, -1.0, 1.0, 3.0, 5.0]:
+		_add_visual_box("Crosswalk stripe", Vector3(stripe_x, 0.10, -7.2), Vector3(1.0, 0.035, 2.2), stripe_material)
+		_add_visual_box("Crosswalk stripe", Vector3(stripe_x, 0.10, 7.2), Vector3(1.0, 0.035, 2.2), stripe_material)
+	for stripe_z in [-5.0, -3.0, -1.0, 1.0, 3.0, 5.0]:
+		_add_visual_box("Crosswalk stripe", Vector3(-7.2, 0.10, stripe_z), Vector3(2.2, 0.035, 1.0), stripe_material)
+		_add_visual_box("Crosswalk stripe", Vector3(7.2, 0.10, stripe_z), Vector3(2.2, 0.035, 1.0), stripe_material)
+
+	for lamp_position in [Vector3(-9.0, 0.0, -9.0), Vector3(9.0, 0.0, -9.0), Vector3(-9.0, 0.0, 9.0), Vector3(9.0, 0.0, 9.0)]:
+		_add_street_lamp(lamp_position)
+
+func _add_visual_box(label: String, position: Vector3, dimensions: Vector3, material: Material) -> void:
+	var visual := MeshInstance3D.new()
+	visual.name = label
+	var mesh := BoxMesh.new()
+	mesh.size = dimensions
+	visual.mesh = mesh
+	visual.position = position
+	visual.material_override = material
+	add_child(visual)
+
+func _add_street_lamp(position: Vector3) -> void:
+	var pole := MeshInstance3D.new()
+	var pole_mesh := CylinderMesh.new()
+	pole_mesh.top_radius = 0.07
+	pole_mesh.bottom_radius = 0.11
+	pole_mesh.height = 5.2
+	pole.mesh = pole_mesh
+	pole.position = position + Vector3(0, 2.6, 0)
+	var pole_material := StandardMaterial3D.new()
+	pole_material.albedo_color = Color(0.10, 0.12, 0.15)
+	pole.material_override = pole_material
+	add_child(pole)
+
+	var arm := MeshInstance3D.new()
+	var arm_mesh := BoxMesh.new()
+	arm_mesh.size = Vector3(1.1, 0.10, 0.10)
+	arm.mesh = arm_mesh
+	arm.position = position + Vector3(0.48, 5.0, 0)
+	arm.material_override = pole_material
+	add_child(arm)
+
+	var lamp := OmniLight3D.new()
+	lamp.position = position + Vector3(0.92, 4.85, 0)
+	lamp.light_color = Color(1.0, 0.82, 0.58)
+	lamp.light_energy = 0.75
+	lamp.omni_range = 13.0
+	lamp.shadow_enabled = false
+	add_child(lamp)
 
 func _build_street_details() -> void:
 	# Small wooden house to establish the residential look.
