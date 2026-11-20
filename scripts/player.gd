@@ -10,6 +10,9 @@ var right_leg: MeshInstance3D
 var left_arm: MeshInstance3D
 var right_arm: MeshInstance3D
 var walk_time: float = 0.0
+var torso: MeshInstance3D
+var head_part: MeshInstance3D
+var idle_bob: float = 0.0
 var outfit_material: StandardMaterial3D
 var money: int = 250
 var money_label: Label
@@ -49,8 +52,8 @@ func _create_placeholder_character() -> void:
 	shoes.albedo_color = Color(0.035, 0.04, 0.05)
 	shoes.roughness = 0.95
 
-	_add_character_part("Torso", CapsuleMesh.new(), Vector3(0, 1.12, 0), Vector3(0.48, 0.72, 0.40), outfit_material)
-	_add_character_part("Head", SphereMesh.new(), Vector3(0, 1.78, 0), Vector3(0.27, 0.29, 0.25), skin)
+	torso = _add_character_part("Torso", CapsuleMesh.new(), Vector3(0, 1.12, 0), Vector3(0.48, 0.72, 0.40), outfit_material)
+	head_part = _add_character_part("Head", SphereMesh.new(), Vector3(0, 1.78, 0), Vector3(0.27, 0.29, 0.25), skin)
 	_add_character_part("Hair", SphereMesh.new(), Vector3(0, 1.91, -0.015), Vector3(0.275, 0.16, 0.25), shoes)
 	var eye_white := StandardMaterial3D.new()
 	eye_white.albedo_color = Color(0.94, 0.92, 0.86)
@@ -368,11 +371,20 @@ func _physics_process(delta: float) -> void:
 		walk_time += delta * 9.0
 	else:
 		walk_time = lerpf(walk_time, 0.0, delta * 5.0)
-	var swing := sin(walk_time) * 0.52 if is_walking else 0.0
-	left_leg.rotation.x = lerpf(left_leg.rotation.x, swing, delta * 12.0)
-	right_leg.rotation.x = lerpf(right_leg.rotation.x, -swing, delta * 12.0)
-	left_arm.rotation.x = lerpf(left_arm.rotation.x, -swing * 0.72, delta * 12.0)
-	right_arm.rotation.x = lerpf(right_arm.rotation.x, swing * 0.72, delta * 12.0)
+	var move_amount := clampf(input_vector.length(), 0.0, 1.0)
+	var swing := sin(walk_time) * 0.62 * move_amount
+	var foot_lift := maxf(0.0, cos(walk_time * 2.0)) * 0.075 * move_amount
+	left_leg.rotation.x = lerpf(left_leg.rotation.x, swing, delta * 10.0)
+	right_leg.rotation.x = lerpf(right_leg.rotation.x, -swing, delta * 10.0)
+	left_leg.position.y = lerpf(left_leg.position.y, 0.48 + foot_lift, delta * 12.0)
+	right_leg.position.y = lerpf(right_leg.position.y, 0.48 + maxf(0.0, -cos(walk_time * 2.0)) * 0.075 * move_amount, delta * 12.0)
+	left_arm.rotation.x = lerpf(left_arm.rotation.x, -swing * 0.78 - 0.06, delta * 9.0)
+	right_arm.rotation.x = lerpf(right_arm.rotation.x, swing * 0.78 - 0.06, delta * 9.0)
+	idle_bob = lerpf(idle_bob, absf(sin(walk_time * 2.0)) * 0.035 * move_amount, delta * 10.0)
+	if is_instance_valid(torso):
+		torso.position.y = lerpf(torso.position.y, 1.12 + idle_bob, delta * 10.0)
+	if is_instance_valid(head_part):
+		head_part.rotation.x = lerpf(head_part.rotation.x, -0.025 * move_amount, delta * 7.0)
 
 	move_and_slide()
 
