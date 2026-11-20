@@ -28,17 +28,42 @@ let seed=8;function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/429496
 for(let gx=-4;gx<4;gx++)for(let gz=-4;gz<4;gz++){if(rand()<.12)continue;let x=gx*24+(rand()-.5)*7,z=gz*24+(rand()-.5)*7,w=7+rand()*7,d=7+rand()*7,h=7+rand()*23;let b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),buildingMats[Math.floor(rand()*buildingMats.length)]);b.position.set(x,h/2,z);b.castShadow=true;b.receiveShadow=true;scene.add(b);let roof=new THREE.Mesh(new THREE.BoxGeometry(w+.2,.35,d+.2),mat(0x48545b));roof.position.set(x,h+.12,z);scene.add(roof);for(let yy=2;yy<h-1;yy+=3)for(let xx=-w/2+1;xx<w/2;xx+=2.5){let win=new THREE.Mesh(new THREE.BoxGeometry(.9,1.1,.08),mat(0x395b68,.3));win.position.set(x+xx,yy,z+d/2+.05);scene.add(win)}}
 function makeCar(){let g=new THREE.Group();let body=new THREE.Mesh(new THREE.BoxGeometry(2.2,.7,4),mat(0x176f76,.35));body.position.y=.75;body.castShadow=true;g.add(body);let cabin=new THREE.Mesh(new THREE.BoxGeometry(1.65,.75,1.9),mat(0x263d4a,.25));cabin.position.set(0,1.42,-.25);g.add(cabin);for(let x of [-1,1])for(let z of [-1.3,1.3]){let w=new THREE.Mesh(new THREE.CylinderGeometry(.38,.38,.22,16),mat(0x151719));w.rotation.z=Math.PI/2;w.position.set(x,.42,z);g.add(w)}return g}
 const car=makeCar();car.position.set(4,0,7);scene.add(car);
-const player=new THREE.Group();const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.38,.85,4,8),mat(0x26394c));torso.position.y=1.1;torso.castShadow=true;player.add(torso);const head=new THREE.Mesh(new THREE.SphereGeometry(.27,16,12),mat(0xd3a27f));head.position.y=1.85;player.add(head);scene.add(player);player.position.set(0,0,0);
+
+// Jogador com silhueta clara e membros separados para ficar visível de longe.
+const player=new THREE.Group();
+const jacket=mat(0xe07a32,.72),pants=mat(0x24364c,.88),skin=mat(0xc88f6a,.85),hair=mat(0x211b18,.95),shoes=mat(0x171b20,.95);
+const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.34,.72,5,12),jacket);
+torso.position.y=1.13;torso.castShadow=true;player.add(torso);
+const head=new THREE.Mesh(new THREE.SphereGeometry(.255,20,16),skin);
+head.position.y=1.88;head.castShadow=true;player.add(head);
+const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.26,16,10,0,Math.PI*2,0,Math.PI*.55),hair);
+hairCap.position.set(0,1.99,-.015);player.add(hairCap);
+const makeLimb=(x,y,length,radius,material)=>{
+ const pivot=new THREE.Group();pivot.position.set(x,y,0);
+ const limb=new THREE.Mesh(new THREE.CapsuleGeometry(radius,length,4,10),material);
+ limb.position.y=-length*.48;limb.castShadow=true;pivot.add(limb);player.add(pivot);return pivot;
+};
+const leftArm=makeLimb(-.43,1.42,.72,.115,jacket);
+const rightArm=makeLimb(.43,1.42,.72,.115,jacket);
+const leftLeg=makeLimb(-.19,.78,.82,.145,pants);
+const rightLeg=makeLimb(.19,.78,.82,.145,pants);
+for(const x of [-.19,.19]){
+ const shoe=new THREE.Mesh(new THREE.BoxGeometry(.27,.14,.42),shoes);
+ shoe.position.set(x,.13,.09);shoe.castShadow=true;player.add(shoe);
+}
+scene.add(player);player.position.set(0,0,0);
+camera.position.set(0,3.8,-7);camera.lookAt(0,1,0);
+
 const marker=new THREE.Group();let ring=new THREE.Mesh(new THREE.TorusGeometry(1.2,.12,8,28),mat(0x4affad));ring.rotation.x=Math.PI/2;ring.position.y=.15;marker.add(ring);let beam=new THREE.Mesh(new THREE.CylinderGeometry(.12,.35,3,12,1,true),new THREE.MeshBasicMaterial({color:0x4affad,transparent:true,opacity:.25}));beam.position.y=1.5;marker.add(beam);marker.position.set(34,0,-30);scene.add(marker);
 let inCar=false,speed=0,angle=0,joy={x:0,y:0},keys={};let run=false,braking=false;
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key.toLowerCase()==='e')toggleCar();if(e.code==='Space')braking=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;if(e.code==='Space')braking=false});
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();keys[k]=true;if(k==='e')toggleCar();if(e.code==='Space')braking=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;if(e.code==='Space')braking=false});
 function toggleCar(){if(inCar){inCar=false;player.position.copy(car.position).add(new THREE.Vector3(2,0,0));player.visible=true;document.querySelector('#action').textContent='ENTRAR'}else if(player.position.distanceTo(car.position)<5){inCar=true;player.visible=false;document.querySelector('#action').textContent='SAIR'}}
-document.querySelector('#action').onclick=toggleCar;document.querySelector('#run').onpointerdown=()=>run=true;document.querySelector('#run').onpointerup=()=>run=false;document.querySelector('#brake').onpointerdown=()=>braking=true;document.querySelector('#brake').onpointerup=()=>braking=false;
+document.querySelector('#action').onclick=toggleCar;for(const [id,setter] of [['run',v=>run=v],['brake',v=>braking=v]]){const el=document.querySelector('#'+id);el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);setter(true)});el.addEventListener('pointerup',()=>setter(false));el.addEventListener('pointercancel',()=>setter(false));}
 const joyEl=document.querySelector('#joy'),knob=document.querySelector('#knob');let active=false;
 joyEl.addEventListener('pointerdown',e=>{active=true;joyEl.setPointerCapture(e.pointerId);moveJoy(e)});joyEl.addEventListener('pointermove',e=>{if(active)moveJoy(e)});function moveJoy(e){let r=joyEl.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),m=Math.min(42,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);joy.x=Math.cos(a)*m/42;joy.y=Math.sin(a)*m/42;knob.style.transform='translate('+joy.x*42+'px,'+joy.y*42+'px)'}function endJoy(){active=false;joy={x:0,y:0};knob.style.transform='translate(0,0)'}joyEl.addEventListener('pointerup',endJoy);joyEl.addEventListener('pointercancel',endJoy);
 const clock=new THREE.Clock();function loop(){requestAnimationFrame(loop);let dt=Math.min(clock.getDelta(),.04);let forward=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0)-joy.y;let turn=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+joy.x;
 if(inCar){speed+=forward*18*dt;speed*=Math.pow(braking?.04:.985,dt*60);car.rotation.y-=turn*dt*(.8+Math.min(Math.abs(speed)/10,1.5));let dir=new THREE.Vector3(Math.sin(car.rotation.y),0,Math.cos(car.rotation.y));car.position.addScaledVector(dir,speed*dt);speed=Math.max(-10,Math.min(24,speed));}
-else{let move=new THREE.Vector3(turn,0,-forward);if(move.length()>1)move.normalize();if(move.lengthSq()>0){angle=Math.atan2(move.x,move.z);player.rotation.y=angle;player.position.addScaledVector(move,dt*(run?8:4.5))}if(player.position.distanceTo(car.position)<4)document.querySelector('#action').textContent='ENTRAR';}
+else{let move=new THREE.Vector3(turn,0,-forward);if(move.length()>1)move.normalize();if(move.lengthSq()>0){angle=Math.atan2(move.x,move.z);player.rotation.y=angle;player.position.addScaledVector(move,dt*(run?8:4.5));leftArm.rotation.x=Math.sin(performance.now()*.012)*.45;rightArm.rotation.x=-leftArm.rotation.x;leftLeg.rotation.x=-leftArm.rotation.x*.8;rightLeg.rotation.x=leftArm.rotation.x*.8;}else{leftArm.rotation.x*=.82;rightArm.rotation.x*=.82;leftLeg.rotation.x*=.82;rightLeg.rotation.x*=.82;}if(player.position.distanceTo(car.position)<4)document.querySelector('#action').textContent='ENTRAR';}
 let target=inCar?car.position:player.position;let yaw=inCar?car.rotation.y:player.rotation.y;let desired=new THREE.Vector3(target.x-Math.sin(yaw)*8, target.y+5.5,target.z-Math.cos(yaw)*8);camera.position.lerp(desired,1-Math.pow(.001,dt));camera.lookAt(target.x,target.y+1,target.z);
 marker.rotation.y+=dt*.8;if(target.distanceTo(marker.position)<3){document.querySelector('#mission').innerHTML='MISSÃO CONCLUÍDA!<br>Explore a cidade livremente.';marker.position.set(-35,0,35)}
 renderer.render(scene,camera)}loop();
