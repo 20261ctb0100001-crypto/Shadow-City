@@ -13,11 +13,33 @@
 <body>
 <div id="hud"><div id="brand" class="panel">SHADOW CITY <span style="color:#55d6be">/ DEMO</span></div><div id="mission" class="panel">MISSÃO 01<br>Encontre o marcador verde na cidade.</div><div id="help" class="panel">WASD / setas: mover · E: entrar/sair do carro · Espaço: freio</div></div>
 <div id="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><button class="btn" id="action">ENTRAR</button><button class="btn btn2" id="brake">FREIO</button><button class="btn btn3" id="run">CORRER</button></div>
+<div id="loadstatus" style="position:fixed;z-index:20;top:50%;left:50%;transform:translate(-50%,-50%);padding:14px 18px;border-radius:12px;background:#101820eF;color:white;font:14px Arial;text-align:center;max-width:90vw">Carregando a cidade 3D...</div>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const statusBox=document.getElementById('loadstatus');
+let THREE;
+try {
+  THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+} catch(firstError) {
+  try {
+    THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
+  } catch(secondError) {
+    statusBox.textContent='Não foi possível carregar o motor 3D. Verifique a conexão e recarregue a página.';
+    console.error('Three.js import failed',firstError,secondError);
+    throw secondError;
+  }
+}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9bc4d5);scene.fog=new THREE.Fog(0x9bc4d5,55,190);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,350);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;document.body.appendChild(renderer.domElement);
+let renderer;
+try {
+ renderer=new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
+} catch(renderError) {
+ statusBox.textContent='Este navegador não conseguiu iniciar o gráfico 3D (WebGL). Tente abrir no Chrome atualizado.';
+ console.error('WebGL initialization failed',renderError);
+ throw renderError;
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;document.body.appendChild(renderer.domElement);
+statusBox.remove();
 scene.add(new THREE.HemisphereLight(0xd9efff,0x52604c,2));const sun=new THREE.DirectionalLight(0xfff0d6,2.1);sun.position.set(-35,65,25);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
 const mat=(c,r=.9)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(240,240),mat(0x667b68));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
