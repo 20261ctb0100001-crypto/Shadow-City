@@ -2,6 +2,13 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="screen-orientation" content="landscape">
+<style>
+#rotateNotice{display:none;position:fixed;inset:0;z-index:1000;background:#101820;color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px;font:700 20px Arial}
+#rotateNotice .inner{max-width:320px}
+#rotateNotice .phone{font-size:58px;display:block;margin-bottom:18px}
+@media (orientation:portrait){#rotateNotice{display:flex}#gameover{z-index:1001}}
+</style>
 <title>Truck Simulator — Estradas do Brasil</title>
 <!-- Truck Simulator update: terrain, camera modes, traffic, refueling and cruise control -->
 <style>
@@ -34,7 +41,7 @@
 @media(max-width:520px){#dpad{left:12px;bottom:14px;width:116px;height:104px;grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,30px);gap:2px}#dpad button{font-size:18px}.pedals{right:10px;bottom:14px}}
 </style>
 </head>
-<body>
+<body><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
 <div id="load">Preparando seu caminhão...</div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
  <div id="minimap" aria-label="Minimapa da rodovia"></div>
