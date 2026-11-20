@@ -17,10 +17,10 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Iluminação direcional, materiais e colisões básicas.
 
 ## Próximas etapas
-1. Testar e ajustar o protótipo no Godot 4.
+1. Executar o projeto no Godot 4 e corrigir problemas encontrados nos testes.
 2. Melhorar personagem, câmera, animações e controles de toque.
-3. Criar um veículo dirigível.
-4. Construir uma loja funcional com interação.
+3. Evoluir o carro provisório com física, sons e visual mais detalhado.
+4. Expandir a loja com mais roupas, barbearia e personalização.
 5. Substituir blocos provisórios por modelos 3D e materiais mais detalhados.
 
 Este repositório contém um protótipo inicial em construção, não um jogo completo. Os sistemas precisam ser executados e testados no Godot e em dispositivos Android antes de serem considerados concluídos.
