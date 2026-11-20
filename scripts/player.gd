@@ -437,9 +437,10 @@ func use_city_service(service: String) -> void:
 	_save_progress()
 
 func _show_city_feedback(message: String) -> void:
-	var building := get_tree().get_first_node_in_group("civic_buildings")
-	if building != null:
-		building.call("_message", message)
+	for building in get_tree().get_nodes_in_group("civic_buildings"):
+		if building.get("occupant") == self:
+			building.call("_message", message)
+			return
 
 func _show_home_feedback(message: String) -> void:
 	var home := get_tree().get_first_node_in_group("homes")
