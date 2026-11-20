@@ -46,7 +46,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 11. Adicionar modelos 3D profissionais, animações, sons e otimização gráfica.
 12. Instalar Godot 4, testar o projeto, configurar exportação Android e gerar APK/AAB (ainda não realizado).
 
-Este repositório contém um protótipo inicial em construção, não um jogo completo. Os sistemas precisam ser executados e testados no Godot e em dispositivos Android antes de serem considerados concluídos.
+## Meta de qualidade e tamanho\n- Meta de tamanho do conteúdo final: **mínimo planejado de 8 GB e máximo de 10 GB**. Esse é um orçamento de conteúdo, não uma exigência de preencher espaço artificialmente.\n- Prioridade de produção: modelos 3D detalhados, texturas de alta resolução, animações, áudio, interiores e cidades variadas. Não reduzir a qualidade visual apenas para atingir um pacote pequeno.\n- A versão Android será planejada dentro desse orçamento. A versão de navegador continuará sendo uma compilação separada, pois navegadores e GitHub Pages têm limitações práticas para distribuir um jogo desse porte.\n- O desempenho será medido e otimizado sem remover detalhes indiscriminadamente; qualidade gráfica e desempenho serão tratados como objetivos separados.\n\nEste repositório contém um protótipo inicial em construção, não um jogo completo. Os sistemas precisam ser executados e testados no Godot e em dispositivos Android antes de serem considerados concluídos.
 
 ## Abrir
 Importe este repositório no Godot 4 e execute `scenes/main.tscn`.
