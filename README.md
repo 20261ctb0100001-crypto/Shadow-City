@@ -24,7 +24,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeiros animais ambientais: cachorro, gato, papagaio e cavalo, com movimento autônomo simples.
 - Quatro moradores com nomes, profissões, personalidades, falas, aparência e velocidades diferentes.
 - Primeira rotina diária dos moradores: deslocamento entre casa, local de trabalho e área de lazer conforme o horário do relógio do mundo.
-- Primeiros veículos de trânsito autônomo circulando pelas avenidas e semáforo central com fases alternadas; carros param no sinal vermelho antes do cruzamento.
+- Primeiros veículos de trânsito autônomo circulando pelas avenidas: carros, um ônibus e motocicletas, com semáforo central e parada no sinal vermelho.
 - Sistema inicial de trabalhos com objetivo físico: aceitar uma tarefa, seguir um marcador dourado pelo bairro e receber pagamento ao chegar ao destino.
 - Carteira na tela que atualiza o dinheiro recebido pelos turnos.
 - Sistema de necessidades com fome, energia e higiene, menu VIDA para comer, descansar e tomar banho.
@@ -38,7 +38,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 3. Evoluir o carro provisório com física, sons e visual mais detalhado.
 4. Evoluir os animais com modelos, animações, sons, necessidades e interações.
 5. Evoluir o trânsito com cruzamentos, semáforos, ônibus, motos e regras de circulação.
-6. Ampliar profissões, tarefas com objetivos no mapa, rotina diária e diálogos dos moradores.
+6. Ampliar profissões, tarefas com objetivos no mapa, rotinas diárias, relações e diálogos dos moradores.
 7. Expandir a loja com mais roupas, barbearia e personalização.
 8. Substituir blocos provisórios por modelos 3D e materiais mais detalhados.
 9. Criar novas regiões inspiradas em cidades reais, começando por bairros e pontos reconhecíveis.
