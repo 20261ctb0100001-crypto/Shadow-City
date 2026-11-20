@@ -7,11 +7,13 @@ var camera: Camera3D
 var body_collision: CollisionShape3D
 var outfit_material: StandardMaterial3D
 var money: int = 250
+var money_label: Label
 
 func _ready() -> void:
 	_create_placeholder_character()
 	_create_camera()
 	_create_mobile_controls()
+	_create_money_display()
 
 func _create_placeholder_character() -> void:
 	var visual := MeshInstance3D.new()
@@ -48,6 +50,22 @@ func _create_camera() -> void:
 	camera.fov = 72.0
 	pivot.add_child(camera)
 	camera.current = true
+
+func _create_money_display() -> void:
+	var layer := get_node_or_null("MobileControls") as CanvasLayer
+	if layer == null:
+		return
+	money_label = Label.new()
+	money_label.text = "DINHEIRO: $" + str(money)
+	money_label.position = Vector2(18, 42)
+	money_label.add_theme_font_size_override("font_size", 20)
+	money_label.add_theme_color_override("font_color", Color(0.72, 1.0, 0.72))
+	layer.add_child(money_label)
+
+func add_money(amount: int) -> void:
+	money += amount
+	if money_label != null:
+		money_label.text = "DINHEIRO: $" + str(money)
 
 func _create_mobile_controls() -> void:
 	var layer := CanvasLayer.new()
@@ -169,6 +187,18 @@ func _try_enter_vehicle() -> void:
 				closest_shop = item
 	if closest_shop != null:
 		closest_shop.call("open_shop", self)
+		return
+
+	var closest_citizen: Node3D = null
+	var citizen_distance := 4.5
+	for item in get_tree().get_nodes_in_group("citizens"):
+		if item is Node3D:
+			var distance := global_position.distance_to(item.global_position)
+			if distance < citizen_distance:
+				citizen_distance = distance
+				closest_citizen = item
+	if closest_citizen != null:
+		closest_citizen.call("interact_with", self)
 
 func buy_outfit(price: int) -> bool:
 	if money < price:
