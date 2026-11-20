@@ -7,6 +7,7 @@ const ANIMAL_SCRIPT = preload("res://scripts/animal.gd")
 const CITIZEN_SCRIPT = preload("res://scripts/citizen.gd")
 const TRAFFIC_SCRIPT = preload("res://scripts/traffic.gd")
 const WORLD_CLOCK_SCRIPT = preload("res://scripts/world_clock.gd")
+const TRAFFIC_SIGNAL_SCRIPT = preload("res://scripts/traffic_signal.gd")
 
 func _ready() -> void:
 	_build_environment()
@@ -17,6 +18,7 @@ func _ready() -> void:
 	_spawn_city_identity()
 	_spawn_animals()
 	_spawn_citizens()
+	_spawn_traffic_signal()
 	_spawn_traffic()
 	_spawn_market_interaction()
 	_spawn_player()
@@ -231,6 +233,13 @@ func _spawn_citizen(person_name: String, job: String, traits: String, line: Stri
 	citizen.set("favorite_color", outfit)
 	citizen.set("walk_speed", speed)
 	add_child(citizen)
+
+
+func _spawn_traffic_signal() -> void:
+	var traffic_signal := Node3D.new()
+	traffic_signal.name = "MainTrafficSignal"
+	traffic_signal.set_script(TRAFFIC_SIGNAL_SCRIPT)
+	add_child(traffic_signal)
 
 func _spawn_traffic() -> void:
 	# Carros autônomos circulam pelas duas avenidas do bairro.
