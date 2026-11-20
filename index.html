@@ -112,8 +112,8 @@ window.selectedTruckChoice='mercedes';
 const load=document.getElementById('load');
 let THREE;
 try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e2){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível baixar o motor 3D. Confira a conexão e atualize a página.';load.textContent='Falha ao carregar o motor 3D';throw e2}}
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,100,430);
-const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,600);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,150,900);
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1200);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<700?1.5:2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;document.body.appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.35);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<700?1024:2048,innerWidth<700?1024:2048);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
 const sunDisc=new THREE.Mesh(new THREE.SphereGeometry(8,24,16),new THREE.MeshBasicMaterial({color:0xffd477}));scene.add(sunDisc);
@@ -121,21 +121,24 @@ const moonDisc=new THREE.Mesh(new THREE.SphereGeometry(5.5,24,16),new THREE.Mesh
 const starField=new THREE.Group();for(let i=0;i<120;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.35,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));star.position.set((Math.random()-.5)*850,100+Math.random()*180,(Math.random()-.5)*850);starField.add(star)}scene.add(starField);
 const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
 const truckPaint=mat(0xf2f2ed,.42,.18);
-const asphaltCanvas=document.createElement('canvas');asphaltCanvas.width=512;asphaltCanvas.height=512;const asphaltCtx=asphaltCanvas.getContext('2d');asphaltCtx.fillStyle='#34393d';asphaltCtx.fillRect(0,0,512,512);for(let i=0;i<26000;i++){const x=Math.random()*512,y=Math.random()*512,v=35+Math.floor(Math.random()*35);asphaltCtx.fillStyle='rgba('+v+','+(v+3)+','+(v+5)+','+(.12+Math.random()*.2)+')';asphaltCtx.fillRect(x,y,1+Math.random()*2,1+Math.random()*2)}const asphaltTex=new THREE.CanvasTexture(asphaltCanvas);asphaltTex.wrapS=asphaltTex.wrapT=THREE.RepeatWrapping;asphaltTex.repeat.set(3,48);asphaltTex.colorSpace=THREE.SRGBColorSpace;const asphalt=new THREE.MeshStandardMaterial({map:asphaltTex,roughness:.96});const grass=mat(0x587b50),line=mat(0xe9e3c8),white=mat(0xe8e8df),rubber=mat(0x141719),glass=mat(0x243f4b,.22,.25);
+const asphaltCanvas=document.createElement('canvas');asphaltCanvas.width=512;asphaltCanvas.height=512;const asphaltCtx=asphaltCanvas.getContext('2d');asphaltCtx.fillStyle='#34393d';asphaltCtx.fillRect(0,0,512,512);for(let i=0;i<26000;i++){const x=Math.random()*512,y=Math.random()*512,v=35+Math.floor(Math.random()*35);asphaltCtx.fillStyle='rgba('+v+','+(v+3)+','+(v+5)+','+(.12+Math.random()*.2)+')';asphaltCtx.fillRect(x,y,1+Math.random()*2,1+Math.random()*2)}const asphaltTex=new THREE.CanvasTexture(asphaltCanvas);asphaltTex.wrapS=asphaltTex.wrapT=THREE.RepeatWrapping;asphaltTex.repeat.set(3,1100);asphaltTex.colorSpace=THREE.SRGBColorSpace;const asphalt=new THREE.MeshStandardMaterial({map:asphaltTex,roughness:.96});const grass=mat(0x587b50),line=mat(0xe9e3c8),white=mat(0xe8e8df),rubber=mat(0x141719),glass=mat(0x243f4b,.22,.25);
 // Textura procedural de terra e capim em vez de um plano verde liso.
 const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanvas.height=512;const ctx=turfCanvas.getContext('2d');ctx.fillStyle='#637d4b';ctx.fillRect(0,0,512,512);for(let i=0;i<18000;i++){const x=Math.random()*512,y=Math.random()*512;ctx.fillStyle=['#3f653e','#78905a','#8a8759','#a08c65','#526f42'][Math.floor(Math.random()*5)];ctx.globalAlpha=.18+Math.random()*.32;ctx.fillRect(x,y,1+Math.random()*3,1+Math.random()*2)}ctx.globalAlpha=1;const turfTex=new THREE.CanvasTexture(turfCanvas);turfTex.wrapS=turfTex.wrapT=THREE.RepeatWrapping;turfTex.repeat.set(34,34);turfTex.colorSpace=THREE.SRGBColorSpace;const groundMat=new THREE.MeshStandardMaterial({map:turfTex,roughness:1});const ground=new THREE.Mesh(new THREE.PlaneGeometry(1200,1200),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
 
 const edgeMat=mat(0xe6e1d0),yellow=mat(0xf1c84b);
 // Rodovia sinuosa em malha contínua: a pista acompanha curvas suaves pelo vale.
-function roadCenter(z){return 34*Math.sin(z*.0032)+13*Math.sin(z*.009)}
+// Rodovia longa de 30 km, com curvas suaves e sem teleporte do caminhão.
+function roadCenter(z){return 18*Math.sin(z*.00035)+7*Math.sin(z*.0014)}
 function roadRibbon(offset,width,material,y=-.12){
- const positions=[],indices=[],steps=900;
- for(let i=0;i<=steps;i++){const z=-650+i*(1300/steps),x=roadCenter(z)+offset;positions.push(x-width/2,y,z,x+width/2,y,z);if(i<steps){const a=i*2;indices.push(a,a+2,a+1,a+1,a+2,a+3)}}
+ const positions=[],indices=[],steps=6000,startZ=-30000,endZ=700;
+ for(let i=0;i<=steps;i++){const z=startZ+i*((endZ-startZ)/steps),x=roadCenter(z)+offset;positions.push(x-width/2,y,z,x+width/2,y,z);if(i<steps){const a=i*2;indices.push(a,a+2,a+1,a+1,a+2,a+3)}}
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setIndex(indices);g.computeVertexNormals();const mesh=new THREE.Mesh(g,material);mesh.receiveShadow=true;scene.add(mesh);return mesh
 }
 roadRibbon(0,22,asphalt);roadRibbon(-10.2,.2,edgeMat,-.105);roadRibbon(10.2,.2,edgeMat,-.105);
 roadRibbon(-.24,.12,yellow,-.098);roadRibbon(.24,.12,yellow,-.098);
-for(let z=-640;z<650;z+=13){const dash=new THREE.Mesh(new THREE.BoxGeometry(.2,.025,5),line);dash.position.set(roadCenter(z),-.095,z);dash.rotation.y=Math.atan((roadCenter(z+1)-roadCenter(z-1))/2);scene.add(dash)}
+const dashCount=1200,dashMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.2,.025,6),line,dashCount),dashDummy=new THREE.Object3D();
+for(let i=0;i<dashCount;i++){const z=640-i*25;dashDummy.position.set(roadCenter(z),-.095,z);dashDummy.rotation.y=Math.atan((roadCenter(z+1)-roadCenter(z-1))/2);dashDummy.updateMatrix();dashMesh.setMatrixAt(i,dashDummy.matrix)}
+dashMesh.instanceMatrix.needsUpdate=true;scene.add(dashMesh);
 // Paisagem rural: árvores com troncos, galhos e copas irregulares (sem bolas redondas).
 const barkMat=mat(0x59402c,1),leafMats=[mat(0x294f32,1),mat(0x37633a,1),mat(0x4c7440,1),mat(0x607c43,1)];
 const broadLeafGeo=new THREE.IcosahedronGeometry(1,1),pineGeo=new THREE.ConeGeometry(1,1,7);
@@ -189,6 +192,94 @@ function buildHouse(x,z,variant=0){
 for(let i=0;i<38;i++){const z=-590+i*31,side=i%2?1:-1;buildHouse(roadCenter(z)+side*(58+(i%3)*13),z,i%4)}
 // Lojas, mercados e galpões próximos à rodovia.
 for(let i=0;i<8;i++){const z=-540+i*145,side=i%2?1:-1,g=new THREE.Group(),w=15,h=5,d=11;const facade=mat(i%2?0xd8d2bd:0xbfc9c8),roof=mat(i%2?0x9a3f32:0x4b555a),windowMat=mat(0x426674,.22,.15);const add=(geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;g.add(o)};add(new THREE.BoxGeometry(w,h,d),facade,0,h/2,0);add(new THREE.BoxGeometry(w+1,.35,d+1),roof,0,h+.15,0);add(new THREE.BoxGeometry(8,2.2,.15),windowMat,0,2.2,-d/2-.1);add(new THREE.BoxGeometry(2,2.8,.18),mat(0x654833),-5,1.4,-d/2-.12);add(new THREE.BoxGeometry(17,.18,3),mat(0xaaa99f),0,.09,-d/2-2);g.position.set(roadCenter(z)+side*66,0,z);scene.add(g);townBuildings.push(g)}
+
+// Quatro cidades inspiradas em referências urbanas reais do Sul e do litoral brasileiro.
+function buildCity(name,centerZ,style){
+ const city=new THREE.Group();scene.add(city);
+ const palettes=[
+  [0xd7c5ad,0xc7d1d0,0xe5ddd0,0xb9c5b2,0x9dabb0],
+  [0x8b9ca7,0xb6c2c8,0xd8d9d3,0x6e7d87,0xc1b9aa],
+  [0xd9d1c2,0xb7c8cb,0xe8e1d4,0x9caeae,0xc4b7a2],
+  [0xc7cbd0,0xe1ded5,0x9faeb5,0xd0c4b5,0x8799a2]
+ ];
+ const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=mat(0x343a3d,.95),sidewalk=mat(0xb9b8ad),roofCity=mat(0x50575a,.9);
+ const cx=roadCenter(centerZ);
+ // Quadras, ruas transversais, calçadas e canteiros.
+ for(let side of [-1,1]){
+  const avenue=new THREE.Mesh(new THREE.BoxGeometry(4,.08,430),roadCity);avenue.position.set(cx+side*34,.015,centerZ);city.add(avenue);
+  const walk=new THREE.Mesh(new THREE.BoxGeometry(3,.16,430),sidewalk);walk.position.set(cx+side*38,.08,centerZ);city.add(walk);
+  for(let r=0;r<5;r++){
+   const zoff=-180+r*88;
+   const cross=new THREE.Mesh(new THREE.BoxGeometry(180,.07,7),roadCity);cross.position.set(cx+side*112,.02,centerZ+zoff);city.add(cross);
+   for(let c=0;c<3;c++){
+    const x=cx+side*(58+c*36),z=centerZ+zoff+((c%2)*15-7);
+    const w=18+(c%2)*5,d=22+(r%2)*6;
+    let h;
+    if(style===0)h=9+(r*7+c*5)%32;
+    else if(style===1)h=24+(r*13+c*11)%68;
+    else if(style===2)h=13+(r*9+c*7)%48;
+    else h=22+(r*11+c*9)%62;
+    const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(colors[(r+c)%colors.length],.78,.08));
+    body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;city.add(body);
+    const roof=new THREE.Mesh(new THREE.BoxGeometry(w+.5,.5,d+.5),roofCity);roof.position.set(x,h+.22,z);city.add(roof);
+    // Varandas e faixas de fachada dão escala e leitura de edifícios reais.
+    if(h>24)for(let floor=1;floor<h/3.4;floor++){
+     const balcony=new THREE.Mesh(new THREE.BoxGeometry(w+.35,.12,.45),mat(0xb8c1c2,.55,.25));
+     balcony.position.set(x,h-floor*3.1,z-d/2-.24);city.add(balcony);
+    }
+    if(style===3&&r%2===0){
+     const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.72,1.2,.16),mat(0x31566a,.6,.1));sign.position.set(x,2.8,z-d/2-.12);city.add(sign);
+    }
+   }
+  }
+ }
+ // Fachadas envidraçadas em instâncias: muitos detalhes sem centenas de objetos separados.
+ const winGeo=new THREE.BoxGeometry(1.05,1.35,.09),wins=new THREE.InstancedMesh(winGeo,glassCity,900),dummy=new THREE.Object3D();let wi=0;
+ for(let side of [-1,1])for(let r=0;r<5;r++)for(let c=0;c<3;c++){
+  const x=cx+side*(58+c*36),z=centerZ-180+r*88+((c%2)*15-7),w=18+(c%2)*5,d=22+(r%2)*6;
+  let h=style===0?9+(r*7+c*5)%32:style===1?24+(r*13+c*11)%68:style===2?13+(r*9+c*7)%48:22+(r*11+c*9)%62;
+  for(let floor=1;floor<h/3.1&&wi<900;floor++)for(let col=0;col<Math.max(2,Math.floor(w/4));col++){
+   dummy.position.set(x-w/2+2.3+col*4.1,floor*3.1,z-d/2-.06);dummy.updateMatrix();wins.setMatrixAt(wi++,dummy.matrix);
+  }
+ }
+ wins.count=wi;wins.instanceMatrix.needsUpdate=true;city.add(wins);
+ // Iluminação pública e árvores nas avenidas.
+ for(let side of [-1,1])for(let i=0;i<12;i++){
+  const x=cx+side*43,z=centerZ-205+i*37;
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.17,7,8),mat(0x42494b,.7,.5));pole.position.set(x,3.5,z);city.add(pole);
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(2,.13,.13),mat(0x42494b,.7,.5));arm.position.set(x+side,6.8,z);city.add(arm);
+  const lamp=new THREE.Mesh(new THREE.BoxGeometry(.7,.18,.45),mat(0xffe4a5,.3,.1));lamp.position.set(x+side*1.7,6.7,z);city.add(lamp);
+  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.18,.25,2.8,7),mat(0x674a32));trunk.position.set(x+side*7,1.4,z);city.add(trunk);
+  const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(2.1,1),mat([0x3e6843,0x557b4c,0x66834d][i%3]));crown.position.set(x+side*7,3.7,z);crown.scale.y=1.2;city.add(crown);
+ }
+ // Marcos urbanos próprios de cada destino.
+ if(style===0){
+  const landmark=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.BoxGeometry(24,15,18),mat(0xe5e0d2));body.position.y=7.5;landmark.add(body);
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(15,8,4),mat(0x7c4940));roof.position.y=19;roof.rotation.y=Math.PI/4;landmark.add(roof);
+  for(let x of [-7,7]){const tower=new THREE.Mesh(new THREE.BoxGeometry(4,23,5),mat(0xe7e2d5));tower.position.set(x,11,0);landmark.add(tower)}
+  landmark.position.set(cx-75,0,centerZ+35);city.add(landmark);
+ }else if(style===1){
+  const park=new THREE.Mesh(new THREE.BoxGeometry(42,.2,300),mat(0x4d7548));park.position.set(cx+190,.05,centerZ);city.add(park);
+  for(let i=0;i<18;i++){const t=new THREE.Mesh(new THREE.IcosahedronGeometry(3,1),mat(0x426d43));t.position.set(cx+174+(i%2)*30,3,centerZ-140+i*16);city.add(t)}
+ }else if(style===2){
+  const bay=new THREE.Mesh(new THREE.BoxGeometry(210,.18,360),mat(0x287b9a,.28,.15));bay.position.set(cx+275,-.22,centerZ);city.add(bay);
+  const pier=new THREE.Mesh(new THREE.BoxGeometry(18,.6,100),mat(0x9b9b91));pier.position.set(cx+160,.3,centerZ+80);city.add(pier);
+ }else{
+  // Zona portuária de Santos: armazéns, contêineres e guindastes.
+  for(let i=0;i<12;i++){const cont=new THREE.Mesh(new THREE.BoxGeometry(12,3.2,5),mat([0x9b3d32,0x315e76,0xb7a45a][i%3]));cont.position.set(cx+205+(i%3)*14,1.6,centerZ-150+Math.floor(i/3)*42);city.add(cont)}
+  for(let i=0;i<3;i++){const crane=new THREE.Group(),mast=new THREE.Mesh(new THREE.BoxGeometry(1.2,27,1.2),mat(0xd5a52d));mast.position.y=13.5;crane.add(mast);const arm=new THREE.Mesh(new THREE.BoxGeometry(26,.9,1),mat(0xd5a52d));arm.position.set(10,26,0);crane.add(arm);crane.position.set(cx+260+i*28,0,centerZ-80+i*100);city.add(crane)}
+ }
+ // Letreiro com o nome da cidade.
+ const canvas=document.createElement('canvas');canvas.width=512;canvas.height=128;const c=canvas.getContext('2d');c.fillStyle='#12232b';c.fillRect(0,0,512,128);c.fillStyle='#f4f1e7';c.font='bold 54px Arial';c.textAlign='center';c.fillText(name.toUpperCase(),256,82);
+ const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
+ const sign=new THREE.Mesh(new THREE.PlaneGeometry(28,7),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));sign.position.set(cx,18,centerZ-220);city.add(sign);
+}
+buildCity('Ponta Grossa',-650,0);
+buildCity('Curitiba',-6500,1);
+buildCity('Florianópolis',-14000,2);
+buildCity('Santos',-23000,3);
+
 // Cordilheiras dos dois lados, com picos irregulares e camadas de profundidade.
 const mountainMats=[mat(0x65766f,1),mat(0x78847b,1),mat(0x596b68,1),mat(0x8a9188,1)];
 for(let side of [-1,1])for(let i=0;i<34;i++){
@@ -197,6 +288,17 @@ for(let side of [-1,1])for(let i=0;i<34;i++){
  peak.position.set(baseX,h*.48-1,z);peak.rotation.y=Math.random()*Math.PI;peak.rotation.z=(Math.random()-.5)*.12;peak.scale.set(1.25,.9,1.5);peak.castShadow=true;peak.receiveShadow=true;scene.add(peak);
 }
 // Posto de combustível na lateral da estrada.
+
+// Faixa costeira no fim da rota: areia, mar contínuo e terminal rodoviário.
+const beachMat=mat(0xd4c18e,1),waterMat=new THREE.MeshStandardMaterial({color:0x176b91,roughness:.28,metalness:.12});
+const beach=new THREE.Mesh(new THREE.PlaneGeometry(1600,420),beachMat);beach.rotation.x=-Math.PI/2;beach.position.set(0,-.12,-29600);scene.add(beach);
+const ocean=new THREE.Mesh(new THREE.PlaneGeometry(5000,5000),waterMat);ocean.rotation.x=-Math.PI/2;ocean.position.set(0,-.28,-32500);scene.add(ocean);
+for(let i=0;i<18;i++){const wave=new THREE.Mesh(new THREE.BoxGeometry(140,.035,.7),mat(0x8ac4d2,.25));wave.position.set((i%3-1)*420,-.22,-30350-Math.floor(i/3)*95);scene.add(wave)}
+const coastTerminal=new THREE.Group();
+const terminalBuilding=new THREE.Mesh(new THREE.BoxGeometry(48,8,20),mat(0xe1ddd1));terminalBuilding.position.set(0,4,0);coastTerminal.add(terminalBuilding);
+const terminalRoof=new THREE.Mesh(new THREE.BoxGeometry(52,.8,24),mat(0x52616a));terminalRoof.position.set(0,8.4,0);coastTerminal.add(terminalRoof);
+coastTerminal.position.set(roadCenter(-29400),0,-29400);scene.add(coastTerminal);
+
 const station=new THREE.Group();const shop=new THREE.Mesh(new THREE.BoxGeometry(16,5,10),mat(0xe2dfd2));shop.position.y=2.5;station.add(shop);const roof=new THREE.Mesh(new THREE.BoxGeometry(20,.6,13),mat(0xb83e32));roof.position.set(0,5.2,0);station.add(roof);for(let x of [-6,6]){const col=new THREE.Mesh(new THREE.BoxGeometry(.45,5,.45),white);col.position.set(x,2.5,5);station.add(col)}station.position.set(roadCenter(330)+27,0,330);scene.add(station);
 function box(parent,w,h,d,material,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
 function wheel(parent,x,y,z,r=.72,width=.48){const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,width,18),rubber);o.rotation.z=Math.PI/2;o.position.set(x,y,z);o.castShadow=true;parent.add(o);const hub=new THREE.Mesh(new THREE.CylinderGeometry(r*.48,r*.48,width+.02,16),mat(0x9ba3a4,.35,.7));hub.rotation.z=Math.PI/2;hub.position.copy(o.position);parent.add(hub)}
@@ -343,16 +445,16 @@ const laneOffset=truck.position.x-roadCenter(truck.position.z);
 truck.position.z-=speed*dt;
 // Volante muda a trajetória lateral sem aplicar freio ou cortar a aceleração.
 const steeringGain=gear==='R'?-1:1;
-const nextLane=THREE.MathUtils.clamp(laneOffset+steer*steeringGain*Math.max(Math.abs(speed),5)*.24*dt,-8.5,8.5);
+const nextLane=THREE.MathUtils.clamp(laneOffset+steer*steeringGain*(5+Math.abs(speed)*.22)*.32*dt,-8.5,8.5);
 truck.position.x=roadCenter(truck.position.z)+nextLane;
 const roadHeading=Math.atan((roadCenter(truck.position.z+1)-roadCenter(truck.position.z-1))/2);
-truck.rotation.y=roadHeading-steer*.24*steeringGain;
+truck.rotation.y=roadHeading-steer*.30*steeringGain;
 if(Math.abs(nextLane)>8.2)speed*=Math.pow(.985,dt*60);
-if(truck.position.z < -620)truck.position.z=620;if(truck.position.z > 620)truck.position.z=-620;
-for(const item of roadside){if(item.group.position.z>truck.position.z+125){item.group.position.z-=1296;item.group.position.x=roadCenter(item.group.position.z)+item.side*48}}
-if(Math.abs(speed)>1)fuel=Math.max(0,fuel-dt*.018*Math.abs(speed));if(fuel<=0)speed*=.98;
+// A viagem não teleporta: a estrada segue até a faixa costeira no fim do percurso.
+for(const item of roadside){if(item.group.position.z>truck.position.z+125&&item.group.position.z>-900){item.group.position.z-=1296;item.group.position.x=roadCenter(item.group.position.z)+item.side*48}}
+ground.position.x=roadCenter(truck.position.z);ground.position.z=Math.max(truck.position.z,-28900);if(Math.abs(speed)>1)fuel=Math.max(0,fuel-dt*.018*Math.abs(speed));if(fuel<=0)speed*=.98;
 const cockpit=truck.localToWorld(new THREE.Vector3(0,2.72,-.35));const rearOffset=new THREE.Vector3(0,cameraHeight,cameraDistance);const rearCamera=truck.localToWorld(rearOffset);const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,2.65,-55));const outsideLook=truck.localToWorld(new THREE.Vector3(0,2.2,-5));camera.lookAt(firstPerson?cabForward:outsideLook);
-for(const car of traffic){car.position.z+=car.userData.dir*dt*(14+Math.sin(now*.0004)*2);if(car.position.z>490)car.position.z=-490;if(car.position.z< -490)car.position.z=490;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<5.2){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
+for(const car of traffic){car.position.z+=car.userData.dir*dt*(14+Math.sin(now*.0004)*2);if(car.position.z>truck.position.z+520)car.position.z=truck.position.z-520;if(car.position.z<truck.position.z-520)car.position.z=truck.position.z+520;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<5.2){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
