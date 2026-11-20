@@ -126,7 +126,7 @@ const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanva
 function roadCenter(z){return 34*Math.sin(z*.0032)+13*Math.sin(z*.009)}
 function roadRibbon(offset,width,material,y=-.12){
  const positions=[],indices=[],steps=900;
- for(let i=0;i<=steps;i++){const z=-650+i*(1300/steps),x=roadCenter(z)+offset;positions.push(x-width/2,y,z,x+width/2,y,z);if(i<steps){const a=i*2;indices.push(a,a+1,a+2,a+1,a+3,a+2)}}
+ for(let i=0;i<=steps;i++){const z=-650+i*(1300/steps),x=roadCenter(z)+offset;positions.push(x-width/2,y,z,x+width/2,y,z);if(i<steps){const a=i*2;indices.push(a,a+2,a+1,a+1,a+2,a+3)}}
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setIndex(indices);g.computeVertexNormals();const mesh=new THREE.Mesh(g,material);mesh.receiveShadow=true;scene.add(mesh);return mesh
 }
 roadRibbon(0,22,asphalt);roadRibbon(-10.2,.2,edgeMat,-.105);roadRibbon(10.2,.2,edgeMat,-.105);
@@ -236,7 +236,7 @@ for(const x of [-1.55,1.55])for(const z of [-11.8,-9.7,-7.6,-5.5])wheel(trailer,
 box(trailer,2.5,.16,.15,mat(0xb72f2b),0,1.1,-13.7);
 truck.position.set(roadCenter(65),0,65);truck.rotation.y=Math.PI;scene.add(truck);
 const cargo=new THREE.Group();for(let i=0;i<10;i++){const c=new THREE.Mesh(new THREE.BoxGeometry(.8,.55,.8),mat([0x9a7651,0xb48c5d,0x7d644a][i%3]));c.position.set((i%2)*.9-.45,1.25+Math.floor(i/2)*.58,-7-Math.floor(i/2)*1.1);cargo.add(c)}trailer.add(cargo);
-const marker=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry(4,.35,10,40),mat(0x43ffc0,.35));ring.rotation.x=Math.PI/2;ring.position.y=.2;marker.add(ring);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.35,1.1,12,16,1,true),new THREE.MeshBasicMaterial({color:0x43ffc0,transparent:true,opacity:.17}));beam.position.y=6;marker.add(beam);marker.position.set(roadCenter(330)+27,0,330);scene.add(marker);
+const marker=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry(4,.35,10,40),mat(0x43ffc0,.35));ring.rotation.x=Math.PI/2;ring.position.y=.2;marker.add(ring);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.35,1.1,12,16,1,true),new THREE.MeshBasicMaterial({color:0x43ffc0,transparent:true,opacity:.17}));beam.position.y=6;marker.add(beam);marker.position.set(roadCenter(330)+12,0,330);scene.add(marker);
 let speed=0,steer=0,throttle=0,brake=0,delivered=false,fuel=100,joy={x:0,y:0},keys={},gear='D';
 let firstPerson=false,cruiseOn=false,cruiseSpeed=0,gameEnded=false;
 let selectedTruck=window.selectedTruckChoice||'mercedes';
