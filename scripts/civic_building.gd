@@ -15,7 +15,7 @@ func interact_with(player: Node3D) -> void:
 	if occupant != null and occupant != player:
 		return
 	if occupant == player:
-		var local_pos: Vector3 = player.global_position - (global_position + interior_origin)
+		var local_pos: Vector3 = player.global_position - interior_origin
 		if local_pos.z > 3.8 and absf(local_pos.x) < 2.5:
 			player.global_position = global_position + Vector3(0.0, 1.2, 9.0)
 			occupant = null
@@ -26,14 +26,15 @@ func interact_with(player: Node3D) -> void:
 	else:
 		occupant = player
 		inside = true
-		player.global_position = global_position + interior_origin + Vector3(0.0, 1.2, 2.4)
+		player.global_position = interior_origin + Vector3(0.0, 1.2, 2.4)
 		player.set("velocity", Vector3.ZERO)
 		_message("Você entrou em " + display_name + ". AÇÃO no balcão para usar o serviço; perto da porta para sair.")
 
 func _message(value: String) -> void:
 	var label := Label3D.new()
 	label.text = value
-	label.position = global_position + interior_origin + Vector3(0, 4.0, 0)
+	label.top_level = true
+	label.global_position = interior_origin + Vector3(0, 4.0, 0)
 	label.font_size = 26
 	label.modulate = Color(1.0, 0.88, 0.58)
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -56,7 +57,8 @@ func _build_room() -> void:
 	_box("Banco direito", Vector3(3.4, 0.45, 1.0), Vector3(1.5, 0.9, 1.0), Color(0.24, 0.32, 0.42))
 	var sign := Label3D.new()
 	sign.text = display_name.to_upper()
-	sign.position = global_position + interior_origin + Vector3(0, 3.0, -4.7)
+	sign.top_level = true
+	sign.global_position = interior_origin + Vector3(0, 3.0, -4.7)
 	sign.font_size = 34
 	sign.modulate = Color(0.20, 0.24, 0.30)
 	sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -68,7 +70,8 @@ func _box(label: String, local_pos: Vector3, size: Vector3, color: Color) -> voi
 	var mesh := BoxMesh.new()
 	mesh.size = size
 	visual.mesh = mesh
-	visual.position = global_position + interior_origin + local_pos
+	visual.top_level = true
+	visual.global_position = interior_origin + local_pos
 	var material := StandardMaterial3D.new()
 	material.albedo_color = color
 	material.roughness = 0.9
