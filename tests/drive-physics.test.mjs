@@ -66,18 +66,22 @@ test('published site copies the runtime physics module', async () => {
 
 test('the main Three.js module has valid JavaScript syntax', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  const match = html.match(/<script type="module">([\\s\\S]*?)<\\/script>/);
-  assert.ok(match, 'main module script must exist');
+  const scriptStart = html.indexOf('<script type="module">');
+  assert.ok(scriptStart >= 0, 'main module script must exist');
+  const contentStart = scriptStart + '<script type="module">'.length;
+  const scriptEnd = html.indexOf('</script>', contentStart);
+  assert.ok(scriptEnd > contentStart, 'main module script must close');
+  const moduleSource = html.slice(contentStart, scriptEnd);
   const checked = spawnSync(process.execPath, ['--check', '--input-type=module'], {
-    input: match[1], encoding: 'utf8'
+    input: moduleSource, encoding: 'utf8'
   });
   assert.equal(checked.status, 0, checked.stderr || checked.stdout || 'module syntax check failed');
 });
 
 test('delivery and refueling targets are ahead on the negative-Z route', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.match(html, /marker\\.position\\.set\\(roadCenter\\(-29400\\)\\+7,0,-29400\\)/);
-  assert.match(html, /station\\.position\\.set\\(roadCenter\\(-3000\\)\\+27,0,-3000\\)/);
+  assert.ok(html.includes('marker.position.set(roadCenter(-29400)+7,0,-29400)'));
+  assert.ok(html.includes('station.position.set(roadCenter(-3000)+27,0,-3000)'));
 });
 
 test('all four Brazilian city stops remain in the route', async () => {
