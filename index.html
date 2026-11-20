@@ -505,9 +505,31 @@ function makeTrafficCar(x,z,color,dir=1){
  box(car,1.5,.12,.08,mat(0x303538,.6),0,.82,2.32);
  // Espelhos e detalhes frontais.
  for(const side of [-1,1]){box(car,.12,.22,.2,mat(0x20282d),side*1.03,1.72,-.86);box(car,.2,.18,.16,chrome,side*1.05,1.73,-.9)}
- car.position.set(x,0,z);car.userData.dir=dir;scene.add(car);traffic.push(car)
+ car.position.set(x,0,z);car.userData.dir=dir;car.userData.speed=14;car.userData.halfLength=2.6;scene.add(car);traffic.push(car)
 }
 for(let i=0;i<13;i++){const z=-440+i*68;makeTrafficCar(i%2? -4.8:4.8,z,[0x2d6eaa,0xd9d5c9,0x383c43,0x9a342c,0x8d9d4c][i%5],i%2?1:-1)}
+function makeTrafficTruck(x,z,color,dir=1){
+ const rig=new THREE.Group(),paint=mat(color,.42,.16),glass=mat(0x203642,.18,.25),rubber=mat(0x171a1c,.95);
+ // Cavalo mecânico com cabine alta e semirreboque longo.
+ box(rig,2.55,2.7,3.5,paint,0,2.05,-2.1);
+ box(rig,2.25,1.45,.12,glass,0,2.75,-3.88);
+ box(rig,.9,.85,.12,glass,-.62,2.35,-3.9);
+ box(rig,.9,.85,.12,glass,.62,2.35,-3.9);
+ box(rig,2.45,.22,.18,mat(0xd8dce0,.3,.7),0,.85,-3.88);
+ box(rig,2.5,.18,.2,mat(0xe8c65a),0,.55,-3.88);
+ box(rig,2.5,3.15,9.8,mat(0x343b40,.72,.12),0,2.35,4.55);
+ box(rig,2.58,.18,9.9,mat(0xb9c1c5,.35,.55),0,3.98,4.55);
+ for(const side of [-1,1]){
+  for(const zz of [-2.8,-.7,4.2,6.1,8]){
+   wheel(rig,side*1.34,.62,zz,.52,.32);
+  }
+  box(rig,.08,.22,1.05,glass,side*1.31,2.7,-2.7);
+ }
+ for(let k=0;k<7;k++)box(rig,.035,.09,.12,mat(0xd8e0e3,.25,.6),-1.05+k*.35,2.3,-.01);
+ rig.rotation.y=dir>0?Math.PI:0;rig.position.set(x,0,z);scene.add(rig);
+ rig.userData.dir=dir;rig.userData.speed=11+Math.random()*4;rig.userData.halfLength=7;traffic.push(rig);
+}
+for(let i=0;i<8;i++)makeTrafficTruck(i%2?-4.8:4.8,-950-i*760,[0xd7dce0,0x244c72,0xb6a04b,0x9b342e,0x3b7259,0xe5e3dc][i%6],i%2?1:-1);
 
 const minimapCanvas=document.getElementById('minimapCanvas');
 const minimapContext=minimapCanvas.getContext('2d');
@@ -576,7 +598,7 @@ truck.position.z+=driveStep.dz;
 for(const item of roadside){if(item.group.position.z>truck.position.z+125){item.group.position.z-=1296;item.group.position.x=roadCenter(item.group.position.z)+item.side*48}}
 ground.position.x=roadCenter(truck.position.z);ground.position.z=Math.max(truck.position.z,-63900);if(Math.abs(speed)>1)fuel=Math.max(0,fuel-dt*.018*Math.abs(speed));if(fuel<=0)speed*=.98;
 const cockpit=truck.localToWorld(new THREE.Vector3(0,2.72,-.35));const rearOffset=new THREE.Vector3(0,cameraHeight,cameraDistance);const rearCamera=truck.localToWorld(rearOffset);const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,2.65,-55));const outsideLook=truck.localToWorld(new THREE.Vector3(0,2.2,-5));camera.lookAt(firstPerson?cabForward:outsideLook);
-for(const car of traffic){car.position.z+=car.userData.dir*dt*(14+Math.sin(now*.0004)*2);if(car.position.z>truck.position.z+520)car.position.z=truck.position.z-520;if(car.position.z<truck.position.z-520)car.position.z=truck.position.z+520;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<5.2){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
+for(const car of traffic){car.position.z+=car.userData.dir*dt*(car.userData.speed+Math.sin(now*.0004)*1.2);if(car.position.z>truck.position.z+520)car.position.z=truck.position.z-520;if(car.position.z<truck.position.z-520)car.position.z=truck.position.z+520;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<(car.userData.halfLength||2.6)+2.6){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
