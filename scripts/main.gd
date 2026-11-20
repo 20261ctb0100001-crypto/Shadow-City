@@ -4,6 +4,7 @@ const PLAYER_SCRIPT = preload("res://scripts/player.gd")
 const CAR_SCRIPT = preload("res://scripts/car.gd")
 const SHOP_SCRIPT = preload("res://scripts/shop.gd")
 const ANIMAL_SCRIPT = preload("res://scripts/animal.gd")
+const CITIZEN_SCRIPT = preload("res://scripts/citizen.gd")
 
 func _ready() -> void:
 	_build_environment()
@@ -11,6 +12,7 @@ func _ready() -> void:
 	_build_street_details()
 	_spawn_city_identity()
 	_spawn_animals()
+	_spawn_citizens()
 	_spawn_market_interaction()
 	_spawn_player()
 
@@ -161,3 +163,22 @@ func _spawn_animal(species: String, spawn_position: Vector3, speed: float) -> vo
 	animal.set("species", species)
 	animal.set("walk_speed", speed)
 	add_child(animal)
+
+func _spawn_citizens() -> void:
+	_spawn_citizen("Marina", "Barista", "Simpática e comunicativa", "Oi! Trabalho no café. Quer fazer um turno comigo?", 85, Vector3(-11, 0, 7), Color(0.22, 0.42, 0.72), 1.0)
+	_spawn_citizen("João", "Mecânico", "Prático, paciente e detalhista", "Meu nome é João. A oficina precisa de ajuda hoje.", 110, Vector3(12, 0, 8), Color(0.78, 0.38, 0.16), 0.8)
+	_spawn_citizen("Lia", "Jardineira", "Tranquila e gosta da natureza", "Estou cuidando da praça. Tem um turno disponível.", 70, Vector3(8, 0, -13), Color(0.25, 0.58, 0.32), 1.2)
+	_spawn_citizen("Carlos", "Entregador", "Agitado, engraçado e pontual", "Preciso de uma mão com as entregas do bairro!", 95, Vector3(-26, 0, -16), Color(0.62, 0.28, 0.25), 1.6)
+
+func _spawn_citizen(person_name: String, job: String, traits: String, line: String, reward: int, spawn_position: Vector3, outfit: Color, speed: float) -> void:
+	var citizen := CharacterBody3D.new()
+	citizen.position = spawn_position
+	citizen.set_script(CITIZEN_SCRIPT)
+	citizen.set("display_name", person_name)
+	citizen.set("profession", job)
+	citizen.set("personality", traits)
+	citizen.set("dialogue", line)
+	citizen.set("shift_reward", reward)
+	citizen.set("favorite_color", outfit)
+	citizen.set("walk_speed", speed)
+	add_child(citizen)
