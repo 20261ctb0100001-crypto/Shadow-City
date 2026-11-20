@@ -12,6 +12,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Câmera acompanhando o personagem.
 - Ações de movimento por teclado e botões de toque na tela.
 - Primeiro carro provisório com entrada/saída e condução básica usando os mesmos controles.
+- Primeira loja de roupas interativa, com saldo inicial e compra de uma jaqueta de teste.
 - Primeiras construções, uma casa de madeira, fachada de mercado e árvores.
 - Iluminação direcional, materiais e colisões básicas.
 
