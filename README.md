@@ -23,6 +23,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeira área identificada como Ponta Grossa, Paraná, Brasil.
 - Primeiros animais ambientais: cachorro, gato, papagaio e cavalo, com movimento autônomo simples.
 - Quatro moradores com nomes, profissões, personalidades, falas, aparência e velocidades diferentes.
+- Primeira rotina diária dos moradores: deslocamento entre casa, local de trabalho e área de lazer conforme o horário do relógio do mundo.
 - Primeiros veículos de trânsito autônomo circulando pelas avenidas e semáforo central com fases alternadas; carros param no sinal vermelho antes do cruzamento.
 - Sistema inicial de trabalhos com objetivo físico: aceitar uma tarefa, seguir um marcador dourado pelo bairro e receber pagamento ao chegar ao destino.
 - Carteira na tela que atualiza o dinheiro recebido pelos turnos.
