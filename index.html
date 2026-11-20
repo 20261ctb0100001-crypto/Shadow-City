@@ -56,13 +56,24 @@
 #garageStatus{min-height:18px;margin:10px 0 0;color:#c5d3d9;font-size:12px}
 #load{z-index:30}
 @media(max-width:650px){.garage-card{padding:13px;border-radius:16px}#truckChoices{gap:5px}.truck-choice{min-height:82px;padding:6px 3px}.customize{margin:10px 0;padding:9px}}
-</style></head>
-<body><div id="garage"><div class="garage-card"><h1>ESCOLHA SEU CAMINHÃO</h1><p class="sub">Selecione o modelo, personalize a cor e depois toque em JOGAR.</p><div id="truckChoices">
-<button class="truck-choice selected" id="truck-mercedes" data-model="mercedes"><img class="truck-photo" src="https://upload.wikimedia.org/wikipedia/commons/2/21/Mercedes-Benz_Actros_truck.jpg" alt="Foto real de um Mercedes-Benz Actros" loading="lazy" referrerpolicy="no-referrer"><b>Mercedes Actros</b></button>
-<button class="truck-choice" id="truck-volvo" data-model="volvo"><img class="truck-photo" src="https://3.bp.blogspot.com/-rFzVMVb_I4A/WPibdUV7oiI/AAAAAAAAR0g/CMv-6xNTRdMo3TuPvGXBkusUAW9LlPsbACLcB/s1600/xFH%2B01%2B%255B1280x768%255D.jpg" alt="Foto real de um Volvo FH" loading="lazy" referrerpolicy="no-referrer"><b>Volvo FH</b></button>
-<button class="truck-choice" id="truck-scania" data-model="scania"><img class="truck-photo" src="https://www.truck1.com.ar/img/xxl/1954/Cabeza-tractora-Scania-R460-NGS-4x2-SUPER-RETARDER-325-TKM-PARK-AIRCO-ACC-NAVI-2-x-FUEL-TANKS-TOP-CONDITION-Paises-Bajos_1954_8936992844837.jpg" alt="Foto real de um Scania R" loading="lazy" referrerpolicy="no-referrer"><b>Scania R</b></button>
-<button class="truck-choice" id="truck-iveco" data-model="iveco"><img class="truck-photo" src="https://api.rodonavesiveco.com.br/v1/media/1538/branco-iveco" alt="Foto real de um Iveco S-Way" loading="lazy" referrerpolicy="no-referrer"><b>Iveco S-Way</b></button>
-</div><div class="customize"><div><div id="truckSelected">Mercedes Actros branco</div><label for="truckColor">Escolha qualquer cor:</label></div><input id="truckColor" type="color" value="#f2f2ed" aria-label="Cor do caminhão"></div><button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o motor 3D...</p></div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
+
+/* Garagem com catálogo de 50 modelos 3D */
+#garage{position:fixed;inset:0;display:grid;place-items:center;padding:10px;background:radial-gradient(ellipse at 50% 15%,#354b55 0%,#17242c 58%,#0b1116 100%);z-index:50}
+.garage-card{width:min(1120px,98vw);max-height:96vh;overflow:hidden;padding:clamp(12px,2vw,24px);border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#263943f5,#101920f7);box-shadow:0 18px 70px #000b;text-align:left;display:flex;flex-direction:column;gap:10px}
+.garage-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.garage-heading h1{margin:0 0 5px;font-size:clamp(19px,3vw,29px);letter-spacing:1px}.garage-heading .sub{margin:0;color:#c5d3d9;font-size:clamp(11px,1.4vw,14px)}.garage-count{display:flex;flex-direction:column;align-items:center;border:1px solid #ffffff24;border-radius:12px;padding:6px 12px;background:#0c151d}.garage-count strong{font-size:24px;color:#73e0b2}.garage-count span{font-size:9px;letter-spacing:1px;color:#bdcbd0}
+.garage-tabs{display:flex;gap:8px}.garage-tab{flex:1;padding:11px;border:1px solid #ffffff35;border-radius:10px;background:#0b151dcc;color:#e9f0f2;font-weight:900;letter-spacing:.7px}.garage-tab.active{background:#1b493f;border:2px solid #50d5a4;color:#fff}.garage-tab b{margin-left:5px;color:#83e7bf}
+.vehicle-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;overflow-y:auto;overscroll-behavior:contain;min-height:0;max-height:52vh;padding:2px 4px 4px 2px}.vehicle-choice{min-width:0;min-height:122px;padding:6px;border:1px solid #ffffff30;border-radius:11px;background:#0c151dcc;color:#fff;display:flex;flex-direction:column;align-items:stretch;gap:4px;text-align:left;overflow:hidden}.vehicle-choice.selected{border:2px solid #50d5a4;background:#1b493f;box-shadow:0 0 0 2px #50d5a433}.vehicle-choice img{width:100%;height:78px;object-fit:contain;border-radius:6px;background:linear-gradient(135deg,#dce4e6,#aab8bd)}.vehicle-choice b{font-size:11px;line-height:1.2}.vehicle-choice small{font-size:9px;color:#a9c0c7}.customize{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:9px 12px;border-radius:10px;background:#0b141bbd;font-size:13px}.customize label{color:#c5d3d9}#truckSelected{font-weight:800;margin-bottom:3px}#truckColor{width:62px;height:38px;border:0;background:transparent;cursor:pointer}#playTruck{width:100%;padding:12px 24px;border:0;border-radius:12px;background:linear-gradient(100deg,#35c58f,#8be0b4);color:#092219;font-size:18px;font-weight:1000;letter-spacing:1.5px}#garageStatus{min-height:16px;margin:0;color:#c5d3d9;font-size:12px;text-align:center}.garage-credit{margin:0;color:#84979d;font-size:9px;text-align:center}
+@media(max-width:700px){.garage-card{gap:7px;padding:10px;border-radius:15px}.vehicle-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-height:48vh}.vehicle-choice{min-height:104px;padding:5px}.vehicle-choice img{height:62px}.vehicle-choice b{font-size:10px}.vehicle-choice small{font-size:8px}.garage-tab{padding:9px;font-size:11px}.customize{padding:7px 9px}}
+@media(min-width:701px) and (max-height:650px){.vehicle-grid{max-height:43vh}.vehicle-choice{min-height:100px}.vehicle-choice img{height:62px}}
+</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script></head>
+<body><div id="garage"><div class="garage-card">
+ <div class="garage-heading"><div><h1>GARAGEM DE VEÍCULOS</h1><p class="sub">Escolha seu veículo. O modelo selecionado será o que você vai dirigir.</p></div><div class="garage-count"><strong>50</strong><span>MODELOS</span></div></div>
+ <div class="garage-tabs"><button class="garage-tab active" data-type="trucks">CAMINHÕES <b>25</b></button><button class="garage-tab" data-type="cars">CARROS <b>25</b></button></div>
+ <div id="vehicleChoices" class="vehicle-grid" aria-label="Modelos disponíveis"></div>
+ <div class="customize"><div><div id="truckSelected">Caminhão plataforma de resgate</div><label for="truckColor">Personalizar a cor do veículo:</label></div><input id="truckColor" type="color" value="#e8e8e2" aria-label="Cor do veículo"></div>
+ <button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o catálogo de veículos...</p>
+ <p class="garage-credit">Pré-visualizações e modelos 3D CC0 · 3DAssets.dev</p>
+ </div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
 <div id="load">Preparando seu caminhão...</div><div id="runtimeError" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:2000;padding:12px 14px;border:2px solid #ff6258;border-radius:12px;background:#241416;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:35vh;overflow:auto"></div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
  <div id="minimap" aria-label="Mapa da rota"><canvas id="minimapCanvas" width="220" height="150"></canvas></div>
@@ -71,52 +82,37 @@
  <div id="help" class="panel">WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão</div>
 </div>
 <div id="controls"><div id="dpad" aria-label="Direção do caminhão"><button class="up" data-dir="up" aria-label="Frente">▲</button><button class="left" data-dir="left" aria-label="Esquerda">◀</button><button class="right" data-dir="right" aria-label="Direita">▶</button><button class="down" data-dir="down" aria-label="Ré">▼</button></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><div id="cameraModes" aria-label="Modos de câmera"><button id="camera2" class="cameraMode" title="Visão interna">2</button><button id="camera3" class="cameraMode active" title="Visão externa">3</button></div><div id="zoomControls" aria-label="Zoom da câmera"><button id="zoomOut" type="button" aria-label="Afastar câmera">−</button><span id="zoomLabel">ZOOM</span><button id="zoomIn" type="button" aria-label="Aproximar câmera">+</button></div><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
+<script src="./scripts/vehicle-catalog.js"></script>
 <script>
-window.gameReady=false;
-window.selectedTruckChoice='mercedes';
+window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicleId='truck-flatbed-recovery';window.selectedVehicleColor='#e8e8e2';
 (function(){
- const names={mercedes:'Mercedes Actros',volvo:'Volvo FH',scania:'Scania R',iveco:'Iveco S-Way'};
- const status=document.getElementById('garageStatus');
- const color=document.getElementById('truckColor');
- function sync(){
-  const key=window.selectedTruckChoice;
-  document.getElementById('truckSelected').textContent=names[key]+' — '+color.value.toUpperCase();
-  document.querySelectorAll('.truck-choice').forEach(b=>b.classList.toggle('selected',b.dataset.model===key));
-  if(typeof window.applyTruckChoice==='function')window.applyTruckChoice(key);
- }
- const modelColors={mercedes:'#e8e8e2',volvo:'#1769aa',scania:'#b52e32',iveco:'#f2f2ed'};
- document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{window.selectedTruckChoice=b.dataset.model;color.value=modelColors[b.dataset.model]||'#e8e8e2';window.selectedTruckColor=color.value;sync()}));
- color.addEventListener('input',()=>{window.selectedTruckColor=color.value;sync()});
+ const catalog=window.VEHICLE_CATALOG,grid=document.getElementById('vehicleChoices'),status=document.getElementById('garageStatus'),color=document.getElementById('truckColor'),tabs=[...document.querySelectorAll('.garage-tab')];
+ const findSelected=()=>catalog[window.selectedVehicleType].find(v=>v.id===window.selectedVehicleId)||catalog.trucks[0];
+ function sync(){const item=findSelected();window.selectedVehicleId=item.id;window.selectedVehicleColor=color.value;document.getElementById('truckSelected').textContent=item.name+' · '+color.value.toUpperCase();grid.querySelectorAll('.vehicle-choice').forEach(b=>b.classList.toggle('selected',b.dataset.id===item.id))}
+ function render(){const list=catalog[window.selectedVehicleType];grid.innerHTML=list.map(v=>'<button type="button" class="vehicle-choice'+(v.id===window.selectedVehicleId?' selected':'')+'" data-id="'+v.id+'"><img src="'+v.image+'" alt="Prévia do modelo 3D '+v.name+'" loading="lazy" decoding="async"><b>'+v.name+'</b><small>'+v.category+'</small></button>').join('');tabs.forEach(b=>b.classList.toggle('active',b.dataset.type===window.selectedVehicleType));sync()}
+ tabs.forEach(tab=>tab.addEventListener('click',()=>{window.selectedVehicleType=tab.dataset.type;window.selectedVehicleId=catalog[window.selectedVehicleType][0].id;color.value=window.selectedVehicleType==='cars'?'#2876b8':'#e8e8e2';render()}));
+ grid.addEventListener('click',e=>{const card=e.target.closest('.vehicle-choice');if(!card)return;const item=catalog[window.selectedVehicleType].find(v=>v.id===card.dataset.id);if(item){window.selectedVehicleId=item.id;sync()}});
+ color.addEventListener('input',sync);
  document.getElementById('playTruck').addEventListener('click',async()=>{
   if(!window.gameReady){status.textContent='O motor 3D ainda está iniciando. Aguarde alguns segundos.';return}
-  if(typeof window.applyTruckChoice==='function')window.applyTruckChoice(window.selectedTruckChoice);
-  const colorInput=document.getElementById('truckColor');
-  if(colorInput)window.selectedTruckColor=colorInput.value;
-  const isMobileDevice=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
-  if(isMobileDevice){
-   try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}
-   try{if(screen.orientation&&screen.orientation.lock){try{await screen.orientation.lock('landscape-primary')}catch(_){await screen.orientation.lock('landscape')}}}catch(_){}
-  }
-  document.getElementById('garage').style.display='none';
+  const button=document.getElementById('playTruck');button.disabled=true;button.textContent='CARREGANDO VEÍCULO...';status.textContent='Carregando o modelo 3D escolhido...';
+  try{if(typeof window.prepareSelectedVehicle!=='function')throw new Error('O carregador de veículos ainda não está pronto.');const loaded=await window.prepareSelectedVehicle(window.selectedVehicleId);if(!loaded)throw new Error('Não foi possível carregar esse modelo. Tente outro veículo.');
+   const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
+   if(mobile){try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}try{if(screen.orientation&&screen.orientation.lock){try{await screen.orientation.lock('landscape-primary')}catch(_){await screen.orientation.lock('landscape')}}}catch(_){}}
+   document.getElementById('garage').style.display='none';
+  }catch(err){status.textContent=err.message||'Falha ao carregar o veículo.'}finally{button.disabled=false;button.textContent='JOGAR'}
  });
- window.addEventListener('error',e=>{
-  if(window.gameReady)return;
-  status.textContent='Não foi possível iniciar o jogo: '+(e.message||'erro de inicialização')+'. Atualize a página para tentar novamente.';
-  const load=document.getElementById('load');if(load)load.textContent='Falha ao iniciar o motor 3D';
- });
- window.addEventListener('unhandledrejection',e=>{
-  if(window.gameReady)return;
-  status.textContent='Falha ao carregar o motor 3D. Verifique a conexão e atualize a página.';
-  const load=document.getElementById('load');if(load)load.textContent='Falha ao carregar o motor 3D';
- });
- sync();
+ window.addEventListener('error',e=>{if(window.gameReady)return;status.textContent='Não foi possível iniciar o jogo: '+(e.message||'erro de inicialização')+'. Atualize a página.'});
+ window.addEventListener('unhandledrejection',()=>{if(window.gameReady)return;status.textContent='Falha ao carregar o motor 3D. Verifique a conexão.'});
+ render();
 })();
 </script>
 <script type="module">
 import { stepTruckPhysics } from './scripts/drive-physics.js';
 const load=document.getElementById('load');
-let THREE;
+let THREE,GLTFLoader,vehicleLoader;
 try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e2){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível baixar o motor 3D. Confira a conexão e atualize a página.';load.textContent='Falha ao carregar o motor 3D';throw e2}}
+try{({GLTFLoader}=await import('three/addons/loaders/GLTFLoader.js'));vehicleLoader=new GLTFLoader()}catch(e){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível iniciar o carregador dos veículos 3D.';throw e}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,150,900);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1200);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<700?1.5:2));renderer.domElement.id='gameCanvas';renderer.domElement.style.position='fixed';renderer.domElement.style.inset='0';renderer.domElement.style.width='100vw';renderer.domElement.style.height='100vh';renderer.domElement.style.zIndex='1';renderer.domElement.style.pointerEvents='none';document.body.appendChild(renderer.domElement);renderer.setSize(innerWidth,innerHeight,false);renderer.domElement.width=Math.round(innerWidth*renderer.getPixelRatio());renderer.domElement.height=Math.round(innerHeight*renderer.getPixelRatio());renderer.setClearColor(0x9fc3d2,1);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
@@ -447,17 +443,35 @@ const marker=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry
 let speed=0,steer=0,throttle=0,brake=0,delivered=false,fuel=100,joy={x:0,y:0},keys={},gear='D';
 const cityCenters=[-4000,-19000,-34000,-49000];
 let firstPerson=false,cruiseOn=false,cruiseSpeed=0,gameEnded=false;
-let selectedTruck=window.selectedTruckChoice||'mercedes';
+let selectedVehicle=null,vehicleIsCar=false,vehicleMixer=null,loadedVehicleRoot=null;
 const colorPicker=document.getElementById('truckColor');
-window.selectedTruckColor=colorPicker.value;
-function applySelectedTruck(key){
- if(!truckStyles[key])return;
- selectedTruck=key;
- truckPaint.color.set(window.selectedTruckColor||colorPicker.value);
- applyTruckStyle(selectedTruck);
-}
-window.applyTruckChoice=applySelectedTruck;
-applySelectedTruck(selectedTruck);
+const playerModelGroup=new THREE.Group();truck.add(playerModelGroup);
+function disposeVehicleRoot(root){if(!root)return;root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){for(const m of (Array.isArray(o.material)?o.material:[o.material])){if(m.map)m.map.dispose();m.dispose()}}})}
+window.prepareSelectedVehicle=async function(id){
+ const all=[...window.VEHICLE_CATALOG.trucks,...window.VEHICLE_CATALOG.cars],item=all.find(v=>v.id===id);if(!item)return false;
+ try{
+  const gltf=await new Promise((resolve,reject)=>vehicleLoader.load(item.model,resolve,undefined,reject)),model=gltf.scene;
+  model.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
+  if(!Number.isFinite(size.z)||size.z<.2)throw new Error('Modelo 3D inválido.');
+  const targetLength=item.id.startsWith('car-')?4.9:(item.trailer?6.1:7.7),scale=targetLength/size.z;
+  model.scale.setScalar(scale);model.updateMatrixWorld(true);
+  const scaledBounds=new THREE.Box3().setFromObject(model),scaledCenter=scaledBounds.getCenter(new THREE.Vector3());
+  model.position.set(-scaledCenter.x,-scaledBounds.min.y,-scaledCenter.z);
+  model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
+  if(loadedVehicleRoot){playerModelGroup.remove(loadedVehicleRoot);disposeVehicleRoot(loadedVehicleRoot)}
+  playerModelGroup.add(model);loadedVehicleRoot=model;
+  vehicleMixer=gltf.animations&&gltf.animations.length?new THREE.AnimationMixer(model):null;
+  if(vehicleMixer){for(const clip of gltf.animations.filter(a=>/wheel|roll|steer/i.test(a.name)))vehicleMixer.clipAction(clip).play()}
+  tractor.visible=false;trailer.visible=Boolean(item.trailer);
+  vehicleIsCar=window.VEHICLE_CATALOG.cars.some(v=>v.id===item.id);selectedVehicle=item;
+  truckPaint.color.set(window.selectedVehicleColor||colorPicker.value);
+  speed=0;truck.position.set(roadCenter(65),0,65);truck.rotation.y=0;gear='D';firstPerson=false;
+  cameraDistance=vehicleIsCar?14:23;cameraHeight=vehicleIsCar?3.8:7.2;
+  document.getElementById('mission').innerHTML=(vehicleIsCar?'DIRIJAÇÃO LIVRE':'ENTREGA 01')+'<br>'+(vehicleIsCar?'Explore as cidades brasileiras.':'Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.');
+  document.getElementById('help').textContent=vehicleIsCar?'WASD / setas: dirigir · Espaço: freio · R: reiniciar veículo':'WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão';
+  return true;
+ }catch(err){console.error('Falha no modelo selecionado:',err);return false}
+};
 
 // Cenário brasileiro vivo: fazendas, lavouras, sítios e obras ao longo da rodovia.
 const roadside=[];
@@ -588,7 +602,7 @@ const offRoad=Math.abs(truck.position.x-roadCenter(truck.position.z))>13;
 const inCity=cityCenters.some(center=>Math.abs(truck.position.z-center)<=4000);
 const driveStep=stepTruckPhysics(
  {speed,heading:truck.rotation.y},
- {throttle:cruiseOn&&gear==='D'?Math.max(gasInput,Math.min(1,(cruiseSpeed/3.6-speed)*.45)):gasInput,brake:brakeInput,turn:steer,gear,dt,offRoad,speedLimit:inCity?8.33:41.7}
+ {throttle:cruiseOn&&gear==='D'?Math.max(gasInput,Math.min(1,(cruiseSpeed/3.6-speed)*.45)):gasInput,brake:brakeInput,turn:steer,gear,dt,offRoad,speedLimit:inCity?8.33:(vehicleIsCar?55.6:41.7),acceleration:vehicleIsCar?9.5:6.5,brakeForce:vehicleIsCar?10.5:8.5,steeringScale:vehicleIsCar?1.12:1}
 );
 speed=driveStep.speed;
 truck.rotation.y=driveStep.heading;
@@ -597,13 +611,14 @@ truck.position.z+=driveStep.dz;
 // A viagem não teleporta: a estrada segue até a faixa costeira no fim do percurso.
 for(const item of roadside){if(item.group.position.z>truck.position.z+125){item.group.position.z-=1296;item.group.position.x=roadCenter(item.group.position.z)+item.side*48}}
 ground.position.x=roadCenter(truck.position.z);ground.position.z=Math.max(truck.position.z,-63900);if(Math.abs(speed)>1)fuel=Math.max(0,fuel-dt*.00018*Math.abs(speed));if(fuel<=0)speed*=.98;
-const cockpit=truck.localToWorld(new THREE.Vector3(0,2.72,-.35));const rearOffset=new THREE.Vector3(0,cameraHeight,cameraDistance);const rearCamera=truck.localToWorld(rearOffset);const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,2.65,-55));const outsideLook=truck.localToWorld(new THREE.Vector3(0,2.2,-5));camera.lookAt(firstPerson?cabForward:outsideLook);
+if(vehicleMixer)vehicleMixer.update(dt);
+const cockpit=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.28:2.45,-.35));const rearOffset=new THREE.Vector3(0,cameraHeight,cameraDistance);const rearCamera=truck.localToWorld(rearOffset);const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.3:2.4,-55));const outsideLook=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.15:2.2,-5));camera.lookAt(firstPerson?cabForward:outsideLook);
 for(const car of traffic){car.position.z+=car.userData.dir*dt*(car.userData.speed+Math.sin(now*.0004)*1.2);const range=car.userData.range||520;if(car.position.z>truck.position.z+range)car.position.z=truck.position.z-range;if(car.position.z<truck.position.z-range)car.position.z=truck.position.z+range;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<(car.userData.halfLength||2.6)+2.6){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();drawMinimap();renderer.render(scene,camera)}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha um dos 50 veículos e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
