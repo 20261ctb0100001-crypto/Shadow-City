@@ -16,6 +16,12 @@
 <div id="loadstatus" style="position:fixed;z-index:20;top:50%;left:50%;transform:translate(-50%,-50%);padding:14px 18px;border-radius:12px;background:#101820eF;color:white;font:14px Arial;text-align:center;max-width:90vw">Carregando a cidade 3D...</div>
 <script type="module">
 const statusBox=document.getElementById('loadstatus');
+const debugBox=document.createElement('div');
+debugBox.style.cssText='position:fixed;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%);max-width:90vw;padding:14px 18px;border-radius:12px;background:#541b1b;color:#fff;font:13px Arial;display:none;white-space:pre-wrap';
+document.body.appendChild(debugBox);
+function showFatal(message){debugBox.style.display='block';debugBox.textContent='ERRO AO INICIAR O JOGO\\n'+String(message).slice(0,500);if(statusBox.isConnected)statusBox.remove();console.error(message);}
+window.addEventListener('error',event=>showFatal(event.message||'Erro JavaScript desconhecido'));
+window.addEventListener('unhandledrejection',event=>showFatal(event.reason?.message||event.reason||'Falha ao carregar recurso'));
 let THREE;
 try {
   THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js');
@@ -83,11 +89,11 @@ function toggleCar(){if(inCar){inCar=false;player.position.copy(car.position).ad
 document.querySelector('#action').onclick=toggleCar;for(const [id,setter] of [['run',v=>run=v],['brake',v=>braking=v]]){const el=document.querySelector('#'+id);el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);setter(true)});el.addEventListener('pointerup',()=>setter(false));el.addEventListener('pointercancel',()=>setter(false));}
 const joyEl=document.querySelector('#joy'),knob=document.querySelector('#knob');let active=false;
 joyEl.addEventListener('pointerdown',e=>{active=true;joyEl.setPointerCapture(e.pointerId);moveJoy(e)});joyEl.addEventListener('pointermove',e=>{if(active)moveJoy(e)});function moveJoy(e){let r=joyEl.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),m=Math.min(42,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);joy.x=Math.cos(a)*m/42;joy.y=Math.sin(a)*m/42;knob.style.transform='translate('+joy.x*42+'px,'+joy.y*42+'px)'}function endJoy(){active=false;joy={x:0,y:0};knob.style.transform='translate(0,0)'}joyEl.addEventListener('pointerup',endJoy);joyEl.addEventListener('pointercancel',endJoy);
-const clock=new THREE.Clock();function loop(){requestAnimationFrame(loop);let dt=Math.min(clock.getDelta(),.04);let forward=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0)-joy.y;let turn=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+joy.x;
+const clock=new THREE.Clock();function loop(){requestAnimationFrame(loop);try{let dt=Math.min(clock.getDelta(),.04);let forward=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0)-joy.y;let turn=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+joy.x;
 if(inCar){speed+=forward*18*dt;speed*=Math.pow(braking?.04:.985,dt*60);car.rotation.y-=turn*dt*(.8+Math.min(Math.abs(speed)/10,1.5));let dir=new THREE.Vector3(Math.sin(car.rotation.y),0,Math.cos(car.rotation.y));car.position.addScaledVector(dir,speed*dt);speed=Math.max(-10,Math.min(24,speed));}
 else{let move=new THREE.Vector3(turn,0,-forward);if(move.length()>1)move.normalize();if(move.lengthSq()>0){angle=Math.atan2(move.x,move.z);player.rotation.y=angle;player.position.addScaledVector(move,dt*(run?8:4.5));leftArm.rotation.x=Math.sin(performance.now()*.012)*.45;rightArm.rotation.x=-leftArm.rotation.x;leftLeg.rotation.x=-leftArm.rotation.x*.8;rightLeg.rotation.x=leftArm.rotation.x*.8;}else{leftArm.rotation.x*=.82;rightArm.rotation.x*=.82;leftLeg.rotation.x*=.82;rightLeg.rotation.x*=.82;}if(player.position.distanceTo(car.position)<4)document.querySelector('#action').textContent='ENTRAR';}
 let target=inCar?car.position:player.position;let yaw=inCar?car.rotation.y:player.rotation.y;let desired=new THREE.Vector3(target.x-Math.sin(yaw)*8, target.y+5.5,target.z-Math.cos(yaw)*8);camera.position.lerp(desired,1-Math.pow(.001,dt));camera.lookAt(target.x,target.y+1,target.z);
 marker.rotation.y+=dt*.8;if(target.distanceTo(marker.position)<3){document.querySelector('#mission').innerHTML='MISSÃO CONCLUÍDA!<br>Explore a cidade livremente.';marker.position.set(-35,0,35)}
-renderer.render(scene,camera)}loop();
+renderer.render(scene,camera)}catch(loopError){showFatal('Falha no ciclo 3D: '+(loopError?.stack||loopError));}}loop();
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script></body></html>
