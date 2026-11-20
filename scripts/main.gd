@@ -127,6 +127,12 @@ func _add_box(label: String, position: Vector3, dimensions: Vector3, color: Colo
 	collision.shape = shape
 	body.add_child(collision)
 
+func _spawn_world_clock() -> void:
+	var clock := Node.new()
+	clock.name = "WorldClock"
+	clock.set_script(WORLD_CLOCK_SCRIPT)
+	add_child(clock)
+
 func _spawn_player() -> void:
 	var player := CharacterBody3D.new()
 	player.name = "Player"
