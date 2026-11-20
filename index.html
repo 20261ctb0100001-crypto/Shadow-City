@@ -122,6 +122,7 @@ const asphaltCanvas=document.createElement('canvas');asphaltCanvas.width=512;asp
 // Textura procedural de terra e capim em vez de um plano verde liso.
 const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanvas.height=512;const ctx=turfCanvas.getContext('2d');ctx.fillStyle='#637d4b';ctx.fillRect(0,0,512,512);for(let i=0;i<18000;i++){const x=Math.random()*512,y=Math.random()*512;ctx.fillStyle=['#3f653e','#78905a','#8a8759','#a08c65','#526f42'][Math.floor(Math.random()*5)];ctx.globalAlpha=.18+Math.random()*.32;ctx.fillRect(x,y,1+Math.random()*3,1+Math.random()*2)}ctx.globalAlpha=1;const turfTex=new THREE.CanvasTexture(turfCanvas);turfTex.wrapS=turfTex.wrapT=THREE.RepeatWrapping;turfTex.repeat.set(34,34);turfTex.colorSpace=THREE.SRGBColorSpace;const groundMat=new THREE.MeshStandardMaterial({map:turfTex,roughness:1});const ground=new THREE.Mesh(new THREE.PlaneGeometry(1200,1200),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
 
+const edgeMat=mat(0xe6e1d0),yellow=mat(0xf1c84b);
 // Rodovia sinuosa em malha contínua: a pista acompanha curvas suaves pelo vale.
 function roadCenter(z){return 34*Math.sin(z*.0032)+13*Math.sin(z*.009)}
 function roadRibbon(offset,width,material,y=-.12){
