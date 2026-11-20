@@ -5,6 +5,7 @@ const PLAYER_SCRIPT = preload("res://scripts/player.gd")
 func _ready() -> void:
 	_build_environment()
 	_build_city()
+	_build_street_details()
 	_spawn_player()
 
 func _build_environment() -> void:
@@ -40,6 +41,55 @@ func _build_city() -> void:
 			if (i + j) % 3 == 0:
 				building_color = Color(0.48, 0.34, 0.24)
 			_add_box("Building", Vector3(x, height * 0.5, z), Vector3(10, height, 12), building_color)
+
+func _build_street_details() -> void:
+	# Small wooden house to establish the residential look.
+	_add_box("Wooden house", Vector3(19, 2.4, 17), Vector3(9, 4.8, 8), Color(0.43, 0.25, 0.14))
+	_add_box("House roof", Vector3(19, 5.1, 17), Vector3(10, 0.55, 9), Color(0.16, 0.18, 0.21))
+	_add_box("Front door", Vector3(19, 1.1, 12.94), Vector3(1.5, 2.2, 0.12), Color(0.20, 0.12, 0.08))
+	_add_box("Front window left", Vector3(16.3, 2.8, 12.90), Vector3(1.8, 1.5, 0.12), Color(0.12, 0.25, 0.34))
+	_add_box("Front window right", Vector3(21.7, 2.8, 12.90), Vector3(1.8, 1.5, 0.12), Color(0.12, 0.25, 0.34))
+
+	# A simple storefront with a sign.
+	_add_box("Market building", Vector3(-19, 2.5, 17), Vector3(10, 5, 8), Color(0.68, 0.65, 0.56))
+	_add_box("Market glass", Vector3(-19, 2.0, 12.90), Vector3(6.5, 2.5, 0.12), Color(0.10, 0.25, 0.32))
+	var sign := Label3D.new()
+	sign.text = "MARKET"
+	sign.position = Vector3(-19, 4.2, 12.7)
+	sign.font_size = 64
+	sign.modulate = Color(1.0, 0.88, 0.55)
+	sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	add_child(sign)
+
+	for x in [-8.0, 8.0]:
+		_add_tree(Vector3(x, 0, 10))
+		_add_tree(Vector3(x, 0, -10))
+		_add_tree(Vector3(x, 0, 28))
+
+func _add_tree(position: Vector3) -> void:
+	var trunk := MeshInstance3D.new()
+	var trunk_mesh := CylinderMesh.new()
+	trunk_mesh.top_radius = 0.18
+	trunk_mesh.bottom_radius = 0.28
+	trunk_mesh.height = 2.2
+	trunk.mesh = trunk_mesh
+	trunk.position = position + Vector3(0, 1.1, 0)
+	var trunk_material := StandardMaterial3D.new()
+	trunk_material.albedo_color = Color(0.28, 0.17, 0.10)
+	trunk.material_override = trunk_material
+	add_child(trunk)
+
+	var leaves := MeshInstance3D.new()
+	var leaves_mesh := SphereMesh.new()
+	leaves_mesh.radius = 1.25
+	leaves_mesh.height = 2.5
+	leaves.mesh = leaves_mesh
+	leaves.position = position + Vector3(0, 2.8, 0)
+	var leaves_material := StandardMaterial3D.new()
+	leaves_material.albedo_color = Color(0.12, 0.30, 0.16)
+	leaves_material.roughness = 1.0
+	leaves.material_override = leaves_material
+	add_child(leaves)
 
 func _add_box(label: String, position: Vector3, dimensions: Vector3, color: Color) -> void:
 	var body := StaticBody3D.new()
