@@ -102,3 +102,10 @@ test('Ponta Grossa has a visible entrance landmark near the start', async () => 
   assert.ok(html.includes('PONTA GROSSA'));
   assert.ok(html.includes('cityGate.position.set(cx,0,centerZ+160)'));
 });
+
+test('fullscreen and landscape locking are limited to mobile devices', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('const isMobileDevice='));
+  assert.ok(html.includes('if(isMobileDevice){'));
+  assert.ok(html.includes("screen.orientation.lock('landscape-primary')"));
+});
