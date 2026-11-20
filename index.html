@@ -204,14 +204,14 @@ function buildCity(name,centerZ,style){
   [0xd9d1c2,0xb7c8cb,0xe8e1d4,0x9caeae,0xc4b7a2],
   [0xc7cbd0,0xe1ded5,0x9faeb5,0xd0c4b5,0x8799a2]
  ];
- const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=mat(0x343a3d,.95),sidewalk=mat(0xb9b8ad),roofCity=mat(0x50575a,.9);
+ const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=mat(0x343a3d,.95),sidewalk=mat(0xb9b8ad),roofCity=mat(0x50575a,.9),houseRoofMat=mat([0x914c3d,0x4c5962,0x9a6848,0x59636a][style],.92),frameMat=mat(0xe8e2d6,.72),garageMat=mat(0x777f83,.82);
  const cx=roadCenter(centerZ);
  // Malha urbana expandida: bairros dos dois lados da rodovia, com ruas conectadas.
  const cityLength=8000,halfLength=cityLength/2;
  const parallelOffsets=[48,132,216];
  const roadMat=roadCity,sidewalkMat=sidewalk,lineMat=mat(0xe6dfb8,.9);
  const roadY=.018;
- const windowGeo=new THREE.BoxGeometry(1.05,1.25,.08),windows=new THREE.InstancedMesh(windowGeo,glassCity,18000),windowDummy=new THREE.Object3D();let windowCount=0;
+ const windowGeo=new THREE.BoxGeometry(1.05,1.25,.08),windows=new THREE.InstancedMesh(windowGeo,glassCity,18000),windowFrames=new THREE.InstancedMesh(new THREE.BoxGeometry(1.24,1.44,.1),frameMat,18000),garageDoors=new THREE.InstancedMesh(new THREE.BoxGeometry(5.4,2.35,.14),garageMat,240),windowDummy=new THREE.Object3D(),garageDummy=new THREE.Object3D();let windowCount=0,garageCount=0;
  for(const side of [-1,1]){
   // Cinco avenidas paralelas por lado, todas conectadas pelas ruas transversais.
   for(let lane=0;lane<parallelOffsets.length;lane++){
@@ -257,25 +257,28 @@ function buildCity(name,centerZ,style){
    const width=isTower?27:24+(row%2)*5,depth=isTower?34:28;
    const body=new THREE.Mesh(new THREE.BoxGeometry(width,h,depth),mat(colors[(row+band+style)%colors.length],.78,.08));
    body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;city.add(body);
-   const roof=new THREE.Mesh(new THREE.BoxGeometry(width+.7,.55,depth+.7),roofCity);
-   roof.position.set(x,h+.25,z);city.add(roof);
+   const roof=isTower?new THREE.Mesh(new THREE.BoxGeometry(width+.7,.55,depth+.7),roofCity):new THREE.Mesh(new THREE.ConeGeometry(Math.max(width,depth)*.72,3.8,4),houseRoofMat);
+   roof.position.set(x,isTower?h+.25:h+1.9,z);roof.rotation.y=Math.PI/4;roof.castShadow=true;city.add(roof);
    // Janelas repetidas em instâncias para manter a cidade leve no celular.
    const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
    for(let floor=0;floor<floors;floor++)for(let col=0;col<cols;col++){
     const wx=x-width/2+2.2+col*4.1,wy=2+floor*3.15;
     if(windowCount<18000){
-     windowDummy.position.set(wx,wy,z-depth/2-.08);windowDummy.rotation.set(0,0,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount++,windowDummy.matrix);
+     windowDummy.position.set(wx,wy,z-depth/2-.08);windowDummy.rotation.set(0,0,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount,windowDummy.matrix);windowFrames.setMatrixAt(windowCount,windowDummy.matrix);windowCount++;
     }
     if(isTower&&windowCount<18000){
-     windowDummy.position.set(x+width/2+.08,wy,z-depth/2+2+col*4.1);windowDummy.rotation.set(0,Math.PI/2,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount++,windowDummy.matrix);
+     windowDummy.position.set(x+width/2+.08,wy,z-depth/2+2+col*4.1);windowDummy.rotation.set(0,Math.PI/2,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount,windowDummy.matrix);windowFrames.setMatrixAt(windowCount,windowDummy.matrix);windowCount++;
     }
    }
    // Garagens e portas para casas de bairro.
    if(!isTower){
     const door=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.7,.12),mat(0x55453a));
-    door.position.set(x,1.35,z-depth/2-.1);city.add(door);
+    door.position.set(x-width/2+4,1.35,z-depth/2-.1);city.add(door);
+    garageDummy.position.set(x+width/2-4,1.28,z-depth/2-.13);garageDummy.rotation.set(0,0,0);garageDummy.scale.set(1,1,1);garageDummy.updateMatrix();if(garageCount<240)garageDoors.setMatrixAt(garageCount++,garageDummy.matrix);
     const porch=new THREE.Mesh(new THREE.BoxGeometry(width+2,.3,5),sidewalkMat);
     porch.position.set(x,.18,z-depth/2-3);city.add(porch);
+    const canopy=new THREE.Mesh(new THREE.BoxGeometry(width+1,.22,3.2),houseRoofMat);canopy.position.set(x,3.35,z-depth/2-1.8);city.add(canopy);
+    for(const postX of [-1,1]){const post=new THREE.Mesh(new THREE.BoxGeometry(.16,2.9,.16),frameMat);post.position.set(x+postX*(width/2-.8),1.65,z-depth/2-2.7);city.add(post)}
    }
    // Árvores em calçadas e pequenos canteiros.
    for(const sideOffset of [-1,1]){
@@ -310,7 +313,7 @@ function buildCity(name,centerZ,style){
    }
   }
  }
- windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;city.add(windows);
+ windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;windowFrames.count=windowCount;windowFrames.instanceMatrix.needsUpdate=true;garageDoors.count=garageCount;garageDoors.instanceMatrix.needsUpdate=true;city.add(windows,windowFrames,garageDoors);
  // Marcos urbanos próprios de cada destino.
  if(style===0){
   const landmark=new THREE.Group();
