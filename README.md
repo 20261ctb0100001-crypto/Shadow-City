@@ -15,9 +15,8 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeira loja de roupas interativa, com saldo inicial e compra de uma jaqueta de teste.
 - Primeiras construções, uma casa de madeira, fachada de mercado e árvores.
 - Mapa ampliado com quatro zonas de referência: escola, hospital, bairro gastronômico e centro comercial.
-- Sistema inicial de necessidades: fome, energia e higiene diminuem com o tempo; o jogador pode comer, descansar e tomar banho pelo menu VIDA.
 - Necessidades e dinheiro incluídos no salvamento local.
-- Ajustes iniciais de apresentação com tonemapping cinematográfico e neblina leve.
+- Ajustes iniciais de apresentação com tonemapping cinematográfico, neblina leve, calçadas, faixas de pedestres e postes com iluminação.
 - Primeira área identificada como Ponta Grossa, Paraná, Brasil.
 - Primeiros animais ambientais: cachorro, gato, papagaio e cavalo, com movimento autônomo simples.
 - Quatro moradores com nomes, profissões, personalidades, falas, aparência e velocidades diferentes.
