@@ -278,7 +278,7 @@ function buildCity(name,centerZ,style){
  const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
  const sign=new THREE.Mesh(new THREE.PlaneGeometry(28,7),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));sign.position.set(cx,18,centerZ-220);city.add(sign);
 }
-buildCity('Ponta Grossa',-650,0);
+buildCity('Ponta Grossa',-350,0);
 buildCity('Curitiba',-6500,1);
 buildCity('Florianópolis',-14000,2);
 buildCity('Santos',-23000,3);
@@ -443,7 +443,7 @@ function drawMinimap(){
  const mapY=z=>top+THREE.MathUtils.clamp((65-z)/routeLength,0,1)*(bottom-top);
  ctx.strokeStyle='#68777a';ctx.lineWidth=15;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(routeX,top);ctx.lineTo(routeX,bottom);ctx.stroke();
  ctx.strokeStyle='#e9d78b';ctx.lineWidth=1.5;ctx.setLineDash([5,6]);ctx.beginPath();ctx.moveTo(routeX,top);ctx.lineTo(routeX,bottom);ctx.stroke();ctx.setLineDash([]);
- const cities=[['PG',-650],['CWB',-6500],['FLN',-14000],['STS',-23000]];
+ const cities=[['PG',-350],['CWB',-6500],['FLN',-14000],['STS',-23000]];
  ctx.font='bold 10px Arial';ctx.textBaseline='middle';
  for(const [name,z] of cities){const y=mapY(z);ctx.fillStyle='#f0c76b';ctx.beginPath();ctx.arc(routeX,y,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e8eef0';ctx.fillText(name,routeX+13,y)}
  const stationY=mapY(-3000);ctx.fillStyle='#48c9a0';ctx.fillRect(routeX-3,stationY-3,6,6);ctx.fillStyle='#aee9d8';ctx.fillText('POSTO',routeX-37,stationY-9);
