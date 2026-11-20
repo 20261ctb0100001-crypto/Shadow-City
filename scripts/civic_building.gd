@@ -34,11 +34,11 @@ func _message(value: String) -> void:
 	var label := Label3D.new()
 	label.text = value
 	label.top_level = true
-	label.global_position = interior_origin + Vector3(0, 4.0, 0)
 	label.font_size = 26
 	label.modulate = Color(1.0, 0.88, 0.58)
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	add_child(label)
+	label.global_position = interior_origin + Vector3(0, 4.0, 0)
 	get_tree().create_timer(3.5).timeout.connect(func() -> void:
 		if is_instance_valid(label):
 			label.queue_free()
@@ -58,18 +58,18 @@ func _build_room() -> void:
 	var sign := Label3D.new()
 	sign.text = display_name.to_upper()
 	sign.top_level = true
-	sign.global_position = interior_origin + Vector3(0, 3.0, -4.7)
 	sign.font_size = 34
 	sign.modulate = Color(0.20, 0.24, 0.30)
 	sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	add_child(sign)
+	sign.global_position = interior_origin + Vector3(0, 3.0, -4.7)
 
 func _box(label: String, local_pos: Vector3, size: Vector3, color: Color) -> void:
 	var body := StaticBody3D.new()
 	body.name = label
 	body.top_level = true
-	body.global_position = interior_origin + local_pos
 	add_child(body)
+	body.global_position = interior_origin + local_pos
 
 	var visual := MeshInstance3D.new()
 	var mesh := BoxMesh.new()
