@@ -21,6 +21,26 @@ func _build_vehicle() -> void:
 	_add_part("Front glass", Vector3(0, 1.36, -1.22), Vector3(1.35, 0.52, 0.08), Color(0.16, 0.30, 0.38))
 	_add_part("Rear glass", Vector3(0, 1.36, 0.72), Vector3(1.35, 0.52, 0.08), Color(0.16, 0.30, 0.38))
 
+	# Detalhes externos para deixar o primeiro carro menos parecido com um bloco.
+	_add_part("Front bumper", Vector3(0, 0.42, -2.02), Vector3(1.92, 0.22, 0.16), Color(0.10, 0.11, 0.12))
+	_add_part("Rear bumper", Vector3(0, 0.42, 2.02), Vector3(1.92, 0.22, 0.16), Color(0.10, 0.11, 0.12))
+	_add_part("Front grille", Vector3(0, 0.69, -2.035), Vector3(0.72, 0.22, 0.035), Color(0.025, 0.03, 0.035))
+	_add_part("Front lower grille", Vector3(0, 0.48, -2.04), Vector3(1.0, 0.07, 0.035), Color(0.035, 0.04, 0.045))
+	_add_part("Left headlight", Vector3(-0.70, 0.83, -2.035), Vector3(0.42, 0.20, 0.055), Color(0.92, 0.88, 0.68))
+	_add_part("Right headlight", Vector3(0.70, 0.83, -2.035), Vector3(0.42, 0.20, 0.055), Color(0.92, 0.88, 0.68))
+	_add_part("Left tail light", Vector3(-0.70, 0.82, 2.035), Vector3(0.42, 0.22, 0.055), Color(0.72, 0.045, 0.025))
+	_add_part("Right tail light", Vector3(0.70, 0.82, 2.035), Vector3(0.42, 0.22, 0.055), Color(0.72, 0.045, 0.025))
+	_add_part("Left mirror", Vector3(-0.91, 1.35, -0.93), Vector3(0.22, 0.16, 0.28), Color(0.12, 0.13, 0.14))
+	_add_part("Right mirror", Vector3(0.91, 1.35, -0.93), Vector3(0.22, 0.16, 0.28), Color(0.12, 0.13, 0.14))
+	_add_part("Left side window front", Vector3(-0.79, 1.38, -0.55), Vector3(0.045, 0.46, 0.90), Color(0.10, 0.19, 0.24))
+	_add_part("Right side window front", Vector3(0.79, 1.38, -0.55), Vector3(0.045, 0.46, 0.90), Color(0.10, 0.19, 0.24))
+	_add_part("Left side window rear", Vector3(-0.79, 1.38, 0.48), Vector3(0.045, 0.46, 0.70), Color(0.10, 0.19, 0.24))
+	_add_part("Right side window rear", Vector3(0.79, 1.38, 0.48), Vector3(0.045, 0.46, 0.70), Color(0.10, 0.19, 0.24))
+	_add_part("Left door handle", Vector3(-1.015, 0.98, -0.05), Vector3(0.035, 0.055, 0.28), Color(0.72, 0.72, 0.68))
+	_add_part("Right door handle", Vector3(1.015, 0.98, -0.05), Vector3(0.035, 0.055, 0.28), Color(0.72, 0.72, 0.68))
+	_add_part("Left rocker panel", Vector3(-0.92, 0.39, 0), Vector3(0.10, 0.16, 2.1), Color(0.12, 0.12, 0.13))
+	_add_part("Right rocker panel", Vector3(0.92, 0.39, 0), Vector3(0.10, 0.16, 2.1), Color(0.12, 0.12, 0.13))
+
 	for side in [-1.0, 1.0]:
 		for axle in [-1.25, 1.25]:
 			var wheel := MeshInstance3D.new()
@@ -35,6 +55,20 @@ func _build_vehicle() -> void:
 			wheel_material.albedo_color = Color(0.035, 0.04, 0.045)
 			wheel.material_override = wheel_material
 			add_child(wheel)
+			var rim := MeshInstance3D.new()
+			var rim_mesh := CylinderMesh.new()
+			rim_mesh.top_radius = 0.19
+			rim_mesh.bottom_radius = 0.19
+			rim_mesh.height = 0.235
+			rim.mesh = rim_mesh
+			rim.rotation_degrees.z = 90
+			rim.position = Vector3(side * 1.14, 0.38, axle)
+			var rim_material := StandardMaterial3D.new()
+			rim_material.albedo_color = Color(0.48, 0.50, 0.52)
+			rim_material.metallic = 0.78
+			rim_material.roughness = 0.28
+			rim.material_override = rim_material
+			add_child(rim)
 
 	var collision := CollisionShape3D.new()
 	var shape := BoxShape3D.new()
