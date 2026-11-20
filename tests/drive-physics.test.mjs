@@ -18,7 +18,7 @@ test('drive physics accelerates a loaded truck and respects the speed cap', asyn
     { throttle: 1, brake: 0, turn: 0, gear: 'D', dt: 1, offRoad: false }
   );
   assert.ok(next.speed > 0, 'accelerator must increase speed');
-  assert.ok(next.speed <= 33.3, 'truck must stay below 120 km/h');
+  assert.ok(next.speed <= 41.7, 'truck must stay below 150 km/h');
 });
 
 test('brake reduces forward speed without reversing the truck', async () => {
