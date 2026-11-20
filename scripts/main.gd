@@ -32,7 +32,7 @@ func _build_city() -> void:
 
 	for i in range(-2, 3):
 		for j in range(-2, 3):
-			if i == 0 and j == 0:
+			if (i == 0 and j == 0) or (j == 1 and abs(i) == 1):
 				continue
 			var height := 5.0 + float(abs(i * 3 + j * 5) % 5) * 2.0
 			var x := float(i) * 22.0
