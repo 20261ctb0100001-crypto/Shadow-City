@@ -34,6 +34,9 @@ jobs:
           echo "Browser game prepared:"
           ls -lh build/index.html
 
+      - name: Test browser game physics and map
+        run: node --test tests/*.test.mjs
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
