@@ -467,7 +467,8 @@ window.prepareSelectedVehicle=async function(id){
   if(vehicleMixer){for(const clip of gltf.animations.filter(a=>/wheel|roll|steer/i.test(a.name)))vehicleMixer.clipAction(clip).play()}
   tractor.visible=false;trailer.visible=Boolean(item.trailer);
   vehicleIsCar=window.VEHICLE_CATALOG.cars.some(v=>v.id===item.id);selectedVehicle=item;
-  truckPaint.color.set(window.selectedVehicleColor||colorPicker.value);
+  const chosenTint=new THREE.Color(window.selectedVehicleColor||colorPicker.value);
+  model.traverse(o=>{if(!o.isMesh||!o.material)return;for(const m of (Array.isArray(o.material)?o.material:[o.material])){const n=(m.name||'').toLowerCase();if(m.color&&!m.transparent&&!/glass|window|tire|rubber|wheel|chrome|metal|light|interior|trim/.test(n))m.color.copy(chosenTint)}});
   speed=0;truck.position.set(roadCenter(65),0,65);truck.rotation.y=0;gear='D';firstPerson=false;
   cameraDistance=vehicleIsCar?14:23;cameraHeight=vehicleIsCar?3.8:7.2;
   document.getElementById('mission').innerHTML=(vehicleIsCar?'DIRIJAÇÃO LIVRE':'ENTREGA 01')+'<br>'+(vehicleIsCar?'Explore as cidades brasileiras.':'Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.');
