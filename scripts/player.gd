@@ -5,6 +5,11 @@ extends CharacterBody3D
 
 var camera: Camera3D
 var body_collision: CollisionShape3D
+var left_leg: MeshInstance3D
+var right_leg: MeshInstance3D
+var left_arm: MeshInstance3D
+var right_arm: MeshInstance3D
+var walk_time: float = 0.0
 var outfit_material: StandardMaterial3D
 var money: int = 250
 var money_label: Label
@@ -47,12 +52,12 @@ func _create_placeholder_character() -> void:
 	_add_character_part("Torso", CapsuleMesh.new(), Vector3(0, 1.12, 0), Vector3(0.48, 0.72, 0.40), outfit_material)
 	_add_character_part("Head", SphereMesh.new(), Vector3(0, 1.78, 0), Vector3(0.27, 0.29, 0.25), skin)
 	_add_character_part("Hair", SphereMesh.new(), Vector3(0, 1.91, -0.015), Vector3(0.275, 0.16, 0.25), shoes)
-	_add_character_part("LeftArm", CapsuleMesh.new(), Vector3(-0.34, 1.13, 0), Vector3(0.13, 0.48, 0.13), outfit_material)
-	_add_character_part("RightArm", CapsuleMesh.new(), Vector3(0.34, 1.13, 0), Vector3(0.13, 0.48, 0.13), outfit_material)
+	left_arm = _add_character_part("LeftArm", CapsuleMesh.new(), Vector3(-0.34, 1.13, 0), Vector3(0.13, 0.48, 0.13), outfit_material)
+	right_arm = _add_character_part("RightArm", CapsuleMesh.new(), Vector3(0.34, 1.13, 0), Vector3(0.13, 0.48, 0.13), outfit_material)
 	_add_character_part("LeftHand", SphereMesh.new(), Vector3(-0.34, 0.83, 0), Vector3(0.12, 0.13, 0.12), skin)
 	_add_character_part("RightHand", SphereMesh.new(), Vector3(0.34, 0.83, 0), Vector3(0.12, 0.13, 0.12), skin)
-	_add_character_part("LeftLeg", CapsuleMesh.new(), Vector3(-0.14, 0.48, 0), Vector3(0.15, 0.55, 0.15), pants)
-	_add_character_part("RightLeg", CapsuleMesh.new(), Vector3(0.14, 0.48, 0), Vector3(0.15, 0.55, 0.15), pants)
+	left_leg = _add_character_part("LeftLeg", CapsuleMesh.new(), Vector3(-0.14, 0.48, 0), Vector3(0.15, 0.55, 0.15), pants)
+	right_leg = _add_character_part("RightLeg", CapsuleMesh.new(), Vector3(0.14, 0.48, 0), Vector3(0.15, 0.55, 0.15), pants)
 	_add_character_part("LeftShoe", BoxMesh.new(), Vector3(-0.14, 0.12, -0.07), Vector3(0.20, 0.13, 0.34), shoes)
 	_add_character_part("RightShoe", BoxMesh.new(), Vector3(0.14, 0.12, -0.07), Vector3(0.20, 0.13, 0.34), shoes)
 
@@ -65,7 +70,7 @@ func _create_placeholder_character() -> void:
 	body_collision.position.y = 0.93
 	add_child(body_collision)
 
-func _add_character_part(part_name: String, mesh_resource: Resource, part_position: Vector3, part_scale: Vector3, material: Material) -> void:
+func _add_character_part(part_name: String, mesh_resource: Resource, part_position: Vector3, part_scale: Vector3, material: Material) -> MeshInstance3D:
 	var part := MeshInstance3D.new()
 	part.name = part_name
 	part.mesh = mesh_resource
@@ -73,6 +78,7 @@ func _add_character_part(part_name: String, mesh_resource: Resource, part_positi
 	part.scale = part_scale
 	part.material_override = material
 	add_child(part)
+	return part
 
 func _create_camera() -> void:
 	var pivot := Node3D.new()
@@ -347,8 +353,17 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = 0.0
 
-	if input_vector.length() > 0.1:
+	var is_walking := input_vector.length() > 0.1
+	if is_walking:
 		rotation.y = lerp_angle(rotation.y, atan2(-direction.x, -direction.z), delta * 8.0)
+		walk_time += delta * 9.0
+	else:
+		walk_time = lerpf(walk_time, 0.0, delta * 5.0)
+	var swing := sin(walk_time) * 0.52 if is_walking else 0.0
+	left_leg.rotation.x = lerpf(left_leg.rotation.x, swing, delta * 12.0)
+	right_leg.rotation.x = lerpf(right_leg.rotation.x, -swing, delta * 12.0)
+	left_arm.rotation.x = lerpf(left_arm.rotation.x, -swing * 0.72, delta * 12.0)
+	right_arm.rotation.x = lerpf(right_arm.rotation.x, swing * 0.72, delta * 12.0)
 
 	move_and_slide()
 
