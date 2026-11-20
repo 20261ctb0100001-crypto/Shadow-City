@@ -13,6 +13,7 @@ var needs_timer: float = 0.0
 var hunger: float = 100.0
 var energy: float = 100.0
 var hygiene: float = 100.0
+var study_points: int = 0
 var needs_label: Label
 var needs_menu: CanvasLayer
 const SAVE_PATH := "user://shadow_city_save.cfg"
@@ -89,6 +90,7 @@ func _load_progress() -> void:
 	hunger = float(config.get_value("player", "hunger", hunger))
 	energy = float(config.get_value("player", "energy", energy))
 	hygiene = float(config.get_value("player", "hygiene", hygiene))
+	study_points = int(config.get_value("player", "study_points", study_points))
 
 func _save_progress() -> void:
 	var config := ConfigFile.new()
@@ -98,6 +100,7 @@ func _save_progress() -> void:
 	config.set_value("player", "hunger", hunger)
 	config.set_value("player", "energy", energy)
 	config.set_value("player", "hygiene", hygiene)
+	config.set_value("player", "study_points", study_points)
 	var error := config.save(SAVE_PATH)
 	if error != OK:
 		push_warning("Não foi possível salvar o progresso do Shadow City.")
@@ -424,7 +427,8 @@ func use_city_service(service: String) -> void:
 			_show_city_feedback("Atendimento concluído. Você recuperou energia.")
 		"school":
 			energy = maxf(0.0, energy - 8.0)
-			_show_city_feedback("Você participou de uma aula e aprendeu algo novo!")
+			study_points += 1
+			_show_city_feedback("Aula concluída! Estudos: " + str(study_points) + " aulas.")
 		"mall":
 			if money < 50:
 				_show_city_feedback("Junte $50 para comprar uma roupa nova.")
