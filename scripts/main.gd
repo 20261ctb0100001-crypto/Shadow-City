@@ -9,6 +9,7 @@ const TRAFFIC_SCRIPT = preload("res://scripts/traffic.gd")
 const WORLD_CLOCK_SCRIPT = preload("res://scripts/world_clock.gd")
 const TRAFFIC_SIGNAL_SCRIPT = preload("res://scripts/traffic_signal.gd")
 const HOME_SCRIPT = preload("res://scripts/home.gd")
+const CIVIC_BUILDING_SCRIPT = preload("res://scripts/civic_building.gd")
 
 func _ready() -> void:
 	_build_environment()
@@ -24,6 +25,7 @@ func _ready() -> void:
 	_spawn_traffic()
 	_spawn_market_interaction()
 	_spawn_home()
+	_spawn_civic_buildings()
 	_spawn_player()
 
 func _build_environment() -> void:
@@ -331,3 +333,19 @@ func _spawn_home() -> void:
 	home.position = Vector3(19, 0, 17)
 	home.set_script(HOME_SCRIPT)
 	add_child(home)
+
+func _spawn_civic_buildings() -> void:
+	_spawn_civic_building("school", "Escola Municipal", Vector3(-65, 0, -62), Vector3(130, 0, 130))
+	_spawn_civic_building("hospital", "Hospital", Vector3(65, 0, -62), Vector3(160, 0, 130))
+	_spawn_civic_building("restaurant", "Restaurante", Vector3(-65, 0, 62), Vector3(130, 0, 160))
+	_spawn_civic_building("mall", "Centro Comercial", Vector3(65, 0, 62), Vector3(160, 0, 160))
+
+func _spawn_civic_building(kind: String, label: String, world_position: Vector3, room_position: Vector3) -> void:
+	var building := Node3D.new()
+	building.name = label.replace(" ", "")
+	building.position = world_position
+	building.set_script(CIVIC_BUILDING_SCRIPT)
+	building.set("building_type", kind)
+	building.set("display_name", label)
+	building.set("interior_origin", room_position)
+	add_child(building)
