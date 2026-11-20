@@ -8,6 +8,7 @@ extends Node3D
 @export var vehicle_color: Color = Color(0.18, 0.42, 0.72)
 
 var route_position: float = 0.0
+var signal_controller: Node
 
 func _ready() -> void:
 	add_to_group("traffic")
@@ -15,6 +16,9 @@ func _ready() -> void:
 	route_position = global_position.dot(travel_axis)
 	rotation.y = atan2(-travel_axis.x, -travel_axis.z)
 	_build_vehicle()
+	var signals := get_tree().get_nodes_in_group("traffic_signals")
+	if not signals.is_empty():
+		signal_controller = signals[0]
 
 func _build_vehicle() -> void:
 	_add_part("Body", Vector3(0, 0.72, 0), Vector3(1.9, 0.72, 3.8), vehicle_color)
@@ -50,7 +54,20 @@ func _add_part(part_name: String, part_position: Vector3, dimensions: Vector3, c
 	add_child(part)
 
 func _process(delta: float) -> void:
-	route_position += travel_speed * delta
+	var stopped_at_red := false
+	if is_instance_valid(signal_controller) and absf(route_position) <= 7.0:
+		var green: bool = signal_controller.call("is_axis_green", travel_axis)
+		if not green:
+			if travel_axis.dot(Vector3.RIGHT) > 0.5:
+				stopped_at_red = route_position >= -7.0 and route_position < 0.0
+			elif travel_axis.dot(Vector3.RIGHT) < -0.5:
+				stopped_at_red = route_position <= 7.0 and route_position > 0.0
+			elif travel_axis.dot(Vector3.BACK) > 0.5:
+				stopped_at_red = route_position >= -7.0 and route_position < 0.0
+			else:
+				stopped_at_red = route_position <= 7.0 and route_position > 0.0
+	if not stopped_at_red:
+		route_position += travel_speed * delta
 	if route_position > route_max:
 		route_position = route_min
 	elif route_position < route_min:
