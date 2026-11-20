@@ -14,6 +14,10 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeiro carro provisório com entrada/saída e condução básica usando os mesmos controles.
 - Primeira loja de roupas interativa, com saldo inicial e compra de uma jaqueta de teste.
 - Primeiras construções, uma casa de madeira, fachada de mercado e árvores.
+- Mapa ampliado com quatro zonas de referência: escola, hospital, bairro gastronômico e centro comercial.
+- Sistema inicial de necessidades: fome, energia e higiene diminuem com o tempo; o jogador pode comer, descansar e tomar banho pelo menu VIDA.
+- Necessidades e dinheiro incluídos no salvamento local.
+- Ajustes iniciais de apresentação com tonemapping cinematográfico e neblina leve.
 - Primeira área identificada como Ponta Grossa, Paraná, Brasil.
 - Primeiros animais ambientais: cachorro, gato, papagaio e cavalo, com movimento autônomo simples.
 - Quatro moradores com nomes, profissões, personalidades, falas, aparência e velocidades diferentes.
@@ -34,6 +38,9 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 7. Expandir a loja com mais roupas, barbearia e personalização.
 8. Substituir blocos provisórios por modelos 3D e materiais mais detalhados.
 9. Criar novas regiões inspiradas em cidades reais, começando por bairros e pontos reconhecíveis.
+10. Criar interiores acessíveis e interações funcionais para escola, hospital, restaurante e centro comercial.
+11. Adicionar modelos 3D profissionais, animações, sons e otimização gráfica.
+12. Instalar Godot 4, testar o projeto, configurar exportação Android e gerar APK/AAB (ainda não realizado).
 
 Este repositório contém um protótipo inicial em construção, não um jogo completo. Os sistemas precisam ser executados e testados no Godot e em dispositivos Android antes de serem considerados concluídos.
 
