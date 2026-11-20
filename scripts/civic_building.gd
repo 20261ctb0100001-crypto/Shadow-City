@@ -65,15 +65,24 @@ func _build_room() -> void:
 	add_child(sign)
 
 func _box(label: String, local_pos: Vector3, size: Vector3, color: Color) -> void:
+	var body := StaticBody3D.new()
+	body.name = label
+	body.top_level = true
+	body.global_position = interior_origin + local_pos
+	add_child(body)
+
 	var visual := MeshInstance3D.new()
-	visual.name = label
 	var mesh := BoxMesh.new()
 	mesh.size = size
 	visual.mesh = mesh
-	visual.top_level = true
-	visual.global_position = interior_origin + local_pos
 	var material := StandardMaterial3D.new()
 	material.albedo_color = color
 	material.roughness = 0.9
 	visual.material_override = material
-	add_child(visual)
+	body.add_child(visual)
+
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = size
+	collision.shape = shape
+	body.add_child(collision)
