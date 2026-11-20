@@ -30,9 +30,11 @@ jobs:
           test -s index.html
           mkdir -p build
           cp index.html build/index.html
+          cp -R scripts build/scripts
           test -s build/index.html
+          test -s build/scripts/drive-physics.js
           echo "Browser game prepared:"
-          ls -lh build/index.html
+          ls -lh build/index.html build/scripts/drive-physics.js
 
       - name: Test browser game physics and map
         run: node --test tests/*.test.mjs
