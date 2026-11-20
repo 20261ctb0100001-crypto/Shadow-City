@@ -2,11 +2,13 @@ extends Node3D
 
 const PLAYER_SCRIPT = preload("res://scripts/player.gd")
 const CAR_SCRIPT = preload("res://scripts/car.gd")
+const SHOP_SCRIPT = preload("res://scripts/shop.gd")
 
 func _ready() -> void:
 	_build_environment()
 	_build_city()
 	_build_street_details()
+	_spawn_market_interaction()
 	_spawn_player()
 
 func _build_environment() -> void:
@@ -126,3 +128,10 @@ func _spawn_player() -> void:
 	car.position = Vector3(3.5, 0.0, 18)
 	car.set_script(CAR_SCRIPT)
 	add_child(car)
+
+func _spawn_market_interaction() -> void:
+	var shop := Node3D.new()
+	shop.name = "ClothingShop"
+	shop.position = Vector3(-19, 0, 17)
+	shop.set_script(SHOP_SCRIPT)
+	add_child(shop)
