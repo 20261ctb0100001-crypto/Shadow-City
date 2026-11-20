@@ -14,14 +14,18 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeiro carro provisório com entrada/saída e condução básica usando os mesmos controles.
 - Primeira loja de roupas interativa, com saldo inicial e compra de uma jaqueta de teste.
 - Primeiras construções, uma casa de madeira, fachada de mercado e árvores.
+- Primeira área identificada como Ponta Grossa, Paraná, Brasil.
+- Primeiros animais ambientais: cachorro, gato, papagaio e cavalo, com movimento autônomo simples.
 - Iluminação direcional, materiais e colisões básicas.
 
 ## Próximas etapas
 1. Executar o projeto no Godot 4 e corrigir problemas encontrados nos testes.
 2. Melhorar personagem, câmera, animações e controles de toque.
 3. Evoluir o carro provisório com física, sons e visual mais detalhado.
-4. Expandir a loja com mais roupas, barbearia e personalização.
-5. Substituir blocos provisórios por modelos 3D e materiais mais detalhados.
+4. Evoluir os animais com modelos, animações, sons, necessidades e interações.
+5. Expandir a loja com mais roupas, barbearia e personalização.
+6. Substituir blocos provisórios por modelos 3D e materiais mais detalhados.
+7. Criar novas regiões inspiradas em cidades reais, começando por bairros e pontos reconhecíveis.
 
 Este repositório contém um protótipo inicial em construção, não um jogo completo. Os sistemas precisam ser executados e testados no Godot e em dispositivos Android antes de serem considerados concluídos.
 
