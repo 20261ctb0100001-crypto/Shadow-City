@@ -92,8 +92,11 @@ window.selectedTruckChoice='mercedes';
   if(typeof window.applyTruckChoice==='function')window.applyTruckChoice(window.selectedTruckChoice);
   const colorInput=document.getElementById('truckColor');
   if(colorInput)window.selectedTruckColor=colorInput.value;
-  try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}
-  try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape')}catch(_){}
+  const isMobileDevice=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
+  if(isMobileDevice){
+   try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}
+   try{if(screen.orientation&&screen.orientation.lock){try{await screen.orientation.lock('landscape-primary')}catch(_){await screen.orientation.lock('landscape')}}}catch(_){}
+  }
   document.getElementById('garage').style.display='none';
  });
  window.addEventListener('error',e=>{
@@ -466,31 +469,6 @@ function drawMinimap(){
  const playerY=mapY(truck.position.z);ctx.save();ctx.translate(routeX,playerY);ctx.rotate(-truck.rotation.y);ctx.fillStyle='#ffffff';ctx.strokeStyle='#0a151a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(6,6);ctx.lineTo(0,3);ctx.lineTo(-6,6);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
  ctx.fillStyle='#dce6e9';ctx.font='bold 9px Arial';ctx.fillText('ROTA 30 KM',7,h-7);
 }
-const debugMode=new URLSearchParams(location.search).get('debug')==='1';
-let renderDebugPanel=null;
-if(debugMode){
- renderDebugPanel=document.createElement('pre');
- renderDebugPanel.id='renderDebug';
- renderDebugPanel.style.cssText='position:fixed;left:8px;bottom:8px;z-index:99999;max-width:70vw;max-height:34vh;overflow:auto;margin:0;padding:8px;background:#071018ed;color:#aef5d3;border:1px solid #7dddb8;border-radius:8px;font:10px/1.35 monospace;white-space:pre-wrap;pointer-events:none';
- document.body.appendChild(renderDebugPanel);
-}
-function updateRenderDebug(){
- if(!renderDebugPanel)return;
- const gl=renderer.getContext(),rect=renderer.domElement.getBoundingClientRect();
- const center=document.elementFromPoint(innerWidth/2,innerHeight/2);
- renderDebugPanel.textContent=[
-  '3D DEBUG | '+(gl.isContextLost()?'CONTEXT LOST':'context active'),
-  'GL: '+gl.getParameter(gl.VERSION),
-  'canvas: '+renderer.domElement.width+'x'+renderer.domElement.height+' css '+Math.round(rect.width)+'x'+Math.round(rect.height),
-  'style: z='+getComputedStyle(renderer.domElement).zIndex+' display='+getComputedStyle(renderer.domElement).display+' opacity='+getComputedStyle(renderer.domElement).opacity,
-  'draw calls: '+renderer.info.render.calls+' triangles: '+renderer.info.render.triangles,
-  'geometries: '+renderer.info.memory.geometries+' scene objects: '+scene.children.length,
-  'camera: '+camera.position.toArray().map(v=>v.toFixed(1)).join(','),
-  'truck: '+truck.position.toArray().map(v=>v.toFixed(1)).join(',')+' speed '+(speed*3.6).toFixed(1)+' km/h',
-  'center element: '+(center?center.tagName+'#'+(center.id||''):'none'),
-  'ready: '+window.gameReady
- ].join('\\n');
-}
 function updateStats(){document.getElementById('speed').textContent=Math.round(Math.abs(speed)*3.6);for(const b of document.querySelectorAll('#gearHud button'))b.classList.toggle('selected',b.dataset.gear===gear);document.getElementById('fuel').textContent=Math.round(fuel)}
 function setHold(id,fn){const el=document.getElementById(id);let held=false;const start=e=>{e.preventDefault();held=true;fn(true);el.classList.add('active');try{el.setPointerCapture(e.pointerId)}catch(_){}};const end=()=>{if(!held)return;held=false;fn(false);el.classList.remove('active')};el.addEventListener('pointerdown',start);el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);el.addEventListener('lostpointercapture',end);window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);}
 setHold('gas',v=>throttle=v?1:0);setHold('brake',v=>brake=v?1:0);
@@ -543,8 +521,8 @@ for(const car of traffic){car.position.z+=car.userData.dir*dt*(14+Math.sin(now*.
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
-updateStats();drawMinimap();renderer.render(scene,camera);updateRenderDebug()}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);updateRenderDebug();if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.__truckGame={get speed(){return speed},get gear(){return gear},get position(){return truck.position.toArray()},get heading(){return truck.rotation.y},get selectedTruck(){return selectedTruck},get renderCalls(){return renderer.info.render.calls}};window.gameReady=true;if(debugMode&&new URLSearchParams(location.search).get('autostart')==='1')document.getElementById('garage').style.display='none';document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
+updateStats();drawMinimap();renderer.render(scene,camera)}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
