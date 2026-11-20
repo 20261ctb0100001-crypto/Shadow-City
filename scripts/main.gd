@@ -8,6 +8,7 @@ const CITIZEN_SCRIPT = preload("res://scripts/citizen.gd")
 const TRAFFIC_SCRIPT = preload("res://scripts/traffic.gd")
 const WORLD_CLOCK_SCRIPT = preload("res://scripts/world_clock.gd")
 const TRAFFIC_SIGNAL_SCRIPT = preload("res://scripts/traffic_signal.gd")
+const HOME_SCRIPT = preload("res://scripts/home.gd")
 
 func _ready() -> void:
 	_build_environment()
@@ -22,6 +23,7 @@ func _ready() -> void:
 	_spawn_traffic_signal()
 	_spawn_traffic()
 	_spawn_market_interaction()
+	_spawn_home()
 	_spawn_player()
 
 func _build_environment() -> void:
@@ -322,3 +324,10 @@ func _spawn_traffic_car(spawn_position: Vector3, axis: Vector3, speed: float, pa
 	traffic_car.set("route_max", 54.0)
 	traffic_car.set("vehicle_color", paint)
 	add_child(traffic_car)
+
+func _spawn_home() -> void:
+	var home := Node3D.new()
+	home.name = "StarterHome"
+	home.position = Vector3(19, 0, 17)
+	home.set_script(HOME_SCRIPT)
+	add_child(home)
