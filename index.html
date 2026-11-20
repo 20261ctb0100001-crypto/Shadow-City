@@ -60,16 +60,27 @@ const car=makeCar();car.position.set(4,0,7);scene.add(car);
 // Jogador com silhueta clara e membros separados para ficar visível de longe.
 const player=new THREE.Group();
 const jacket=mat(0xe07a32,.72),pants=mat(0x24364c,.88),skin=mat(0xc88f6a,.85),hair=mat(0x211b18,.95),shoes=mat(0x171b20,.95);
-const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.34,.72,5,12),jacket);
-torso.position.y=1.13;torso.castShadow=true;player.add(torso);
+// Capsule construída com geometrias básicas do Three.js (sem addon externo).
+function makeCapsule(radius,length,material){
+ const group=new THREE.Group();
+ const core=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,length,12),material);
+ core.castShadow=true;group.add(core);
+ for(const y of [-length/2,length/2]){
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(radius,12,10),material);
+  cap.position.y=y;cap.castShadow=true;group.add(cap);
+ }
+ return group;
+}
+const torso=makeCapsule(.34,.72,jacket);
+torso.position.y=1.13;player.add(torso);
 const head=new THREE.Mesh(new THREE.SphereGeometry(.255,20,16),skin);
 head.position.y=1.88;head.castShadow=true;player.add(head);
 const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.26,16,10,0,Math.PI*2,0,Math.PI*.55),hair);
 hairCap.position.set(0,1.99,-.015);player.add(hairCap);
 const makeLimb=(x,y,length,radius,material)=>{
  const pivot=new THREE.Group();pivot.position.set(x,y,0);
- const limb=new THREE.Mesh(new THREE.CapsuleGeometry(radius,length,4,10),material);
- limb.position.y=-length*.48;limb.castShadow=true;pivot.add(limb);player.add(pivot);return pivot;
+ const limb=makeCapsule(radius,length,material);
+ limb.position.y=-length*.48;pivot.add(limb);player.add(pivot);return pivot;
 };
 const leftArm=makeLimb(-.43,1.42,.72,.115,jacket);
 const rightArm=makeLimb(.43,1.42,.72,.115,jacket);
@@ -80,7 +91,7 @@ for(const x of [-.19,.19]){
  shoe.position.set(x,.13,.09);shoe.castShadow=true;player.add(shoe);
 }
 scene.add(player);player.position.set(0,0,0);
-camera.position.set(0,5.5,-8);camera.lookAt(0,1,0);
+camera.position.set(0,5.5,8);camera.lookAt(0,1,0);
 
 const marker=new THREE.Group();let ring=new THREE.Mesh(new THREE.TorusGeometry(1.2,.12,8,28),mat(0x4affad));ring.rotation.x=Math.PI/2;ring.position.y=.15;marker.add(ring);let beam=new THREE.Mesh(new THREE.CylinderGeometry(.12,.35,3,12,1,true),new THREE.MeshBasicMaterial({color:0x4affad,transparent:true,opacity:.25}));beam.position.y=1.5;marker.add(beam);marker.position.set(34,0,-30);scene.add(marker);
 let inCar=false,speed=0,angle=0,joy={x:0,y:0},keys={};let run=false,braking=false;
