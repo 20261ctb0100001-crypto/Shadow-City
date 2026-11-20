@@ -15,6 +15,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeira loja de roupas interativa, com saldo inicial e compra de uma jaqueta de teste.
 - Primeiras construções, uma casa de madeira, fachada de mercado e árvores.
 - Casa inicial com interior mobiliado em área própria do mapa; o jogador pode entrar e sair pelo botão AÇÃO.
+- Interações domésticas: descansar na cama, preparar comida na geladeira (custa $10) e tomar banho no chuveiro; as necessidades e o dinheiro são atualizados e salvos.
 - Mapa ampliado com quatro zonas de referência: escola, hospital, bairro gastronômico e centro comercial.
 - Necessidades e dinheiro incluídos no salvamento local.
 - Ajustes iniciais de apresentação com tonemapping cinematográfico, neblina leve, calçadas, faixas de pedestres e postes com iluminação.
