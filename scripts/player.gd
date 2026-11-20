@@ -9,6 +9,12 @@ var outfit_material: StandardMaterial3D
 var money: int = 250
 var money_label: Label
 var save_timer: float = 0.0
+var needs_timer: float = 0.0
+var hunger: float = 100.0
+var energy: float = 100.0
+var hygiene: float = 100.0
+var needs_label: Label
+var needs_menu: CanvasLayer
 const SAVE_PATH := "user://shadow_city_save.cfg"
 
 func _ready() -> void:
@@ -17,6 +23,7 @@ func _ready() -> void:
 	_create_mobile_controls()
 	_load_progress()
 	_create_money_display()
+	_create_needs_display()
 	tree_exiting.connect(_save_progress)
 
 func _create_placeholder_character() -> void:
@@ -68,8 +75,8 @@ func _create_money_display() -> void:
 
 func add_money(amount: int) -> void:
 	money += amount
-	if money_label != null:
-		money_label.text = "DINHEIRO: $" + str(money)
+	_update_money_display()
+	_save_progress()
 
 func _load_progress() -> void:
 	var config := ConfigFile.new()
@@ -79,12 +86,18 @@ func _load_progress() -> void:
 	global_position = config.get_value("player", "position", global_position)
 	var saved_color: Color = config.get_value("player", "outfit_color", Color(0.16, 0.30, 0.58))
 	outfit_material.albedo_color = saved_color
+	hunger = float(config.get_value("player", "hunger", hunger))
+	energy = float(config.get_value("player", "energy", energy))
+	hygiene = float(config.get_value("player", "hygiene", hygiene))
 
 func _save_progress() -> void:
 	var config := ConfigFile.new()
 	config.set_value("player", "money", money)
 	config.set_value("player", "position", global_position)
 	config.set_value("player", "outfit_color", outfit_material.albedo_color)
+	config.set_value("player", "hunger", hunger)
+	config.set_value("player", "energy", energy)
+	config.set_value("player", "hygiene", hygiene)
 	var error := config.save(SAVE_PATH)
 	if error != OK:
 		push_warning("Não foi possível salvar o progresso do Shadow City.")
@@ -94,6 +107,124 @@ func _process(delta: float) -> void:
 	if save_timer >= 10.0:
 		save_timer = 0.0
 		_save_progress()
+	needs_timer += delta
+	if needs_timer >= 1.0:
+		needs_timer = 0.0
+		hunger = maxf(0.0, hunger - 0.035)
+		energy = maxf(0.0, energy - 0.025)
+		hygiene = maxf(0.0, hygiene - 0.018)
+		_update_needs_display()
+
+
+func _create_needs_display() -> void:
+	needs_label = Label.new()
+	needs_label.position = Vector2(18, 70)
+	needs_label.add_theme_font_size_override("font_size", 17)
+	needs_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.62))
+	var layer := get_node_or_null("MobileControls") as CanvasLayer
+	if layer != null:
+		layer.add_child(needs_label)
+	_update_needs_display()
+
+func _update_needs_display() -> void:
+	if needs_label != null:
+		needs_label.text = "FOME %d%%  •  ENERGIA %d%%  •  HIGIENE %d%%" % [roundi(hunger), roundi(energy), roundi(hygiene)]
+
+func _add_life_button(root: Control) -> void:
+	var button := Button.new()
+	button.text = "VIDA"
+	button.position = Vector2(get_viewport().get_visible_rect().size.x - 250, get_viewport().get_visible_rect().size.y - 104)
+	button.size = Vector2(108, 76)
+	button.add_theme_font_size_override("font_size", 19)
+	button.add_theme_stylebox_override("normal", _button_style(Color(0.12, 0.28, 0.20, 0.88)))
+	button.add_theme_stylebox_override("pressed", _button_style(Color(0.20, 0.48, 0.30, 0.95)))
+	button.focus_mode = Control.FOCUS_NONE
+	root.add_child(button)
+	button.pressed.connect(_open_life_menu)
+
+func _open_life_menu() -> void:
+	if needs_menu != null:
+		return
+	needs_menu = CanvasLayer.new()
+	get_tree().root.add_child(needs_menu)
+	var backdrop := ColorRect.new()
+	backdrop.color = Color(0.01, 0.02, 0.04, 0.78)
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	needs_menu.add_child(backdrop)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	needs_menu.add_child(center)
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(420, 340)
+	center.add_child(panel)
+	var layout := VBoxContainer.new()
+	layout.add_theme_constant_override("separation", 12)
+	panel.add_child(layout)
+	var title := Label.new()
+	title.text = "NECESSIDADES DO PERSONAGEM"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 22)
+	layout.add_child(title)
+	var status := Label.new()
+	status.name = "NeedsStatus"
+	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	layout.add_child(status)
+	var eat := Button.new()
+	eat.text = "Comer uma refeição  •  $15"
+	eat.custom_minimum_size = Vector2(0, 48)
+	layout.add_child(eat)
+	eat.pressed.connect(func() -> void:
+		if money < 15:
+			status.text = "Dinheiro insuficiente para comprar comida."
+			return
+		money -= 15
+		hunger = minf(100.0, hunger + 38.0)
+		_update_money_display()
+		_update_needs_display()
+		status.text = "Você comeu. Fome recuperada!"
+		_save_progress()
+	)
+	var rest := Button.new()
+	rest.text = "Descansar"
+	rest.custom_minimum_size = Vector2(0, 48)
+	layout.add_child(rest)
+	rest.pressed.connect(func() -> void:
+		energy = minf(100.0, energy + 45.0)
+		_update_needs_display()
+		status.text = "Você descansou e recuperou energia."
+		_save_progress()
+	)
+	var shower := Button.new()
+	shower.text = "Tomar banho"
+	shower.custom_minimum_size = Vector2(0, 48)
+	layout.add_child(shower)
+	shower.pressed.connect(func() -> void:
+		hygiene = 100.0
+		_update_needs_display()
+		status.text = "Higiene restaurada."
+		_save_progress()
+	)
+	var close := Button.new()
+	close.text = "Fechar"
+	close.custom_minimum_size = Vector2(0, 42)
+	layout.add_child(close)
+	close.pressed.connect(func() -> void:
+		if needs_menu != null:
+			needs_menu.queue_free()
+			needs_menu = null
+	)
+	_update_life_menu_status()
+
+func _update_life_menu_status() -> void:
+	if needs_menu == null:
+		return
+	var status := needs_menu.find_child("NeedsStatus", true, false) as Label
+	if status != null:
+		status.text = "Fome: %d%%   Energia: %d%%   Higiene: %d%%" % [roundi(hunger), roundi(energy), roundi(hygiene)]
+
+func _update_money_display() -> void:
+	if money_label != null:
+		money_label.text = "DINHEIRO: $" + str(money)
 
 func _create_mobile_controls() -> void:
 	var layer := CanvasLayer.new()
@@ -110,6 +241,7 @@ func _create_mobile_controls() -> void:
 	_add_touch_button(root, "←", "move_left", Vector2(8, -76))
 	_add_touch_button(root, "→", "move_right", Vector2(200, -76))
 	_add_interact_button(root)
+	_add_life_button(root)
 
 	var hint := Label.new()
 	hint.text = "SHADOW CITY  •  TEST BUILD"
