@@ -5,6 +5,8 @@ extends CharacterBody3D
 
 var camera: Camera3D
 var body_collision: CollisionShape3D
+var outfit_material: StandardMaterial3D
+var money: int = 250
 
 func _ready() -> void:
 	_create_placeholder_character()
@@ -18,10 +20,10 @@ func _create_placeholder_character() -> void:
 	capsule.height = 1.75
 	visual.mesh = capsule
 	visual.position.y = 0.88
-	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(0.16, 0.30, 0.58)
-	material.roughness = 0.78
-	visual.material_override = material
+	outfit_material = StandardMaterial3D.new()
+	outfit_material.albedo_color = Color(0.16, 0.30, 0.58)
+	outfit_material.roughness = 0.78
+	visual.material_override = outfit_material
 	add_child(visual)
 
 	body_collision = CollisionShape3D.new()
@@ -155,3 +157,22 @@ func _try_enter_vehicle() -> void:
 				closest_vehicle = item
 	if closest_vehicle != null:
 		closest_vehicle.call("enter", self)
+		return
+
+	var closest_shop: Node3D = null
+	var shop_distance := 5.0
+	for item in get_tree().get_nodes_in_group("shops"):
+		if item is Node3D:
+			var distance := global_position.distance_to(item.global_position)
+			if distance < shop_distance:
+				shop_distance = distance
+				closest_shop = item
+	if closest_shop != null:
+		closest_shop.call("open_shop", self)
+
+func buy_outfit(price: int) -> bool:
+	if money < price:
+		return false
+	money -= price
+	outfit_material.albedo_color = Color(0.12, 0.42, 0.28)
+	return true
