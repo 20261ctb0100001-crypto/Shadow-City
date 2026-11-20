@@ -19,7 +19,7 @@
  <div id="stats" class="panel">Velocidade: <b id="speed">0</b> km/h<br>Marcha: <b id="gear">N</b><br>Combustível: <b id="fuel">100</b>%</div>
  <div id="help" class="panel">WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão</div>
 </div>
-<div id="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
+<div id="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><button id="viewBtn" class="panel" style="color:white;border:1px solid #ffffff66">1ª PESSOA</button><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
 <script type="module">
 const load=document.getElementById('load');
 let THREE;
@@ -30,13 +30,18 @@ const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-per
 scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.1);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
 const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
 const asphalt=mat(0x343b40),grass=mat(0x587b50),line=mat(0xe9e3c8),white=mat(0xe8e8df),rubber=mat(0x141719),glass=mat(0x243f4b,.22,.25);
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(1200,1200),grass);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
+// Textura procedural de terra e capim em vez de um plano verde liso.
+const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanvas.height=512;const ctx=turfCanvas.getContext('2d');ctx.fillStyle='#637d4b';ctx.fillRect(0,0,512,512);for(let i=0;i<18000;i++){const x=Math.random()*512,y=Math.random()*512;ctx.fillStyle=['#3f653e','#78905a','#8a8759','#a08c65','#526f42'][Math.floor(Math.random()*5)];ctx.globalAlpha=.18+Math.random()*.32;ctx.fillRect(x,y,1+Math.random()*3,1+Math.random()*2)}ctx.globalAlpha=1;const turfTex=new THREE.CanvasTexture(turfCanvas);turfTex.wrapS=turfTex.wrapT=THREE.RepeatWrapping;turfTex.repeat.set(34,34);turfTex.colorSpace=THREE.SRGBColorSpace;const groundMat=new THREE.MeshStandardMaterial({map:turfTex,roughness:1});const ground=new THREE.Mesh(new THREE.PlaneGeometry(1200,1200),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
+
 function road(x,z,w,d){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),asphalt);m.rotation.x=-Math.PI/2;m.position.set(x,-.12,z);m.receiveShadow=true;scene.add(m)}
 road(0,0,22,1000);road(0,-190,700,18);road(0,190,700,18);
 for(let z=-490;z<500;z+=12){const dash=new THREE.Mesh(new THREE.PlaneGeometry(.22,5),line);dash.rotation.x=-Math.PI/2;dash.position.set(0,-.105,z);scene.add(dash)}
 for(let x=-340;x<=340;x+=18){const d=new THREE.Mesh(new THREE.PlaneGeometry(6,.22),line);d.rotation.x=-Math.PI/2;d.position.set(x,-.105,-190);scene.add(d);const d2=d.clone();d2.position.z=190;scene.add(d2)}
 // Paisagem rural, morros suaves e árvores variadas.
 for(let i=0;i<90;i++){const x=(Math.random()-.5)*650,z=(Math.random()-.5)*900;if(Math.abs(x)<17)continue;const h=8+Math.random()*20;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.35,.55,h*.28,7),mat(0x59432f));trunk.position.set(x,h*.14,z);trunk.castShadow=true;scene.add(trunk);const crown=new THREE.Mesh(new THREE.SphereGeometry(h*.32,9,7),mat([0x315f3b,0x426e42,0x567c48][i%3]));crown.position.set(x,h*.56,z);crown.scale.set(1,1.2,1);crown.castShadow=true;scene.add(crown)}
+// Arbustos, capim alto e pequenas pedras nas margens para dar profundidade à paisagem.
+for(let i=0;i<320;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<15)continue;const g=new THREE.Group();const stem=new THREE.Mesh(new THREE.ConeGeometry(.12,.8+Math.random()*1.1,5),mat([0x557b3e,0x6c8b48,0x87934f][i%3]));stem.position.y=.4;g.add(stem);for(let j=0;j<3;j++){const leaf=new THREE.Mesh(new THREE.ConeGeometry(.12,.65,5),stem.material);leaf.position.set((Math.random()-.5)*.3,.25+Math.random()*.35,(Math.random()-.5)*.3);leaf.rotation.z=(Math.random()-.5)*.7;g.add(leaf)}g.position.set(x,0,z);scene.add(g)}
+for(let i=0;i<95;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if(Math.abs(x)<17)continue;const shrub=new THREE.Mesh(new THREE.SphereGeometry(.8+Math.random()*1.2,7,5),mat([0x355d36,0x466b39,0x647c43][i%3]));shrub.position.set(x,.55,z);shrub.scale.y=.65;shrub.castShadow=true;scene.add(shrub)}
 for(let i=0;i<28;i++){const x=(Math.random()-.5)*520,z=(Math.random()-.5)*850;if(Math.abs(x)<18)continue;const w=12+Math.random()*20,h=5+Math.random()*14,d=12+Math.random()*20;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat([0xb4a28b,0x9babae,0xc4bba7,0x8d9992][i%4]));b.position.set(x,h/2,z);b.castShadow=true;b.receiveShadow=true;scene.add(b);const roof=new THREE.Mesh(new THREE.BoxGeometry(w+.5,.45,d+.5),mat(0x454b4a));roof.position.set(x,h+.2,z);scene.add(roof)}
 // Posto de combustível na lateral da estrada.
 const station=new THREE.Group();const shop=new THREE.Mesh(new THREE.BoxGeometry(16,5,10),mat(0xe2dfd2));shop.position.y=2.5;station.add(shop);const roof=new THREE.Mesh(new THREE.BoxGeometry(20,.6,13),mat(0xb83e32));roof.position.set(0,5.2,0);station.add(roof);for(let x of [-6,6]){const col=new THREE.Mesh(new THREE.BoxGeometry(.45,5,.45),white);col.position.set(x,2.5,5);station.add(col)}station.position.set(27,0,-105);scene.add(station);
@@ -60,21 +65,34 @@ truck.position.set(0,0,65);truck.rotation.y=Math.PI;scene.add(truck);
 const cargo=new THREE.Group();for(let i=0;i<10;i++){const c=new THREE.Mesh(new THREE.BoxGeometry(.8,.55,.8),mat([0x9a7651,0xb48c5d,0x7d644a][i%3]));c.position.set((i%2)*.9-.45,1.25+Math.floor(i/2)*.58,-7-Math.floor(i/2)*1.1);cargo.add(c)}trailer.add(cargo);
 const marker=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry(4,.35,10,40),mat(0x43ffc0,.35));ring.rotation.x=Math.PI/2;ring.position.y=.2;marker.add(ring);const beam=new THREE.Mesh(new THREE.CylinderGeometry(.35,1.1,12,16,1,true),new THREE.MeshBasicMaterial({color:0x43ffc0,transparent:true,opacity:.17}));beam.position.y=6;marker.add(beam);marker.position.set(27,0,-105);scene.add(marker);
 let speed=0,steer=0,throttle=0,brake=0,delivered=false,fuel=100,joy={x:0,y:0},keys={};
+let firstPerson=false,cruiseOn=false,cruiseSpeed=0;
+const traffic=[];
+function makeTrafficCar(x,z,color,dir=1){const car=new THREE.Group();box(car,1.9,.75,4,mat(color,.45,.12),0,1,0);box(car,1.75,.65,1.5,glass,0,1.65,-.25);for(const zz of [-1.25,1.25])for(const xx of [-1.02,1.02])wheel(car,xx,.55,zz,.43,.28);car.position.set(x,0,z);car.userData.dir=dir;scene.add(car);traffic.push(car)}
+for(let i=0;i<13;i++){const z=-440+i*68;makeTrafficCar(i%2? -4.8:4.8,z,[0x2d6eaa,0xd9d5c9,0x383c43,0x9a342c,0x8d9d4c][i%5],i%2?1:-1)}
+
 function updateStats(){document.getElementById('speed').textContent=Math.round(Math.abs(speed)*3.6);document.getElementById('gear').textContent=speed>.4?'D':speed<-.4?'R':'N';document.getElementById('fuel').textContent=Math.round(fuel)}
 function setHold(id,fn){const el=document.getElementById(id);el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture(e.pointerId);fn(true);el.classList.add('active')});const end=()=>{fn(false);el.classList.remove('active')};el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);el.addEventListener('lostpointercapture',end)}
 setHold('gas',v=>throttle=v?1:0);setHold('brake',v=>brake=v?1:0);
+const viewBtn=document.getElementById('viewBtn'),cruiseBtn=document.getElementById('cruiseBtn'),refuelBtn=document.getElementById('refuelBtn');
+viewBtn.addEventListener('click',()=>{firstPerson=!firstPerson;viewBtn.textContent=firstPerson?'3ª PESSOA':'1ª PESSOA'});
+cruiseBtn.addEventListener('click',()=>{cruiseOn=!cruiseOn;cruiseSpeed=Math.max(8,Math.abs(speed));cruiseBtn.textContent=cruiseOn?'LIMITADOR: '+Math.round(cruiseSpeed*3.6)+' KM/H':'LIMITADOR: OFF';cruiseBtn.style.background=cruiseOn?'#176c54':'#101820d9'});
+refuelBtn.addEventListener('click',()=>{if(truck.position.distanceTo(station.position)<24&&Math.abs(speed)<.7){fuel=100;document.getElementById('mission').innerHTML='TANQUE CHEIO<br>Boa viagem!';refuelBtn.style.display='none'}});
+
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();if(k==='r'){truck.position.set(0,0,65);truck.rotation.y=Math.PI;speed=0;fuel=100;delivered=false;marker.visible=true;document.getElementById('mission').innerHTML='ENTREGA 01<br>Leve a carga até o posto marcado.'}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 const joyEl=document.getElementById('joy'),knob=document.getElementById('knob');let joyActive=false;
 function joyMove(e){const r=joyEl.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,m=Math.min(42,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);joy.x=Math.cos(a)*m/42;joy.y=Math.sin(a)*m/42;knob.style.transform='translate('+joy.x*42+'px,'+joy.y*42+'px)'}
 joyEl.addEventListener('pointerdown',e=>{joyActive=true;joyEl.setPointerCapture(e.pointerId);joyMove(e)});joyEl.addEventListener('pointermove',e=>{if(joyActive)joyMove(e)});function joyEnd(){joyActive=false;joy={x:0,y:0};knob.style.transform='translate(0,0)'}joyEl.addEventListener('pointerup',joyEnd);joyEl.addEventListener('pointercancel',joyEnd);
 let last=performance.now();function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-last)/1000,.04);last=now;
 const fwd=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0)-joy.y;const turn=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+joy.x;const gasInput=Math.max(throttle,fwd>0?fwd:0),brakeInput=Math.max(brake,fwd<0?-fwd:0);
-if(gasInput>0)speed+=gasInput*5.5*dt;else speed*=Math.pow(.985,dt*60);if(brakeInput>0)speed*=Math.pow(.08,brakeInput*dt*60);speed=THREE.MathUtils.clamp(speed,-5,31);
+if(cruiseOn&&!brakeInput){const target=cruiseSpeed/3.6;speed=THREE.MathUtils.damp(speed,target,1.8,dt)}else if(gasInput>0)speed+=gasInput*5.5*dt;else speed*=Math.pow(.985,dt*60);if(brakeInput>0){speed*=Math.pow(.08,brakeInput*dt*60);if(brakeInput>.3)cruiseOn=false}speed=THREE.MathUtils.clamp(speed,-5,31);
 steer=THREE.MathUtils.damp(steer,THREE.MathUtils.clamp(turn,-1,1),5,dt);truck.rotation.y-=steer*dt*(.16+Math.min(Math.abs(speed)/25,.45))*Math.sign(speed||1);
 const direction=new THREE.Vector3(Math.sin(truck.rotation.y),0,Math.cos(truck.rotation.y));truck.position.addScaledVector(direction,speed*dt);
 truck.position.x=THREE.MathUtils.clamp(truck.position.x,-330,330);truck.position.z=THREE.MathUtils.clamp(truck.position.z,-480,480);
 if(Math.abs(speed)>1)fuel=Math.max(0,fuel-dt*.018*Math.abs(speed));if(fuel<=0)speed*=.98;
-const target=new THREE.Vector3(truck.position.x-direction.x*18,truck.position.y+10,truck.position.z-direction.z*18);camera.position.lerp(target,1-Math.pow(.002,dt));camera.lookAt(truck.position.x,2.1,truck.position.z+direction.z*4);
+const target=firstPerson?new THREE.Vector3(truck.position.x+direction.x*1.2,3.45,truck.position.z+direction.z*1.2):new THREE.Vector3(truck.position.x-direction.x*18,truck.position.y+10,truck.position.z-direction.z*18);camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.002,dt));camera.lookAt(firstPerson?new THREE.Vector3(truck.position.x+direction.x*35,3.1,truck.position.z+direction.z*35):new THREE.Vector3(truck.position.x,2.1,truck.position.z+direction.z*4));
+for(const car of traffic){car.position.z+=car.userData.dir*dt*(14+Math.sin(now*.0004)*2);if(car.position.z>490)car.position.z=-490;if(car.position.z< -490)car.position.z=490}
+const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
+
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();renderer.render(scene,camera)}
 camera.position.set(0,10,88);camera.lookAt(0,2,65);load.remove();requestAnimationFrame(loop);
