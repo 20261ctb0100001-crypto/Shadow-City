@@ -12,7 +12,7 @@ export function stepTruckPhysics(state, input) {
     const deceleration = (gear === 'R' ? 7.5 : 8.5) * brake * dt;
     speed = Math.sign(speed) * Math.max(0, Math.abs(speed) - deceleration);
   } else if (gear === 'D' && throttle > 0) {
-    speed = Math.min(33.3, speed + 4.2 * throttle * dt);
+    speed = Math.min(41.7, speed + 6.5 * throttle * dt);
   } else if (gear === 'R' && throttle > 0) {
     if (speed > 0) speed = Math.max(0, speed - 8 * throttle * dt);
     else speed = Math.max(-5.5, speed - 2.8 * throttle * dt);
@@ -27,7 +27,7 @@ export function stepTruckPhysics(state, input) {
   heading -= turn * steeringDirection * steeringRate * dt;
 
   return {
-    speed: Math.max(-5.5, Math.min(33.3, speed)),
+    speed: Math.max(-5.5, Math.min(41.7, speed)),
     heading,
     dx: -Math.sin(heading) * speed * dt,
     dz: -Math.cos(heading) * speed * dt
