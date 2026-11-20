@@ -60,10 +60,10 @@
 @media(max-width:650px){.garage-card{padding:13px;border-radius:16px}#truckChoices{gap:5px}.truck-choice{min-height:82px;padding:6px 3px}.customize{margin:10px 0;padding:9px}}
 </style></head>
 <body><div id="garage"><div class="garage-card"><h1>ESCOLHA SEU CAMINHÃO</h1><p class="sub">Selecione o modelo, personalize a cor e depois toque em JOGAR.</p><div id="truckChoices">
-<button class="truck-choice selected" data-model="mercedes"><span class="truck-art">🚛</span><b>Mercedes Actros</b></button>
-<button class="truck-choice" data-model="volvo"><span class="truck-art">🚚</span><b>Volvo FH</b></button>
-<button class="truck-choice" data-model="scania"><span class="truck-art">🚛</span><b>Scania R</b></button>
-<button class="truck-choice" data-model="iveco"><span class="truck-art">🚚</span><b>Iveco S-Way</b></button>
+<button class="truck-choice selected" id="truck-mercedes" data-model="mercedes"><span class="truck-art">🚛</span><b>Mercedes Actros</b></button>
+<button class="truck-choice" id="truck-volvo" data-model="volvo"><span class="truck-art">🚚</span><b>Volvo FH</b></button>
+<button class="truck-choice" id="truck-scania" data-model="scania"><span class="truck-art">🚛</span><b>Scania R</b></button>
+<button class="truck-choice" id="truck-iveco" data-model="iveco"><span class="truck-art">🚚</span><b>Iveco S-Way</b></button>
 </div><div class="customize"><div><div id="truckSelected">Mercedes Actros branco</div><label for="truckColor">Escolha qualquer cor:</label></div><input id="truckColor" type="color" value="#f2f2ed" aria-label="Cor do caminhão"></div><button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o motor 3D...</p></div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
 <div id="load">Preparando seu caminhão...</div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
@@ -84,6 +84,7 @@ window.selectedTruckChoice='mercedes';
   const key=window.selectedTruckChoice;
   document.getElementById('truckSelected').textContent=names[key]+' — '+color.value.toUpperCase();
   document.querySelectorAll('.truck-choice').forEach(b=>b.classList.toggle('selected',b.dataset.model===key));
+  if(typeof window.applyTruckChoice==='function')window.applyTruckChoice(key);
  }
  document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{window.selectedTruckChoice=b.dataset.model;sync()}));
  color.addEventListener('input',sync);
@@ -227,8 +228,14 @@ let speed=0,steer=0,throttle=0,brake=0,delivered=false,fuel=100,joy={x:0,y:0},ke
 let firstPerson=false,cruiseOn=false,cruiseSpeed=0,gameEnded=false;
 let selectedTruck=window.selectedTruckChoice||'mercedes';
 const colorPicker=document.getElementById('truckColor');
-truckPaint.color.set(colorPicker.value);
-applyTruckStyle(selectedTruck);
+function applySelectedTruck(key){
+ if(!truckStyles[key])return;
+ selectedTruck=key;
+ truckPaint.color.set(colorPicker.value);
+ applyTruckStyle(selectedTruck);
+}
+window.applyTruckChoice=applySelectedTruck;
+applySelectedTruck(selectedTruck);
 
 const traffic=[];
 function makeTrafficCar(x,z,color,dir=1){const car=new THREE.Group();box(car,1.9,.75,4,mat(color,.45,.12),0,1,0);box(car,1.75,.65,1.5,glass,0,1.65,-.25);for(const zz of [-1.25,1.25])for(const xx of [-1.02,1.02])wheel(car,xx,.55,zz,.43,.28);car.position.set(x,0,z);car.userData.dir=dir;scene.add(car);traffic.push(car)}
@@ -246,7 +253,7 @@ refuelBtn.addEventListener('click',()=>{if(truck.position.distanceTo(station.pos
 function restartGame(){gameEnded=false;document.getElementById('gameover').style.display='none';truck.position.set(0,0,65);truck.rotation.y=Math.PI;speed=0;steer=0;fuel=100;delivered=false;marker.visible=true;cruiseOn=false;cruiseBtn.textContent='LIMITADOR: OFF';document.getElementById('mission').innerHTML='ENTREGA 01<br>Leve a carga até o posto marcado.';traffic.forEach((car,i)=>{car.position.set(i%2?-4.8:4.8,-0,-440+i*68)});updateStats()}document.getElementById('restart').addEventListener('click',restartGame);
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();if(k==='r')restartGame()});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 const dpadState={up:false,down:false,left:false,right:false};
-document.querySelectorAll('#dpad button').forEach(btn=>{const dir=btn.dataset.dir;const on=e=>{e.preventDefault();dpadState[dir]=true;btn.classList.add('pressed');if(dir==='up')speed=Math.max(speed,3.5);if(dir==='down'&&Math.abs(speed)<1)speed=-2.5;try{btn.setPointerCapture(e.pointerId)}catch(_){}};const off=e=>{dpadState[dir]=false;btn.classList.remove('pressed')};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);btn.addEventListener('lostpointercapture',off);btn.addEventListener('contextmenu',e=>e.preventDefault())});
+document.querySelectorAll('#dpad button').forEach(btn=>{const dir=btn.dataset.dir;const on=e=>{e.preventDefault();dpadState[dir]=true;btn.classList.add('pressed');if(dir==='up')speed=Math.max(speed,0);try{btn.setPointerCapture(e.pointerId)}catch(_){}};const off=e=>{dpadState[dir]=false;btn.classList.remove('pressed')};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);btn.addEventListener('lostpointercapture',off);btn.addEventListener('contextmenu',e=>e.preventDefault())});
 // Arrastar na tela permite olhar para os lados e para cima/baixo.
 let cameraYaw=0,cameraPitch=0,dragLook=false,lastLookX=0,lastLookY=0;
 renderer.domElement.style.touchAction='none';
@@ -254,8 +261,8 @@ renderer.domElement.addEventListener('pointerdown',e=>{if(e.target.closest('#con
 renderer.domElement.addEventListener('pointermove',e=>{if(!dragLook)return;const dx=e.clientX-lastLookX,dy=e.clientY-lastLookY;lastLookX=e.clientX;lastLookY=e.clientY;cameraYaw=THREE.MathUtils.clamp(cameraYaw-dx*.0045,-1.35,1.35);cameraPitch=THREE.MathUtils.clamp(cameraPitch-dy*.0035,-.55,.55)});
 const stopLook=()=>dragLook=false;renderer.domElement.addEventListener('pointerup',stopLook);renderer.domElement.addEventListener('pointercancel',stopLook);renderer.domElement.addEventListener('lostpointercapture',stopLook);
 let last=performance.now();function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-last)/1000,.04);last=now;if(gameEnded){renderer.render(scene,camera);return;}
-const fwd=(keys.w||keys.arrowup||dpadState.up?1:0)-(keys.s||keys.arrowdown||dpadState.down?1:0);const turn=(keys.d||keys.arrowright||dpadState.right?1:0)-(keys.a||keys.arrowleft||dpadState.left?1:0);const gasInput=Math.max(throttle,fwd>0?fwd:0),brakeInput=Math.max(brake,fwd<0?-fwd:0);
-if(brakeInput>0){const decel=32*brakeInput*dt;speed=Math.sign(speed)*Math.max(0,Math.abs(speed)-decel);if(brakeInput>.3)cruiseOn=false}else if(cruiseOn){if(gasInput>0)speed+=gasInput*5.5*dt;else speed*=Math.pow(.985,dt*60);speed=Math.min(speed,cruiseSpeed/3.6)}else if(gasInput>0){speed+=gasInput*5.5*dt}else{speed*=Math.pow(.985,dt*60)}speed=THREE.MathUtils.clamp(speed,-5,31);
+const forwardInput=(keys.w||keys.arrowup||dpadState.up)?1:0;const reverseInput=(keys.s||keys.arrowdown||dpadState.down)?1:0;const turn=(keys.d||keys.arrowright||dpadState.right?1:0)-(keys.a||keys.arrowleft||dpadState.left?1:0);const gasInput=Math.max(throttle,forwardInput),brakeInput=brake;
+if(brakeInput>0){const decel=32*brakeInput*dt;speed=Math.sign(speed)*Math.max(0,Math.abs(speed)-decel);if(brakeInput>.3)cruiseOn=false}else if(reverseInput>0){if(speed>0)speed=Math.max(0,speed-18*dt);else speed-=5.5*dt;cruiseOn=false}else if(cruiseOn){if(gasInput>0)speed+=gasInput*5.5*dt;else speed*=Math.pow(.985,dt*60);speed=Math.min(speed,cruiseSpeed/3.6)}else if(gasInput>0){speed+=gasInput*5.5*dt}else{speed*=Math.pow(.985,dt*60)}speed=THREE.MathUtils.clamp(speed,-5,31);
 steer=THREE.MathUtils.damp(steer,THREE.MathUtils.clamp(turn,-1,1),5,dt);truck.rotation.y-=steer*dt*(.16+Math.min(Math.abs(speed)/25,.45))*Math.sign(speed||1);
 const direction=new THREE.Vector3(Math.sin(truck.rotation.y),0,Math.cos(truck.rotation.y));truck.position.addScaledVector(direction,speed*dt);
 truck.position.x=THREE.MathUtils.clamp(truck.position.x,-500,500);if(Math.abs(truck.position.x)>11){speed*=Math.pow(.90,dt*60)}if(truck.position.z < -470)truck.position.z=470;if(truck.position.z > 470)truck.position.z=-470;
@@ -266,7 +273,7 @@ const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();renderer.render(scene,camera)}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);window.gameReady=true;document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);window.gameReady=true;document.documentElement.dataset.gameReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha seu caminhão e toque em JOGAR.';load.remove();requestAnimationFrame(loop);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
