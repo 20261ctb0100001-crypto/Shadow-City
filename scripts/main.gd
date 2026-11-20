@@ -331,18 +331,25 @@ func _spawn_traffic() -> void:
 	_spawn_traffic_car(Vector3(42.0, 0.0, 2.2), Vector3(-1, 0, 0), 8.5, Color(0.18, 0.48, 0.30))
 	_spawn_traffic_car(Vector3(2.2, 0.0, -8.0), Vector3(0, 0, -1), 7.5, Color(0.48, 0.28, 0.62))
 	_spawn_traffic_car(Vector3(-48.0, 0.0, 2.2), Vector3(1, 0, 0), 6.0, Color(0.72, 0.38, 0.12))
+	_spawn_traffic_vehicle(Vector3(-2.2, 0.0, 48.0), Vector3(0, 0, -1), 5.2, Color(0.78, 0.68, 0.22), "bus")
+	_spawn_traffic_vehicle(Vector3(2.2, 0.0, -38.0), Vector3(0, 0, 1), 9.5, Color(0.82, 0.24, 0.12), "motorcycle")
+	_spawn_traffic_vehicle(Vector3(36.0, 0.0, -2.2), Vector3(-1, 0, 0), 10.0, Color(0.16, 0.18, 0.20), "motorcycle")
 
 func _spawn_traffic_car(spawn_position: Vector3, axis: Vector3, speed: float, paint: Color) -> void:
-	var traffic_car := Node3D.new()
-	traffic_car.position = spawn_position
-	traffic_car.set_script(TRAFFIC_SCRIPT)
-	traffic_car.set("travel_axis", axis)
-	traffic_car.set("travel_speed", speed)
-	traffic_car.set("lane_offset", Vector3(spawn_position.x, 0.0, spawn_position.z) - axis * spawn_position.dot(axis))
-	traffic_car.set("route_min", -54.0)
-	traffic_car.set("route_max", 54.0)
-	traffic_car.set("vehicle_color", paint)
-	add_child(traffic_car)
+	_spawn_traffic_vehicle(spawn_position, axis, speed, paint, "car")
+
+func _spawn_traffic_vehicle(spawn_position: Vector3, axis: Vector3, speed: float, paint: Color, kind: String) -> void:
+	var traffic_vehicle := Node3D.new()
+	traffic_vehicle.position = spawn_position
+	traffic_vehicle.set_script(TRAFFIC_SCRIPT)
+	traffic_vehicle.set("travel_axis", axis)
+	traffic_vehicle.set("travel_speed", speed)
+	traffic_vehicle.set("lane_offset", Vector3(spawn_position.x, 0.0, spawn_position.z) - axis * spawn_position.dot(axis))
+	traffic_vehicle.set("route_min", -54.0)
+	traffic_vehicle.set("route_max", 54.0)
+	traffic_vehicle.set("vehicle_color", paint)
+	traffic_vehicle.set("vehicle_type", kind)
+	add_child(traffic_vehicle)
 
 func _spawn_home() -> void:
 	var home := Node3D.new()
