@@ -359,6 +359,18 @@ func _try_enter_vehicle() -> void:
 				closest_citizen = item
 	if closest_citizen != null:
 		closest_citizen.call("interact_with", self)
+		return
+
+	var closest_home: Node3D = null
+	var home_distance := 5.5
+	for item in get_tree().get_nodes_in_group("homes"):
+		if item is Node3D:
+			var distance := global_position.distance_to(item.global_position)
+			if distance < home_distance or item.get("occupant") == self:
+				home_distance = distance
+				closest_home = item
+	if closest_home != null:
+		closest_home.call("interact_with", self)
 
 func buy_outfit(price: int) -> bool:
 	if money < price:
