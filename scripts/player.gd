@@ -4,7 +4,7 @@ extends CharacterBody3D
 @export var gravity: float = 9.8
 
 var camera: Camera3D
-var mobile_actions: Array[String] = ["move_forward", "move_backward", "move_left", "move_right"]
+var body_collision: CollisionShape3D
 
 func _ready() -> void:
 	_create_placeholder_character()
@@ -24,13 +24,13 @@ func _create_placeholder_character() -> void:
 	visual.material_override = material
 	add_child(visual)
 
-	var collision := CollisionShape3D.new()
+	body_collision = CollisionShape3D.new()
 	var shape := CapsuleShape3D.new()
 	shape.radius = 0.38
 	shape.height = 1.75
-	collision.shape = shape
-	collision.position.y = 0.88
-	add_child(collision)
+	body_collision.shape = shape
+	body_collision.position.y = 0.88
+	add_child(body_collision)
 
 func _create_camera() -> void:
 	var pivot := Node3D.new()
@@ -39,6 +39,7 @@ func _create_camera() -> void:
 	add_child(pivot)
 
 	camera = Camera3D.new()
+	camera.name = "PlayerCamera"
 	camera.position = Vector3(0, 2.1, 6.0)
 	camera.rotation_degrees.x = -16.0
 	camera.fov = 72.0
@@ -59,6 +60,7 @@ func _create_mobile_controls() -> void:
 	_add_touch_button(root, "↓", "move_backward", Vector2(104, -76))
 	_add_touch_button(root, "←", "move_left", Vector2(8, -76))
 	_add_touch_button(root, "→", "move_right", Vector2(200, -76))
+	_add_interact_button(root)
 
 	var hint := Label.new()
 	hint.text = "SHADOW CITY  •  TEST BUILD"
@@ -66,6 +68,19 @@ func _create_mobile_controls() -> void:
 	hint.add_theme_font_size_override("font_size", 18)
 	hint.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.9))
 	root.add_child(hint)
+
+func _add_interact_button(root: Control) -> void:
+	var button := Button.new()
+	button.text = "AÇÃO"
+	button.position = Vector2(get_viewport().get_visible_rect().size.x - 126, get_viewport().get_visible_rect().size.y - 104)
+	button.size = Vector2(108, 76)
+	button.add_theme_font_size_override("font_size", 20)
+	button.add_theme_stylebox_override("normal", _button_style(Color(0.30, 0.18, 0.08, 0.85)))
+	button.add_theme_stylebox_override("pressed", _button_style(Color(0.58, 0.32, 0.10, 0.95)))
+	button.focus_mode = Control.FOCUS_NONE
+	root.add_child(button)
+	button.button_down.connect(func() -> void: Input.action_press("interact"))
+	button.button_up.connect(func() -> void: Input.action_release("interact"))
 
 func _add_touch_button(root: Control, caption: String, action_name: String, offset: Vector2) -> void:
 	var button := Button.new()
