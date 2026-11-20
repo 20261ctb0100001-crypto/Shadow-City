@@ -20,10 +20,11 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Primeiros veículos de trânsito autônomo circulando continuamente pelas duas avenidas, em faixas e velocidades diferentes.
 - Sistema inicial de trabalhos: conversar com moradores, cumprir um turno curto e receber pagamento.
 - Carteira na tela que atualiza o dinheiro recebido pelos turnos.
+- Salvamento local automático do dinheiro, posição do personagem e cor da roupa a cada 10 segundos, ao receber pagamento, ao comprar roupa e ao sair do jogo.
 - Iluminação direcional, materiais e colisões básicas.
 
 ## Próximas etapas
-1. Executar o projeto no Godot 4 e corrigir problemas encontrados nos testes.
+1. Executar o projeto no Godot 4 e corrigir problemas encontrados nos testes (ainda pendente; Godot não está disponível neste ambiente).
 2. Melhorar personagem, câmera, animações e controles de toque.
 3. Evoluir o carro provisório com física, sons e visual mais detalhado.
 4. Evoluir os animais com modelos, animações, sons, necessidades e interações.
