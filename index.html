@@ -63,7 +63,7 @@
 @media(max-width:650px){.garage-card{padding:13px;border-radius:16px}#truckChoices{gap:5px}.truck-choice{min-height:82px;padding:6px 3px}.customize{margin:10px 0;padding:9px}}
 </style></head>
 <body><div id="garage"><div class="garage-card"><h1>ESCOLHA SEU CAMINHÃO</h1><p class="sub">Selecione o modelo, personalize a cor e depois toque em JOGAR.</p><div id="truckChoices">
-<button class="truck-choice selected" id="truck-mercedes" data-model="mercedes"><img class="truck-photo" src="https://m.atcdn.co.uk/a/media/b039821313c045a9b24170f2709a8719.jpg" alt="Foto real de um Mercedes-Benz Actros" loading="lazy" referrerpolicy="no-referrer"><b>Mercedes Actros</b></button>
+<button class="truck-choice selected" id="truck-mercedes" data-model="mercedes"><img class="truck-photo" src="https://upload.wikimedia.org/wikipedia/commons/2/21/Mercedes-Benz_Actros_truck.jpg" alt="Foto real de um Mercedes-Benz Actros" loading="lazy" referrerpolicy="no-referrer"><b>Mercedes Actros</b></button>
 <button class="truck-choice" id="truck-volvo" data-model="volvo"><img class="truck-photo" src="https://3.bp.blogspot.com/-rFzVMVb_I4A/WPibdUV7oiI/AAAAAAAAR0g/CMv-6xNTRdMo3TuPvGXBkusUAW9LlPsbACLcB/s1600/xFH%2B01%2B%255B1280x768%255D.jpg" alt="Foto real de um Volvo FH" loading="lazy" referrerpolicy="no-referrer"><b>Volvo FH</b></button>
 <button class="truck-choice" id="truck-scania" data-model="scania"><img class="truck-photo" src="https://www.truck1.com.ar/img/xxl/1954/Cabeza-tractora-Scania-R460-NGS-4x2-SUPER-RETARDER-325-TKM-PARK-AIRCO-ACC-NAVI-2-x-FUEL-TANKS-TOP-CONDITION-Paises-Bajos_1954_8936992844837.jpg" alt="Foto real de um Scania R" loading="lazy" referrerpolicy="no-referrer"><b>Scania R</b></button>
 <button class="truck-choice" id="truck-iveco" data-model="iveco"><img class="truck-photo" src="https://api.rodonavesiveco.com.br/v1/media/1538/branco-iveco" alt="Foto real de um Iveco S-Way" loading="lazy" referrerpolicy="no-referrer"><b>Iveco S-Way</b></button>
@@ -291,8 +291,8 @@ for(let side of [-1,1])for(let i=0;i<34;i++){
 
 // Faixa costeira no fim da rota: areia, mar contínuo e terminal rodoviário.
 const beachMat=mat(0xd4c18e,1),waterMat=new THREE.MeshStandardMaterial({color:0x176b91,roughness:.28,metalness:.12});
-const beach=new THREE.Mesh(new THREE.PlaneGeometry(1600,420),beachMat);beach.rotation.x=-Math.PI/2;beach.position.set(0,-.12,-29600);scene.add(beach);
-const ocean=new THREE.Mesh(new THREE.PlaneGeometry(5000,5000),waterMat);ocean.rotation.x=-Math.PI/2;ocean.position.set(0,-.28,-32500);scene.add(ocean);
+const beach=new THREE.Mesh(new THREE.PlaneGeometry(1600,700),beachMat);beach.rotation.x=-Math.PI/2;beach.position.set(0,-.12,-29700);scene.add(beach);
+const ocean=new THREE.Mesh(new THREE.PlaneGeometry(5000,6000),waterMat);ocean.rotation.x=-Math.PI/2;ocean.position.set(0,-.28,-32600);scene.add(ocean);
 for(let i=0;i<18;i++){const wave=new THREE.Mesh(new THREE.BoxGeometry(140,.035,.7),mat(0x8ac4d2,.25));wave.position.set((i%3-1)*420,-.22,-30350-Math.floor(i/3)*95);scene.add(wave)}
 const coastTerminal=new THREE.Group();
 const terminalBuilding=new THREE.Mesh(new THREE.BoxGeometry(48,8,20),mat(0xe1ddd1));terminalBuilding.position.set(0,4,0);coastTerminal.add(terminalBuilding);
@@ -403,7 +403,30 @@ function makeRoadsideSet(z,side,kind){
 }
 for(let i=0;i<18;i++){const z=520-i*72;makeRoadsideSet(z,i%2?1:-1,i%3===0?1:0)}
 const traffic=[];
-function makeTrafficCar(x,z,color,dir=1){const car=new THREE.Group();box(car,1.9,.75,4,mat(color,.45,.12),0,1,0);box(car,1.75,.65,1.5,glass,0,1.65,-.25);for(const zz of [-1.25,1.25])for(const xx of [-1.02,1.02])wheel(car,xx,.55,zz,.43,.28);car.position.set(x,0,z);car.userData.dir=dir;scene.add(car);traffic.push(car)}
+function makeTrafficCar(x,z,color,dir=1){
+ const car=new THREE.Group(),paint=mat(color,.38,.18),darkGlass=mat(0x263f49,.2,.25),chrome=mat(0xaeb8bb,.32,.65);
+ // Carroceria com capô, teto, portas, para-choques e vidros separados.
+ box(car,2,.68,4.55,paint,0,.88,0);
+ box(car,1.88,.32,1.15,paint,0,1.18,-1.62);
+ box(car,1.82,.32,1.05,paint,0,1.18,1.68);
+ box(car,1.68,.82,2.05,paint,0,1.55,-.12);
+ box(car,1.55,.62,.08,darkGlass,0,1.62,-1.18);
+ box(car,1.52,.58,.08,darkGlass,0,1.62,.92);
+ for(const side of [-1,1]){
+  box(car,.07,.55,.78,darkGlass,side*.87,1.58,-.2);
+  box(car,.07,.55,.72,darkGlass,side*.87,1.58,.58);
+  box(car,.07,.12,1.65,chrome,side*.98,1.04,0);
+  box(car,.09,.13,.34,mat(0xfff0c6,.3),side*.72,1.02,-2.28);
+  box(car,.09,.16,.38,mat(0xc83228,.35),side*.72,1.02,2.28);
+  for(const zz of [-1.42,1.42])wheel(car,side*1.03,.55,zz,.43,.28);
+ }
+ box(car,1.25,.16,.08,chrome,0,.92,-2.31);
+ box(car,1.35,.12,.08,mat(0x252a2c,.65),0,.82,-2.33);
+ box(car,1.5,.12,.08,mat(0x303538,.6),0,.82,2.32);
+ // Espelhos e detalhes frontais.
+ for(const side of [-1,1]){box(car,.12,.22,.2,mat(0x20282d),side*1.03,1.72,-.86);box(car,.2,.18,.16,chrome,side*1.05,1.73,-.9)}
+ car.position.set(x,0,z);car.userData.dir=dir;scene.add(car);traffic.push(car)
+}
 for(let i=0;i<13;i++){const z=-440+i*68;makeTrafficCar(i%2? -4.8:4.8,z,[0x2d6eaa,0xd9d5c9,0x383c43,0x9a342c,0x8d9d4c][i%5],i%2?1:-1)}
 
 function updateStats(){document.getElementById('speed').textContent=Math.round(Math.abs(speed)*3.6);for(const b of document.querySelectorAll('#gearHud button'))b.classList.toggle('selected',b.dataset.gear===gear);document.getElementById('fuel').textContent=Math.round(fuel)}
