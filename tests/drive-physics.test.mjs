@@ -139,11 +139,39 @@ test('all four cities have a large connected street grid and dense blocks', asyn
   assert.ok(html.includes('for(let row=0;row<61;row++)'));
   assert.ok(html.includes('for(let band=0;band<2;band++)for(let row=0;row<60;row++)'));
   assert.ok(html.includes('steps=13000,startZ=-65000,endZ=700'));
-  assert.ok(html.includes('speedLimit:inCity?8.33:41.7'));
+  assert.ok(html.includes('speedLimit:inCity?8.33:(vehicleIsCar?55.6:41.7)'));
+  assert.ok(html.includes('vehicleMixer.update(dt)'));
+  assert.ok(html.includes('window.prepareSelectedVehicle=async function(id)'));
   assert.ok(html.includes('function makeTrafficTruck'));
   assert.ok(html.includes('for(let i=0;i<8;i++)makeTrafficTruck'));
   assert.ok(html.includes('new THREE.InstancedMesh(windowGeo,glassCity,18000)'));
   for (const city of ["buildCity('Ponta Grossa'", "buildCity('Curitiba'", "buildCity('Florianópolis'", "buildCity('Santos'"]) {
     assert.ok(html.includes(city), city + ' must use the expanded city builder');
   }
+});
+
+
+test('garage offers 25 cars and 25 trucks with matching 3D preview images', async () => {
+  const catalog = await readFile(new URL('../scripts/vehicle-catalog.js', import.meta.url), 'utf8');
+  assert.equal((catalog.match(/"id":"truck-/g) || []).length, 25, 'must list 25 trucks');
+  assert.equal((catalog.match(/"id":"car-/g) || []).length, 25, 'must list 25 cars');
+  assert.equal((catalog.match(/"model":"https:\\/\\/cdn\\.3dassets\\.dev/g) || []).length, 50, 'every vehicle must have a GLB model');
+  assert.equal((catalog.match(/"image":"https:\\/\\/cdn\\.3dassets\\.dev/g) || []).length, 50, 'every vehicle must have a matching preview render');
+});
+
+test('selected GLB model replaces the procedural player vehicle and uses car or truck handling', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('three/addons/loaders/GLTFLoader.js'));
+  assert.ok(html.includes('playerModelGroup.add(model)'));
+  assert.ok(html.includes('vehicleIsCar?55.6:41.7'));
+  assert.ok(html.includes('vehicleIsCar?9.5:6.5'));
+  assert.ok(html.includes('vehicleIsCar?10.5:8.5'));
+});
+
+test('house blocks include roofs, framed windows, garages and porches', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('new THREE.ConeGeometry(Math.max(width,depth)*.72,3.8,4)'));
+  assert.ok(html.includes('windowFrames=new THREE.InstancedMesh'));
+  assert.ok(html.includes('garageDoors=new THREE.InstancedMesh'));
+  assert.ok(html.includes('const canopy=new THREE.Mesh'));
 });
