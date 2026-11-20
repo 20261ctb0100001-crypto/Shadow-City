@@ -215,6 +215,7 @@ function buildCity(name,centerZ,style){
  const parallelOffsets=[48,132,216,300,384];
  const roadMat=roadCity,sidewalkMat=sidewalk,lineMat=mat(0xe6dfb8,.9);
  const roadY=.018;
+ const windowGeo=new THREE.BoxGeometry(1.05,1.25,.08),windows=new THREE.InstancedMesh(windowGeo,glassCity,18000),windowDummy=new THREE.Object3D();let windowCount=0;
  for(const side of [-1,1]){
   // Cinco avenidas paralelas por lado, todas conectadas pelas ruas transversais.
   for(let lane=0;lane<parallelOffsets.length;lane++){
@@ -266,11 +267,11 @@ function buildCity(name,centerZ,style){
    const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
    for(let floor=0;floor<floors;floor++)for(let col=0;col<cols;col++){
     const wx=x-width/2+2.2+col*4.1,wy=2+floor*3.15;
-    const win=new THREE.Mesh(new THREE.BoxGeometry(1.05,1.25,.08),glassCity);
-    win.position.set(wx,wy,z-depth/2-.08);city.add(win);
-    if(isTower){
-     const sideWin=new THREE.Mesh(new THREE.BoxGeometry(.08,1.25,1.05),glassCity);
-     sideWin.position.set(x+width/2+.08,wy,z-depth/2+2+col*4.1);city.add(sideWin);
+    if(windowCount<18000){
+     windowDummy.position.set(wx,wy,z-depth/2-.08);windowDummy.rotation.set(0,0,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount++,windowDummy.matrix);
+    }
+    if(isTower&&windowCount<18000){
+     windowDummy.position.set(x+width/2+.08,wy,z-depth/2+2+col*4.1);windowDummy.rotation.set(0,Math.PI/2,0);windowDummy.scale.set(1,1,1);windowDummy.updateMatrix();windows.setMatrixAt(windowCount++,windowDummy.matrix);
     }
    }
    // Garagens e portas para casas de bairro.
@@ -290,10 +291,10 @@ function buildCity(name,centerZ,style){
    }
   }
   // Postes e iluminação ao longo das avenidas e ruas secundárias.
-  for(let lane=0;lane<parallelOffsets.length;lane++){
+  for(const lane of [0,2,4]){
    const x=cx+side*(parallelOffsets[lane]+(lane===0?10:7));
-   for(let i=0;i<30;i++){
-    const z=centerZ-790+i*54;
+   for(let i=0;i<20;i++){
+    const z=centerZ-780+i*82;
     const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.17,7,8),mat(0x42494b,.7,.5));
     pole.position.set(x,3.5,z);city.add(pole);
     const arm=new THREE.Mesh(new THREE.BoxGeometry(2,.13,.13),mat(0x42494b,.7,.5));
@@ -313,6 +314,7 @@ function buildCity(name,centerZ,style){
    }
   }
  }
+ windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;city.add(windows);
  // Marcos urbanos próprios de cada destino.
  if(style===0){
   const landmark=new THREE.Group();
