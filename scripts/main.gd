@@ -37,7 +37,7 @@ func _build_environment() -> void:
 	environment.tonemap_white = 6.0
 	environment.fog_enabled = true
 	environment.fog_light_color = Color(0.62, 0.70, 0.80)
-	environment.fog_density = 0.0012
+	environment.fog_density = 0.0007
 	environment.background_mode = Environment.BG_SKY
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
@@ -50,22 +50,26 @@ func _build_environment() -> void:
 	sky.sky_material = sky_material
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	environment.ambient_light_energy = 0.8
+	environment.ambient_light_energy = 0.38
 	world.environment = environment
 	add_child(world)
 
 	var sun := DirectionalLight3D.new()
 	sun.name = "Sun"
-	sun.rotation_degrees = Vector3(-48, -32, 0)
-	sun.light_energy = 1.2
+	sun.rotation_degrees = Vector3(-42, -55, 0)
+	sun.light_energy = 1.55
 	sun.light_color = Color(1.0, 0.94, 0.82)
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
-	sun.directional_shadow_max_distance = 110.0
-	sun.directional_shadow_blend_splits = true
-	sun.shadow_bias = 0.035
-	sun.shadow_normal_bias = 1.2
-	sun.light_angular_distance = 0.35
+	sun.directional_shadow_max_distance = 75.0
+	sun.directional_shadow_blend_splits = false
+	sun.directional_shadow_split_1 = 0.08
+	sun.directional_shadow_split_2 = 0.22
+	sun.directional_shadow_split_3 = 0.55
+	sun.shadow_bias = 0.02
+	sun.shadow_normal_bias = 0.6
+	sun.light_angular_distance = 0.0
+	sun.shadow_opacity = 1.0
 	add_child(sun)
 
 func _build_city() -> void:
