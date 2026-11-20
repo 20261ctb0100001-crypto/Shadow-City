@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const physicsUrl = new URL('../scripts/drive-physics.js', import.meta.url);
 async function loadPhysics() {
@@ -55,4 +56,33 @@ test('minimap is a live canvas, not a static CSS road decoration', async () => {
   assert.match(html, /function drawMinimap/);
   assert.doesNotMatch(html, /#minimap:before/);
   assert.doesNotMatch(html, /#minimap:after/);
+});
+
+test('published site copies the runtime physics module', async () => {
+  const workflow = await readFile(new URL('../.github/workflows/deploy-pages.yml', import.meta.url), 'utf8');
+  assert.match(workflow, /cp -R scripts build\/scripts/);
+  assert.match(workflow, /test -s build\/scripts\/drive-physics\.js/);
+});
+
+test('the main Three.js module has valid JavaScript syntax', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  const match = html.match(/<script type="module">([\\s\\S]*?)<\\/script>/);
+  assert.ok(match, 'main module script must exist');
+  const checked = spawnSync(process.execPath, ['--check', '--input-type=module'], {
+    input: match[1], encoding: 'utf8'
+  });
+  assert.equal(checked.status, 0, checked.stderr || checked.stdout || 'module syntax check failed');
+});
+
+test('delivery and refueling targets are ahead on the negative-Z route', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /marker\\.position\\.set\\(roadCenter\\(-29400\\)\\+7,0,-29400\\)/);
+  assert.match(html, /station\\.position\\.set\\(roadCenter\\(-3000\\)\\+27,0,-3000\\)/);
+});
+
+test('all four Brazilian city stops remain in the route', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  for (const city of ['Ponta Grossa', 'Curitiba', 'Florianópolis', 'Santos']) {
+    assert.ok(html.includes(city), city + ' must remain on the route');
+  }
 });
