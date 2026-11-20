@@ -77,6 +77,35 @@ func _build_city() -> void:
 	_add_box("Main road", Vector3(0, 0.02, 0), Vector3(12, 0.08, 180), Color(0.12, 0.13, 0.15))
 	_add_box("Cross road", Vector3(0, 0.03, 0), Vector3(180, 0.08, 12), Color(0.12, 0.13, 0.15))
 
+	var asphalt_noise := FastNoiseLite.new()
+	asphalt_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	asphalt_noise.frequency = 0.075
+	asphalt_noise.fractal_octaves = 3
+	var asphalt_texture := NoiseTexture2D.new()
+	asphalt_texture.width = 256
+	asphalt_texture.height = 256
+	asphalt_texture.noise = asphalt_noise
+	var asphalt_material := StandardMaterial3D.new()
+	asphalt_material.albedo_color = Color(0.42, 0.43, 0.45)
+	asphalt_material.albedo_texture = asphalt_texture
+	asphalt_material.roughness = 0.98
+	_add_visual_box("Textured asphalt north south", Vector3(0, 0.066, 0), Vector3(11.9, 0.012, 180), asphalt_material)
+	_add_visual_box("Textured asphalt east west", Vector3(0, 0.067, 0), Vector3(180, 0.012, 11.9), asphalt_material)
+
+	var grass_noise := FastNoiseLite.new()
+	grass_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	grass_noise.frequency = 0.035
+	grass_noise.fractal_octaves = 4
+	var grass_texture := NoiseTexture2D.new()
+	grass_texture.width = 256
+	grass_texture.height = 256
+	grass_texture.noise = grass_noise
+	var grass_material := StandardMaterial3D.new()
+	grass_material.albedo_color = Color(0.58, 0.66, 0.48)
+	grass_material.albedo_texture = grass_texture
+	grass_material.roughness = 1.0
+	_add_visual_box("Procedural grass surface", Vector3(0, 0.006, 0), Vector3(180, 0.01, 180), grass_material)
+
 	for i in range(-2, 3):
 		for j in range(-2, 3):
 			if (i == 0 and j == 0) or (j == 1 and abs(i) == 1):
