@@ -112,6 +112,9 @@ func _button_style(color: Color) -> StyleBoxFlat:
 	return style
 
 func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed("interact"):
+		_try_enter_vehicle()
+
 	var input_vector := Vector2(
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
 		Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
@@ -139,3 +142,15 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, atan2(-direction.x, -direction.z), delta * 8.0)
 
 	move_and_slide()
+
+func _try_enter_vehicle() -> void:
+	var closest_vehicle: Node3D = null
+	var closest_distance := 4.0
+	for item in get_tree().get_nodes_in_group("vehicles"):
+		if item is Node3D:
+			var distance := global_position.distance_to(item.global_position)
+			if distance < closest_distance:
+				closest_distance = distance
+				closest_vehicle = item
+	if closest_vehicle != null:
+		closest_vehicle.enter(self)
