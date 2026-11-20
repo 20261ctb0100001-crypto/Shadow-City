@@ -6,6 +6,8 @@ Jogo 3D de mundo aberto em desenvolvimento com **Godot 4**, planejado para Andro
 Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, veículos, lojas, personalização de personagem, casas, profissões e missões. O mundo será construído por regiões, com identidade própria para cada cidade.
 
 ## Protótipo atual no repositório
+
+**Estado realista atual:** ainda é um protótipo de geometria procedural. As mudanças recentes melhoram céu, iluminação, sombras e fachadas, mas não equivalem a gráficos fotorrealistas nem a um jogo final. O projeto ainda não contém 8 GB de modelos e texturas; 8–10 GB é apenas a meta definida para a versão Android.
 - Projeto Godot 4 com renderizador Mobile.
 - Cena 3D principal e bairro procedural de teste.
 - Personagem provisório em terceira pessoa.
@@ -30,7 +32,8 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Sistema de necessidades com fome, energia e higiene, menu VIDA para comer, descansar e tomar banho.
 - Salvamento local automático de dinheiro, posição, roupa e necessidades.
 - Ciclo inicial de dia e noite com relógio na tela, mudança gradual da luz solar e iluminação ambiente.
-- Iluminação direcional, materiais e colisões básicas.
+- Iluminação direcional com sombras em quatro divisões, céu procedural, iluminação ambiente baseada no céu, materiais e colisões básicas.
+- Fachadas com janelas em quatro lados e detalhes de cobertura nos prédios do distrito central.
 
 ## Próximas etapas
 1. Executar o projeto no Godot 4 e corrigir problemas encontrados nos testes (ainda pendente; Godot não está disponível neste ambiente).
