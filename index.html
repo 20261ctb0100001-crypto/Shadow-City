@@ -103,6 +103,14 @@ const steering=new THREE.Mesh(new THREE.TorusGeometry(.43,.055,10,36),rubber);st
 const hub=new THREE.Mesh(new THREE.CylinderGeometry(.105,.105,.12,16),trimMat);hub.rotation.x=Math.PI/2;hub.position.set(0,2.28,-.58);tractor.add(hub);
 const spoke1=new THREE.Mesh(new THREE.BoxGeometry(.055,.72,.07),trimMat);spoke1.position.set(0,2.28,-.58);tractor.add(spoke1);
 const spoke2=new THREE.Mesh(new THREE.BoxGeometry(.66,.055,.07),trimMat);spoke2.position.set(0,2.28,-.58);tractor.add(spoke2);
+// Braços do motorista apoiados no volante, visíveis na visão interna.
+const sleeveMat=mat(0x26343b,.85),skinMat=mat(0xb98768,.9);
+function armSegment(a,b,r,material){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),delta=end.clone().sub(start);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r*.82,r,delta.length(),10),material);mesh.position.copy(start).add(end).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());mesh.castShadow=true;tractor.add(mesh);return mesh}
+for(const side of [-1,1]){
+ armSegment([side*.88,2.72,-.38],[side*.48,2.52,-.58],.13,sleeveMat);
+ armSegment([side*.48,2.52,-.58],[side*.31,2.35,-.62],.105,skinMat);
+ const hand=new THREE.Mesh(new THREE.SphereGeometry(.13,12,10),skinMat);hand.position.set(side*.31,2.35,-.62);hand.scale.set(1,.72,1.25);tractor.add(hand);
+}
 box(tractor,.08,.55,.08,mat(0x272d30),1.12,2.25,-.58);
 box(tractor,.08,.55,.08,mat(0x272d30),-1.12,2.25,-.58);
 
@@ -141,7 +149,7 @@ steer=THREE.MathUtils.damp(steer,THREE.MathUtils.clamp(turn,-1,1),5,dt);truck.ro
 const direction=new THREE.Vector3(Math.sin(truck.rotation.y),0,Math.cos(truck.rotation.y));truck.position.addScaledVector(direction,speed*dt);
 truck.position.x=THREE.MathUtils.clamp(truck.position.x,-500,500);if(Math.abs(truck.position.x)>11){speed*=Math.pow(.90,dt*60)}if(truck.position.z < -470)truck.position.z=470;if(truck.position.z > 470)truck.position.z=-470;
 if(Math.abs(speed)>1)fuel=Math.max(0,fuel-dt*.018*Math.abs(speed));if(fuel<=0)speed*=.98;
-const cockpit=truck.localToWorld(new THREE.Vector3(0,2.72,-.35));const rearCamera=truck.localToWorld(new THREE.Vector3(-5.2,6.4,-14.5));const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));camera.lookAt(firstPerson?new THREE.Vector3(cockpit.x+direction.x*55,cockpit.y-.12,cockpit.z+direction.z*55):new THREE.Vector3(truck.position.x,2.7,truck.position.z));
+const cockpit=truck.localToWorld(new THREE.Vector3(0,2.72,-.35));const rearCamera=truck.localToWorld(new THREE.Vector3(-5.2,6.4,-14.5));const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,2.65,-55));camera.lookAt(firstPerson?cabForward:new THREE.Vector3(truck.position.x,2.7,truck.position.z));
 for(const car of traffic){car.position.z+=car.userData.dir*dt*(14+Math.sin(now*.0004)*2);if(car.position.z>490)car.position.z=-490;if(car.position.z< -490)car.position.z=490;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<5.2){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
