@@ -28,26 +28,51 @@ func _ready() -> void:
 	tree_exiting.connect(_save_progress)
 
 func _create_placeholder_character() -> void:
-	var visual := MeshInstance3D.new()
-	var capsule := CapsuleMesh.new()
-	capsule.radius = 0.38
-	capsule.height = 1.75
-	visual.mesh = capsule
-	visual.position.y = 0.88
+	# Silhueta humana provisória, substituível por um modelo 3D rigado.
 	outfit_material = StandardMaterial3D.new()
-	outfit_material.albedo_color = Color(0.16, 0.30, 0.58)
-	outfit_material.roughness = 0.78
-	visual.material_override = outfit_material
-	add_child(visual)
+	outfit_material.albedo_color = Color(0.12, 0.22, 0.38)
+	outfit_material.roughness = 0.72
+	outfit_material.metallic = 0.0
+
+	var skin := StandardMaterial3D.new()
+	skin.albedo_color = Color(0.72, 0.49, 0.34)
+	skin.roughness = 0.86
+	var pants := StandardMaterial3D.new()
+	pants.albedo_color = Color(0.10, 0.13, 0.18)
+	pants.roughness = 0.9
+	var shoes := StandardMaterial3D.new()
+	shoes.albedo_color = Color(0.035, 0.04, 0.05)
+	shoes.roughness = 0.95
+
+	_add_character_part("Torso", CapsuleMesh.new(), Vector3(0, 1.12, 0), Vector3(0.48, 0.72, 0), outfit_material)
+	_add_character_part("Head", SphereMesh.new(), Vector3(0, 1.78, 0), Vector3(0.27, 0.29, 0), skin)
+	_add_character_part("Hair", SphereMesh.new(), Vector3(0, 1.91, -0.015), Vector3(0.275, 0.16, 0), shoes)
+	_add_character_part("LeftArm", CapsuleMesh.new(), Vector3(-0.34, 1.13, 0), Vector3(0.13, 0.48, 0), outfit_material)
+	_add_character_part("RightArm", CapsuleMesh.new(), Vector3(0.34, 1.13, 0), Vector3(0.13, 0.48, 0), outfit_material)
+	_add_character_part("LeftHand", SphereMesh.new(), Vector3(-0.34, 0.83, 0), Vector3(0.12, 0.13, 0), skin)
+	_add_character_part("RightHand", SphereMesh.new(), Vector3(0.34, 0.83, 0), Vector3(0.12, 0.13, 0), skin)
+	_add_character_part("LeftLeg", CapsuleMesh.new(), Vector3(-0.14, 0.48, 0), Vector3(0.15, 0.55, 0), pants)
+	_add_character_part("RightLeg", CapsuleMesh.new(), Vector3(0.14, 0.48, 0), Vector3(0.15, 0.55, 0), pants)
+	_add_character_part("LeftShoe", BoxMesh.new(), Vector3(-0.14, 0.12, -0.07), Vector3(0.20, 0.13, 0.34), shoes)
+	_add_character_part("RightShoe", BoxMesh.new(), Vector3(0.14, 0.12, -0.07), Vector3(0.20, 0.13, 0.34), shoes)
 
 	body_collision = CollisionShape3D.new()
 	body_collision.name = "CollisionShape3D"
 	var shape := CapsuleShape3D.new()
-	shape.radius = 0.38
-	shape.height = 1.75
+	shape.radius = 0.30
+	shape.height = 1.85
 	body_collision.shape = shape
-	body_collision.position.y = 0.88
+	body_collision.position.y = 0.93
 	add_child(body_collision)
+
+func _add_character_part(part_name: String, mesh_resource: Resource, part_position: Vector3, part_scale: Vector3, material: Material) -> void:
+	var part := MeshInstance3D.new()
+	part.name = part_name
+	part.mesh = mesh_resource
+	part.position = part_position
+	part.scale = part_scale
+	part.material_override = material
+	add_child(part)
 
 func _create_camera() -> void:
 	var pivot := Node3D.new()
