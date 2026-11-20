@@ -372,6 +372,35 @@ func _try_enter_vehicle() -> void:
 	if closest_home != null:
 		closest_home.call("interact_with", self)
 
+func use_home_object(object_name: String) -> void:
+	match object_name:
+		"cama":
+			energy = minf(100.0, energy + 65.0)
+			hunger = maxf(0.0, hunger - 4.0)
+			_update_needs_display()
+			_save_progress()
+			_show_home_feedback("Você descansou. Energia recuperada.")
+		"geladeira":
+			if money < 10:
+				_show_home_feedback("Você precisa de $10 para preparar uma refeição.")
+				return
+			money -= 10
+			hunger = minf(100.0, hunger + 42.0)
+			_update_money_display()
+			_update_needs_display()
+			_save_progress()
+			_show_home_feedback("Refeição preparada. Fome recuperada.")
+		"chuveiro":
+			hygiene = 100.0
+			_update_needs_display()
+			_save_progress()
+			_show_home_feedback("Banho tomado. Higiene restaurada.")
+
+func _show_home_feedback(message: String) -> void:
+	var home := get_tree().get_first_node_in_group("homes")
+	if home != null:
+		home.call("_show_message", message)
+
 func buy_outfit(price: int) -> bool:
 	if money < price:
 		return false
