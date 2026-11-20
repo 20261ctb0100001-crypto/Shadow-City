@@ -13,6 +13,11 @@ var direction := Vector3.ZERO
 var decision_time := 0.0
 var menu_layer: CanvasLayer
 var working := false
+var mission_active := false
+var mission_target := Vector3.ZERO
+var mission_marker: Node3D
+var mission_status: Label
+var active_player: Node
 
 func _ready() -> void:
 	add_to_group("citizens")
@@ -84,8 +89,17 @@ func _physics_process(delta: float) -> void:
 	if Vector2(velocity.x, velocity.z).length() > 0.1:
 		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), delta * 3.0)
 
+func _process(_delta: float) -> void:
+	if not mission_active or not is_instance_valid(active_player):
+		return
+	var distance := Vector2(active_player.global_position.x - mission_target.x, active_player.global_position.z - mission_target.z).length()
+	if is_instance_valid(mission_status):
+		mission_status.text = "Vá até o marcador dourado. Distância: " + str(roundi(distance)) + " m"
+	if distance <= 2.4:
+		_complete_mission()
+
 func interact_with(player: Node) -> void:
-	if menu_layer != null:
+	if menu_layer != null or mission_active:
 		return
 	_open_dialogue(player)
 
@@ -101,7 +115,7 @@ func _open_dialogue(player: Node) -> void:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	menu_layer.add_child(center)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(440, 310)
+	panel.custom_minimum_size = Vector2(440, 330)
 	center.add_child(panel)
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 12)
@@ -122,40 +136,93 @@ func _open_dialogue(player: Node) -> void:
 	speech.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(speech)
 	var status := Label.new()
-	status.text = "Vaga disponível: turno de " + profession + " • $" + str(shift_reward)
+	status.text = "Trabalho disponível: " + profession + " • Pagamento: $" + str(shift_reward)
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(status)
 
 	var work_button := Button.new()
-	work_button.text = "Fazer turno (+$" + str(shift_reward) + ")"
+	work_button.text = "Aceitar trabalho (+$" + str(shift_reward) + ")"
 	work_button.custom_minimum_size = Vector2(0, 54)
 	layout.add_child(work_button)
 	work_button.pressed.connect(func() -> void:
-		if working:
+		if working or not is_instance_valid(player):
 			return
-		working = true
-		work_button.disabled = true
-		work_button.text = "Trabalhando... aguarde"
-		status.text = "Você está cumprindo seu turno."
-		var shift_timer := Timer.new()
-		shift_timer.one_shot = true
-		shift_timer.wait_time = 8.0
-		add_child(shift_timer)
-		shift_timer.timeout.connect(func() -> void:
-			if is_instance_valid(player):
-				player.call("add_money", shift_reward)
-			status.text = "Turno concluído! Você recebeu $" + str(shift_reward) + "."
-			work_button.text = "Pagamento recebido"
-			working = false
-			shift_timer.queue_free()
-		)
-		shift_timer.start()
+		_start_mission(player, status, work_button)
 	)
 	var close_button := Button.new()
 	close_button.text = "Fechar conversa"
 	close_button.custom_minimum_size = Vector2(0, 44)
 	layout.add_child(close_button)
 	close_button.pressed.connect(_close_dialogue)
+
+func _start_mission(player: Node, status: Label, work_button: Button) -> void:
+	working = true
+	mission_active = true
+	active_player = player
+	mission_status = status
+	work_button.disabled = true
+	work_button.text = "Trabalho em andamento"
+	var offset := Vector3(0, 0, -14)
+	mission_target = player.global_position + offset
+	mission_target.y = 0.12
+	_create_mission_marker()
+	status.text = "Entrega iniciada! Siga o marcador dourado no mapa."
+	_close_dialogue()
+
+func _create_mission_marker() -> void:
+	mission_marker = Node3D.new()
+	mission_marker.name = "JobDestination"
+	mission_marker.position = mission_target
+	get_tree().current_scene.add_child(mission_marker)
+
+	var ring := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = 1.15
+	torus.outer_radius = 1.55
+	ring.mesh = torus
+	var ring_material := StandardMaterial3D.new()
+	ring_material.albedo_color = Color(1.0, 0.72, 0.12)
+	ring_material.emission_enabled = true
+	ring_material.emission = Color(1.0, 0.48, 0.04)
+	ring.material_override = ring_material
+	ring.rotation_degrees.x = 90
+	mission_marker.add_child(ring)
+
+	var beam := MeshInstance3D.new()
+	var cylinder := CylinderMesh.new()
+	cylinder.top_radius = 0.08
+	cylinder.bottom_radius = 0.08
+	cylinder.height = 3.2
+	beam.mesh = cylinder
+	beam.position.y = 1.8
+	var beam_material := StandardMaterial3D.new()
+	beam_material.albedo_color = Color(1.0, 0.78, 0.22, 0.65)
+	beam_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	beam_material.emission_enabled = true
+	beam_material.emission = Color(1.0, 0.55, 0.08)
+	beam.material_override = beam_material
+	mission_marker.add_child(beam)
+
+	var marker_label := Label3D.new()
+	marker_label.text = "DESTINO DO TRABALHO"
+	marker_label.position.y = 3.8
+	marker_label.font_size = 32
+	marker_label.modulate = Color(1.0, 0.86, 0.42)
+	marker_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	mission_marker.add_child(marker_label)
+
+func _complete_mission() -> void:
+	mission_active = false
+	working = false
+	if is_instance_valid(active_player):
+		active_player.call("add_money", shift_reward)
+	if is_instance_valid(mission_status):
+		mission_status.text = "Objetivo concluído! Você recebeu $" + str(shift_reward) + "."
+	if is_instance_valid(mission_marker):
+		mission_marker.queue_free()
+	active_player = null
+	mission_marker = null
 
 func _close_dialogue() -> void:
 	if menu_layer != null:
