@@ -210,53 +210,108 @@ function buildCity(name,centerZ,style){
  ];
  const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=mat(0x343a3d,.95),sidewalk=mat(0xb9b8ad),roofCity=mat(0x50575a,.9);
  const cx=roadCenter(centerZ);
- // Quadras, ruas transversais, calçadas e canteiros.
- for(let side of [-1,1]){
-  const avenue=new THREE.Mesh(new THREE.BoxGeometry(4,.08,430),roadCity);avenue.position.set(cx+side*34,.015,centerZ);city.add(avenue);
-  const walk=new THREE.Mesh(new THREE.BoxGeometry(3,.16,430),sidewalk);walk.position.set(cx+side*38,.08,centerZ);city.add(walk);
-  for(let r=0;r<5;r++){
-   const zoff=-180+r*88;
-   const cross=new THREE.Mesh(new THREE.BoxGeometry(180,.07,7),roadCity);cross.position.set(cx+side*112,.02,centerZ+zoff);city.add(cross);
-   for(let c=0;c<3;c++){
-    const x=cx+side*(58+c*36),z=centerZ+zoff+((c%2)*15-7);
-    const w=18+(c%2)*5,d=22+(r%2)*6;
-    let h;
-    if(style===0)h=9+(r*7+c*5)%32;
-    else if(style===1)h=24+(r*13+c*11)%68;
-    else if(style===2)h=13+(r*9+c*7)%48;
-    else h=22+(r*11+c*9)%62;
-    const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(colors[(r+c)%colors.length],.78,.08));
-    body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;city.add(body);
-    const roof=new THREE.Mesh(new THREE.BoxGeometry(w+.5,.5,d+.5),roofCity);roof.position.set(x,h+.22,z);city.add(roof);
-    // Varandas e faixas de fachada dão escala e leitura de edifícios reais.
-    if(h>24)for(let floor=1;floor<h/3.4;floor++){
-     const balcony=new THREE.Mesh(new THREE.BoxGeometry(w+.35,.12,.45),mat(0xb8c1c2,.55,.25));
-     balcony.position.set(x,h-floor*3.1,z-d/2-.24);city.add(balcony);
-    }
-    if(style===3&&r%2===0){
-     const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.72,1.2,.16),mat(0x31566a,.6,.1));sign.position.set(x,2.8,z-d/2-.12);city.add(sign);
-    }
+ // Malha urbana expandida: bairros dos dois lados da rodovia, com ruas conectadas.
+ const cityLength=1680,halfLength=cityLength/2;
+ const parallelOffsets=[48,132,216,300,384];
+ const roadMat=roadCity,sidewalkMat=sidewalk,lineMat=mat(0xe6dfb8,.9);
+ const roadY=.018;
+ for(const side of [-1,1]){
+  // Cinco avenidas paralelas por lado, todas conectadas pelas ruas transversais.
+  for(let lane=0;lane<parallelOffsets.length;lane++){
+   const x=cx+side*parallelOffsets[lane];
+   const avenue=new THREE.Mesh(new THREE.BoxGeometry(lane===0?13:9,.09,cityLength),roadMat);
+   avenue.position.set(x,roadY,centerZ);city.add(avenue);
+   for(const edge of [-1,1]){
+    const walk=new THREE.Mesh(new THREE.BoxGeometry(3,.17,cityLength),sidewalkMat);
+    walk.position.set(x+edge*(lane===0?8:6),.09,centerZ);city.add(walk);
+   }
+   // Faixas centrais tracejadas nas avenidas.
+   for(let z=-halfLength+28;z<halfLength;z+=34){
+    const dash=new THREE.Mesh(new THREE.BoxGeometry(.22,.025,13),lineMat);
+    dash.position.set(x,.075,centerZ+z);city.add(dash);
    }
   }
- }
- // Fachadas envidraçadas em instâncias: muitos detalhes sem centenas de objetos separados.
- const winGeo=new THREE.BoxGeometry(1.05,1.35,.09),wins=new THREE.InstancedMesh(winGeo,glassCity,900),dummy=new THREE.Object3D();let wi=0;
- for(let side of [-1,1])for(let r=0;r<5;r++)for(let c=0;c<3;c++){
-  const x=cx+side*(58+c*36),z=centerZ-180+r*88+((c%2)*15-7),w=18+(c%2)*5,d=22+(r%2)*6;
-  let h=style===0?9+(r*7+c*5)%32:style===1?24+(r*13+c*11)%68:style===2?13+(r*9+c*7)%48:22+(r*11+c*9)%62;
-  for(let floor=1;floor<h/3.1&&wi<900;floor++)for(let col=0;col<Math.max(2,Math.floor(w/4));col++){
-   dummy.position.set(x-w/2+2.3+col*4.1,floor*3.1,z-d/2-.06);dummy.updateMatrix();wins.setMatrixAt(wi++,dummy.matrix);
+  // Ruas transversais ligam todos os bairros e criam cruzamentos de verdade.
+  for(let row=0;row<13;row++){
+   const zoff=-780+row*130;
+   const cross=new THREE.Mesh(new THREE.BoxGeometry(430,.09,10),roadMat);
+   cross.position.set(cx+side*220,roadY,centerZ+zoff);city.add(cross);
+   for(const edge of [-1,1]){
+    const walk=new THREE.Mesh(new THREE.BoxGeometry(430,.16,2.5),sidewalkMat);
+    walk.position.set(cx+side*220,.09,centerZ+zoff+edge*7);city.add(walk);
+   }
+   // Travessias de pedestres nos cruzamentos principais.
+   if(row%2===0)for(let stripe=0;stripe<7;stripe++){
+    const crosswalk=new THREE.Mesh(new THREE.BoxGeometry(2.2,.035,1.15),lineMat);
+    crosswalk.position.set(cx+side*(52+stripe*3.1),.085,centerZ+zoff-6);city.add(crosswalk);
+   }
   }
- }
- wins.count=wi;wins.instanceMatrix.needsUpdate=true;city.add(wins);
- // Iluminação pública e árvores nas avenidas.
- for(let side of [-1,1])for(let i=0;i<12;i++){
-  const x=cx+side*43,z=centerZ-205+i*37;
-  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.17,7,8),mat(0x42494b,.7,.5));pole.position.set(x,3.5,z);city.add(pole);
-  const arm=new THREE.Mesh(new THREE.BoxGeometry(2,.13,.13),mat(0x42494b,.7,.5));arm.position.set(x+side,6.8,z);city.add(arm);
-  const lamp=new THREE.Mesh(new THREE.BoxGeometry(.7,.18,.45),mat(0xffe4a5,.3,.1));lamp.position.set(x+side*1.7,6.7,z);city.add(lamp);
-  const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.18,.25,2.8,7),mat(0x674a32));trunk.position.set(x+side*7,1.4,z);city.add(trunk);
-  const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(2.1,1),mat([0x3e6843,0x557b4c,0x66834d][i%3]));crown.position.set(x+side*7,3.7,z);crown.scale.y=1.2;city.add(crown);
+  // Quadras completas entre cada par de avenidas.
+  for(let band=0;band<4;band++)for(let row=0;row<12;row++){
+   const inner=parallelOffsets[band],outer=parallelOffsets[band+1];
+   const x=cx+side*((inner+outer)/2);
+   const z=centerZ-715+row*130;
+   const w=38+(row%3)*5,d=76+(band%2)*8;
+   const lot=new THREE.Mesh(new THREE.BoxGeometry(outer-inner-15,.12,112),mat(0x71815f));
+   lot.position.set(x,.015,z);city.add(lot);
+   // Pequenos jardins internos, árvores e estacionamentos entre edifícios.
+   const isTower=style===1||style===3||(style===0&&row%4===0);
+   const h=isTower?22+((row*11+band*17+side*3+style*7)%54):7+((row*5+band*9)%10);
+   const width=isTower?27:24+(row%2)*5,depth=isTower?34:28;
+   const body=new THREE.Mesh(new THREE.BoxGeometry(width,h,depth),mat(colors[(row+band+style)%colors.length],.78,.08));
+   body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;city.add(body);
+   const roof=new THREE.Mesh(new THREE.BoxGeometry(width+.7,.55,depth+.7),roofCity);
+   roof.position.set(x,h+.25,z);city.add(roof);
+   // Janelas repetidas em instâncias para manter a cidade leve no celular.
+   const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
+   for(let floor=0;floor<floors;floor++)for(let col=0;col<cols;col++){
+    const wx=x-width/2+2.2+col*4.1,wy=2+floor*3.15;
+    const win=new THREE.Mesh(new THREE.BoxGeometry(1.05,1.25,.08),glassCity);
+    win.position.set(wx,wy,z-depth/2-.08);city.add(win);
+    if(isTower){
+     const sideWin=new THREE.Mesh(new THREE.BoxGeometry(.08,1.25,1.05),glassCity);
+     sideWin.position.set(x+width/2+.08,wy,z-depth/2+2+col*4.1);city.add(sideWin);
+    }
+   }
+   // Garagens e portas para casas de bairro.
+   if(!isTower){
+    const door=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.7,.12),mat(0x55453a));
+    door.position.set(x,1.35,z-depth/2-.1);city.add(door);
+    const porch=new THREE.Mesh(new THREE.BoxGeometry(width+2,.3,5),sidewalkMat);
+    porch.position.set(x,.18,z-depth/2-3);city.add(porch);
+   }
+   // Árvores em calçadas e pequenos canteiros.
+   for(const sideOffset of [-1,1]){
+    const tx=x+sideOffset*(width/2+7),tz=z+depth/2+7;
+    const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.2,.28,3,7),mat(0x674a32));
+    trunk.position.set(tx,1.5,tz);city.add(trunk);
+    const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(2.25,1),mat([0x3e6843,0x557b4c,0x66834d][(row+band)%3]));
+    crown.position.set(tx,3.9,tz);crown.scale.y=1.15;city.add(crown);
+   }
+  }
+  // Postes e iluminação ao longo das avenidas e ruas secundárias.
+  for(let lane=0;lane<parallelOffsets.length;lane++){
+   const x=cx+side*(parallelOffsets[lane]+(lane===0?10:7));
+   for(let i=0;i<30;i++){
+    const z=centerZ-790+i*54;
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.17,7,8),mat(0x42494b,.7,.5));
+    pole.position.set(x,3.5,z);city.add(pole);
+    const arm=new THREE.Mesh(new THREE.BoxGeometry(2,.13,.13),mat(0x42494b,.7,.5));
+    arm.position.set(x+side,6.8,z);city.add(arm);
+    const lamp=new THREE.Mesh(new THREE.BoxGeometry(.7,.18,.45),mat(0xffe4a5,.3,.1));
+    lamp.position.set(x+side*1.7,6.7,z);city.add(lamp);
+   }
+  }
+  // Praças públicas em quadras selecionadas.
+  for(let parkIndex=0;parkIndex<4;parkIndex++){
+   const px=cx+side*260,pz=centerZ-585+parkIndex*390;
+   const park=new THREE.Mesh(new THREE.BoxGeometry(62,.2,72),mat(0x4d7548));
+   park.position.set(px,.08,pz);city.add(park);
+   for(let treeIndex=0;treeIndex<8;treeIndex++){
+    const tree=new THREE.Mesh(new THREE.IcosahedronGeometry(2.5,1),mat(0x426d43));
+    tree.position.set(px-22+(treeIndex%4)*14,3,pz-22+Math.floor(treeIndex/4)*40);city.add(tree);
+   }
+  }
  }
  // Marcos urbanos próprios de cada destino.
  if(style===0){
