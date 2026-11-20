@@ -11,6 +11,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Personagem provisório em terceira pessoa.
 - Câmera acompanhando o personagem.
 - Ações de movimento por teclado e botões de toque na tela.
+- Primeiro carro provisório com entrada/saída e condução básica usando os mesmos controles.
 - Primeiras construções, uma casa de madeira, fachada de mercado e árvores.
 - Iluminação direcional, materiais e colisões básicas.
 
