@@ -136,6 +136,14 @@ func _build_road_details() -> void:
 		_add_visual_box("Crosswalk stripe", Vector3(-7.2, 0.10, stripe_z), Vector3(2.2, 0.035, 1.0), stripe_material)
 		_add_visual_box("Crosswalk stripe", Vector3(7.2, 0.10, stripe_z), Vector3(2.2, 0.035, 1.0), stripe_material)
 
+	var lane_paint := StandardMaterial3D.new()
+	lane_paint.albedo_color = Color(0.88, 0.82, 0.58)
+	lane_paint.roughness = 0.95
+	for dash_z in range(-80, 81, 12):
+		_add_visual_box("Road center dash", Vector3(0, 0.085, float(dash_z)), Vector3(0.16, 0.025, 5.5), lane_paint)
+	for dash_x in range(-80, 81, 12):
+		_add_visual_box("Road center dash", Vector3(float(dash_x), 0.085, 0), Vector3(5.5, 0.025, 0.16), lane_paint)
+
 	for lamp_position in [Vector3(-9.0, 0.0, -9.0), Vector3(9.0, 0.0, -9.0), Vector3(-9.0, 0.0, 9.0), Vector3(9.0, 0.0, 9.0)]:
 		_add_street_lamp(lamp_position)
 
