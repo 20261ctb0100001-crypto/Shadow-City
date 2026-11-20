@@ -5,6 +5,7 @@ const CAR_SCRIPT = preload("res://scripts/car.gd")
 const SHOP_SCRIPT = preload("res://scripts/shop.gd")
 const ANIMAL_SCRIPT = preload("res://scripts/animal.gd")
 const CITIZEN_SCRIPT = preload("res://scripts/citizen.gd")
+const TRAFFIC_SCRIPT = preload("res://scripts/traffic.gd")
 
 func _ready() -> void:
 	_build_environment()
@@ -13,6 +14,7 @@ func _ready() -> void:
 	_spawn_city_identity()
 	_spawn_animals()
 	_spawn_citizens()
+	_spawn_traffic()
 	_spawn_market_interaction()
 	_spawn_player()
 
@@ -182,3 +184,24 @@ func _spawn_citizen(person_name: String, job: String, traits: String, line: Stri
 	citizen.set("favorite_color", outfit)
 	citizen.set("walk_speed", speed)
 	add_child(citizen)
+
+func _spawn_traffic() -> void:
+	# Carros autônomos circulam pelas duas avenidas do bairro.
+	_spawn_traffic_car(Vector3(-2.2, 0.0, -48.0), Vector3(0, 0, 1), 8.0, Color(0.72, 0.16, 0.12))
+	_spawn_traffic_car(Vector3(2.2, 0.0, 28.0), Vector3(0, 0, -1), 6.5, Color(0.16, 0.32, 0.68))
+	_spawn_traffic_car(Vector3(-32.0, 0.0, -2.2), Vector3(1, 0, 0), 7.2, Color(0.72, 0.68, 0.52))
+	_spawn_traffic_car(Vector3(42.0, 0.0, 2.2), Vector3(-1, 0, 0), 8.5, Color(0.18, 0.48, 0.30))
+	_spawn_traffic_car(Vector3(2.2, 0.0, -8.0), Vector3(0, 0, -1), 7.5, Color(0.48, 0.28, 0.62))
+	_spawn_traffic_car(Vector3(-48.0, 0.0, 2.2), Vector3(1, 0, 0), 6.0, Color(0.72, 0.38, 0.12))
+
+func _spawn_traffic_car(spawn_position: Vector3, axis: Vector3, speed: float, paint: Color) -> void:
+	var traffic_car := Node3D.new()
+	traffic_car.position = spawn_position
+	traffic_car.set_script(TRAFFIC_SCRIPT)
+	traffic_car.set("travel_axis", axis)
+	traffic_car.set("travel_speed", speed)
+	traffic_car.set("lane_offset", Vector3(spawn_position.x, 0.0, spawn_position.z) - axis * spawn_position.dot(axis))
+	traffic_car.set("route_min", -54.0)
+	traffic_car.set("route_max", 54.0)
+	traffic_car.set("vehicle_color", paint)
+	add_child(traffic_car)
