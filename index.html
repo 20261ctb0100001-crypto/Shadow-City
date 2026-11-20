@@ -85,7 +85,8 @@ window.selectedTruckChoice='mercedes';
   document.querySelectorAll('.truck-choice').forEach(b=>b.classList.toggle('selected',b.dataset.model===key));
   if(typeof window.applyTruckChoice==='function')window.applyTruckChoice(key);
  }
- document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{window.selectedTruckChoice=b.dataset.model;sync()}));
+ const modelColors={mercedes:'#e8e8e2',volvo:'#1769aa',scania:'#b52e32',iveco:'#f2f2ed'};
+ document.querySelectorAll('.truck-choice').forEach(b=>b.addEventListener('click',()=>{window.selectedTruckChoice=b.dataset.model;color.value=modelColors[b.dataset.model]||'#e8e8e2';window.selectedTruckColor=color.value;sync()}));
  color.addEventListener('input',()=>{window.selectedTruckColor=color.value;sync()});
  document.getElementById('playTruck').addEventListener('click',async()=>{
   if(!window.gameReady){status.textContent='O motor 3D ainda está iniciando. Aguarde alguns segundos.';return}
