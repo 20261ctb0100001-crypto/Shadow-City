@@ -26,6 +26,10 @@ var mission_marker: Node3D
 var mission_status: Label
 var mission_hud_layer: CanvasLayer
 var active_player: Node
+var citizen_legs: Array[Node3D] = []
+var citizen_arms: Array[Node3D] = []
+var gait_time: float = 0.0
+var citizen_torso: MeshInstance3D
 
 func _ready() -> void:
 	add_to_group("citizens")
@@ -47,6 +51,7 @@ func _build_person() -> void:
 	capsule.height = 1.7
 	body.mesh = capsule
 	body.position.y = 0.85
+	citizen_torso = body
 	body.material_override = material
 	add_child(body)
 
@@ -60,6 +65,42 @@ func _build_person() -> void:
 	skin.albedo_color = Color(0.72, 0.52, 0.39)
 	head.material_override = skin
 	add_child(head)
+
+	var limb_material := StandardMaterial3D.new()
+	limb_material.albedo_color = favorite_color.darkened(0.16)
+	limb_material.roughness = 0.88
+	for side in [-1.0, 1.0]:
+		var leg_pivot := Node3D.new()
+		leg_pivot.position = Vector3(side * 0.16, 0.78, 0.0)
+		add_child(leg_pivot)
+		var leg_mesh := MeshInstance3D.new()
+		var leg_shape := CapsuleMesh.new()
+		leg_shape.radius = 0.105
+		leg_shape.height = 0.78
+		leg_mesh.mesh = leg_shape
+		leg_mesh.position.y = -0.34
+		leg_mesh.material_override = limb_material
+		leg_pivot.add_child(leg_mesh)
+		citizen_legs.append(leg_pivot)
+		var arm_pivot := Node3D.new()
+		arm_pivot.position = Vector3(side * 0.38, 1.38, 0.0)
+		add_child(arm_pivot)
+		var arm_mesh := MeshInstance3D.new()
+		var arm_shape := CapsuleMesh.new()
+		arm_shape.radius = 0.085
+		arm_shape.height = 0.62
+		arm_mesh.mesh = arm_shape
+		arm_mesh.position.y = -0.27
+		arm_mesh.material_override = limb_material
+		arm_pivot.add_child(arm_mesh)
+		var hand := MeshInstance3D.new()
+		var hand_shape := SphereMesh.new()
+		hand_shape.radius = 0.09
+		hand.mesh = hand_shape
+		hand.position.y = -0.59
+		hand.material_override = skin
+		arm_pivot.add_child(hand)
+		citizen_arms.append(arm_pivot)
 
 	var collision := CollisionShape3D.new()
 	var shape := CapsuleShape3D.new()
@@ -109,8 +150,19 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = 0.0
 	move_and_slide()
-	if Vector2(velocity.x, velocity.z).length() > 0.1:
-		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), delta * 3.0)
+	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
+	var walk_amount := clampf(horizontal_speed / maxf(walk_speed, 0.01), 0.0, 1.0)
+	if walk_amount > 0.03:
+		gait_time += delta * (7.5 + horizontal_speed * 1.8)
+		rotation.y = lerp_angle(rotation.y, atan2(-velocity.x, -velocity.z), delta * 5.0)
+	for i in range(citizen_legs.size()):
+		var phase := gait_time + (PI if i == 1 else 0.0)
+		citizen_legs[i].rotation.x = lerpf(citizen_legs[i].rotation.x, sin(phase) * 0.48 * walk_amount, delta * 9.0)
+	for i in range(citizen_arms.size()):
+		var phase := gait_time + (PI if i == 0 else 0.0)
+		citizen_arms[i].rotation.x = lerpf(citizen_arms[i].rotation.x, sin(phase) * 0.34 * walk_amount - 0.08, delta * 8.0)
+	if is_instance_valid(citizen_torso):
+		citizen_torso.position.y = lerpf(citizen_torso.position.y, 0.85 + absf(sin(gait_time * 2.0)) * 0.025 * walk_amount, delta * 8.0)
 
 func _stop_horizontal(delta: float) -> void:
 	velocity.x = move_toward(velocity.x, 0.0, 5.0 * delta)
