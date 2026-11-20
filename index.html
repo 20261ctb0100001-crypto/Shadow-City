@@ -58,7 +58,7 @@
 <script type="module">
 const load=document.getElementById('load');
 let THREE;
-try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e){THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}
+try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,100,430);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,600);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(renderer.domElement);
