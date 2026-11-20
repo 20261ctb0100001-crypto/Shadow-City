@@ -8,6 +8,7 @@ extends CharacterBody3D
 var current_speed: float = 0.0
 var driver: CharacterBody3D = null
 var vehicle_camera: Camera3D
+var just_entered: bool = false
 
 func _ready() -> void:
 	add_to_group("vehicles")
@@ -67,6 +68,7 @@ func enter(player: CharacterBody3D) -> void:
 	if driver != null:
 		return
 	driver = player
+	just_entered = true
 	driver.visible = false
 	driver.set_physics_process(false)
 	var player_collision := driver.get_node_or_null("CollisionShape3D") as CollisionShape3D
@@ -78,9 +80,10 @@ func _physics_process(delta: float) -> void:
 	if driver == null:
 		return
 
-	if Input.is_action_just_pressed("interact"):
+	if Input.is_action_just_pressed("interact") and not just_entered:
 		_exit_vehicle()
 		return
+	just_entered = false
 
 	var throttle := Input.get_action_strength("move_forward") - Input.get_action_strength("move_backward")
 	var steering := Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
