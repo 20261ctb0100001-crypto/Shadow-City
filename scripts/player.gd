@@ -25,6 +25,7 @@ func _create_placeholder_character() -> void:
 	add_child(visual)
 
 	body_collision = CollisionShape3D.new()
+	body_collision.name = "CollisionShape3D"
 	var shape := CapsuleShape3D.new()
 	shape.radius = 0.38
 	shape.height = 1.75
@@ -153,4 +154,4 @@ func _try_enter_vehicle() -> void:
 				closest_distance = distance
 				closest_vehicle = item
 	if closest_vehicle != null:
-		closest_vehicle.enter(self)
+		closest_vehicle.call("enter", self)
