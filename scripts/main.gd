@@ -13,6 +13,7 @@ func _ready() -> void:
 	_spawn_world_clock()
 	_build_city()
 	_build_street_details()
+	_build_outer_districts()
 	_spawn_city_identity()
 	_spawn_animals()
 	_spawn_citizens()
@@ -24,6 +25,12 @@ func _build_environment() -> void:
 	var world := WorldEnvironment.new()
 	world.name = "WorldEnvironment"
 	var environment := Environment.new()
+	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	environment.tonemap_exposure = 1.0
+	environment.tonemap_white = 6.0
+	environment.fog_enabled = true
+	environment.fog_light_color = Color(0.62, 0.70, 0.80)
+	environment.fog_density = 0.0018
 	environment.background_mode = Environment.BG_SKY
 	environment.sky = Sky.new()
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
@@ -40,9 +47,9 @@ func _build_environment() -> void:
 	add_child(sun)
 
 func _build_city() -> void:
-	_add_box("Ground", Vector3(0, -0.25, 0), Vector3(120, 0.5, 120), Color(0.22, 0.30, 0.22))
-	_add_box("Main road", Vector3(0, 0.02, 0), Vector3(12, 0.08, 120), Color(0.12, 0.13, 0.15))
-	_add_box("Cross road", Vector3(0, 0.03, 0), Vector3(120, 0.08, 12), Color(0.12, 0.13, 0.15))
+	_add_box("Ground", Vector3(0, -0.25, 0), Vector3(180, 0.5, 180), Color(0.22, 0.30, 0.22))
+	_add_box("Main road", Vector3(0, 0.02, 0), Vector3(12, 0.08, 180), Color(0.12, 0.13, 0.15))
+	_add_box("Cross road", Vector3(0, 0.03, 0), Vector3(180, 0.08, 12), Color(0.12, 0.13, 0.15))
 
 	for i in range(-2, 3):
 		for j in range(-2, 3):
@@ -55,6 +62,36 @@ func _build_city() -> void:
 			if (i + j) % 3 == 0:
 				building_color = Color(0.48, 0.34, 0.24)
 			_add_box("Building", Vector3(x, height * 0.5, z), Vector3(10, height, 12), building_color)
+
+
+func _build_outer_districts() -> void:
+	_add_district_building("ESCOLA MUNICIPAL", Vector3(-65, 3.2, -62), Vector3(18, 6.4, 14), Color(0.72, 0.62, 0.38))
+	_add_district_building("HOSPITAL", Vector3(65, 4.0, -62), Vector3(18, 8.0, 14), Color(0.72, 0.76, 0.78))
+	_add_district_building("RESTAURANTE", Vector3(-65, 2.8, 62), Vector3(18, 5.6, 14), Color(0.55, 0.27, 0.18))
+	_add_district_building("CENTRO COMERCIAL", Vector3(65, 4.5, 62), Vector3(20, 9.0, 16), Color(0.30, 0.38, 0.48))
+	_add_box("School entrance", Vector3(-65, 1.1, -54.85), Vector3(3.0, 2.2, 0.18), Color(0.20, 0.16, 0.10))
+	_add_box("Hospital entrance", Vector3(65, 1.2, -54.85), Vector3(3.0, 2.4, 0.18), Color(0.18, 0.35, 0.42))
+	_add_box("Restaurant entrance", Vector3(-65, 1.1, 69.15), Vector3(3.0, 2.2, 0.18), Color(0.20, 0.12, 0.08))
+	_add_box("Shopping entrance", Vector3(65, 1.2, 70.15), Vector3(3.0, 2.4, 0.18), Color(0.12, 0.18, 0.25))
+	_add_district_sign("DISTRITO ESCOLAR", Vector3(-65, 7.4, -52))
+	_add_district_sign("DISTRITO DE SAÚDE", Vector3(65, 9.0, -52))
+	_add_district_sign("BAIRRO GASTRONÔMICO", Vector3(-65, 6.5, 77))
+	_add_district_sign("CENTRO COMERCIAL", Vector3(65, 10.0, 78))
+
+func _add_district_building(label: String, position: Vector3, dimensions: Vector3, color: Color) -> void:
+	_add_box(label, position, dimensions, color)
+	var front_z := position.z + dimensions.z * 0.5 + 0.08
+	for window_x in [-5.5, 0.0, 5.5]:
+		_add_box(label + " window", Vector3(position.x + window_x, position.y + 0.7, front_z), Vector3(2.2, 1.8, 0.12), Color(0.12, 0.28, 0.38))
+
+func _add_district_sign(label: String, position: Vector3) -> void:
+	var sign := Label3D.new()
+	sign.text = label
+	sign.position = position
+	sign.font_size = 38
+	sign.modulate = Color(1.0, 0.88, 0.58)
+	sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	add_child(sign)
 
 func _build_street_details() -> void:
 	# Small wooden house to establish the residential look.
