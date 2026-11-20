@@ -17,6 +17,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 - Casa inicial com interior mobiliado em área própria do mapa; o jogador pode entrar e sair pelo botão AÇÃO.
 - Interações domésticas: descansar na cama, preparar comida na geladeira (custa $10) e tomar banho no chuveiro; as necessidades e o dinheiro são atualizados e salvos.
 - Mapa ampliado com quatro zonas de referência: escola, hospital, bairro gastronômico e centro comercial.
+- Interiores separados e acessíveis para escola, hospital, restaurante e centro comercial, com piso e paredes com colisão.
 - Necessidades e dinheiro incluídos no salvamento local.
 - Ajustes iniciais de apresentação com tonemapping cinematográfico, neblina leve, calçadas, faixas de pedestres e postes com iluminação.
 - Primeira área identificada como Ponta Grossa, Paraná, Brasil.
@@ -40,7 +41,7 @@ Um simulador de vida em mundo aberto inspirado em cidades reais: exploração, v
 7. Expandir a loja com mais roupas, barbearia e personalização.
 8. Substituir blocos provisórios por modelos 3D e materiais mais detalhados.
 9. Criar novas regiões inspiradas em cidades reais, começando por bairros e pontos reconhecíveis.
-10. Criar interiores acessíveis e interações funcionais para escola, hospital, restaurante e centro comercial; ampliar a casa inicial com objetos interativos.
+10. Expandir os interiores e os serviços dos prédios públicos, com mais atividades e objetos interativos.
 11. Adicionar modelos 3D profissionais, animações, sons e otimização gráfica.
 12. Instalar Godot 4, testar o projeto, configurar exportação Android e gerar APK/AAB (ainda não realizado).
 
