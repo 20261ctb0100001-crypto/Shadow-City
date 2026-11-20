@@ -297,6 +297,23 @@ func _spawn_citizen(person_name: String, job: String, traits: String, line: Stri
 	citizen.set("shift_reward", reward)
 	citizen.set("favorite_color", outfit)
 	citizen.set("walk_speed", speed)
+	var work_spot := spawn_position + Vector3(5, 0, -2)
+	var leisure_spot := spawn_position + Vector3(-3, 0, 6)
+	match job:
+		"Barista":
+			work_spot = Vector3(-19, 0, 11)
+			leisure_spot = Vector3(-5, 0, 28)
+		"Mecânico":
+			work_spot = Vector3(14, 0, 15)
+			leisure_spot = Vector3(0, 0, -18)
+		"Jardineira":
+			work_spot = Vector3(0, 0, -18)
+			leisure_spot = Vector3(8, 0, -8)
+		"Entregador":
+			work_spot = Vector3(-24, 0, -22)
+			leisure_spot = Vector3(-8, 0, 28)
+	citizen.set("work_position", work_spot)
+	citizen.set("leisure_position", leisure_spot)
 	add_child(citizen)
 
 
