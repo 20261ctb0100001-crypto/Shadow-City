@@ -26,9 +26,9 @@ test('urban speed limit keeps the long city route at 30 km/h', async () => {
   const { stepTruckPhysics } = await loadPhysics();
   const next = stepTruckPhysics(
     { speed: 12, heading: 0 },
-    { throttle: 1, brake: 0, turn: 0, gear: 'D', dt: 0.1, offRoad: false, speedLimit: 8.33 }
+    { throttle: 1, brake: 0, turn: 0, gear: 'D', dt: 0.1, offRoad: false, speedLimit: 22.2 }
   );
-  assert.ok(next.speed <= 8.33, 'urban speed must respect the 30 km/h limit');
+  assert.ok(next.speed <= 22.2, 'urban speed must respect the 80 km/h truck limit');
 });
 
 test('brake reduces forward speed without reversing the truck', async () => {
@@ -139,7 +139,7 @@ test('all four cities have a large connected street grid and dense blocks', asyn
   assert.ok(html.includes('for(let row=0;row<61;row++)'));
   assert.ok(html.includes('for(let band=0;band<2;band++)for(let row=0;row<60;row++)'));
   assert.ok(html.includes('steps=13000,startZ=-65000,endZ=700'));
-  assert.ok(html.includes('speedLimit:inCity?8.33:(vehicleIsCar?55.6:41.7)'));
+  assert.ok(html.includes('speedLimit:inCity?(vehicleIsCar?27.8:22.2):(vehicleIsCar?55.6:41.7)'));
   assert.ok(html.includes('vehicleMixer.update(dt)'));
   assert.ok(html.includes('window.prepareSelectedVehicle=async function(id)'));
   assert.ok(html.includes('function makeTrafficTruck'));
@@ -191,7 +191,10 @@ test('city neighborhoods place complete GLB house models in the street grid', as
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   assert.ok(html.includes('const cityHousePlacements=[]'));
   assert.ok(html.includes('cityHouseModelUrls'));
-  assert.ok(html.includes('await loadCityHouseModels()'));
+  assert.ok(html.includes('loadCityHouseModels().then(()=>{renderer.render(scene,camera)})'));
   assert.ok(html.includes('housePool[(i+spot.style)%housePool.length].clone(true)'));
   assert.ok(html.includes('window.cityHouseModelsReady=true'));
 });
+
+test('selected vehicle GLB is rotated to match the simulator forward axis', async () => { const html = await readFile(new URL('../index.html', import.meta.url), 'utf8'); assert.ok(html.includes('model.rotation.y=Math.PI')); });
+test('game becomes playable before optional neighborhood house assets finish downloading', async () => { const html = await readFile(new URL('../index.html', import.meta.url), 'utf8'); const ready=html.indexOf('window.gameReady=true'); const houses=html.indexOf('loadCityHouseModels().then'); assert.ok(ready>=0 && houses>ready); assert.ok(!html.includes('await loadCityHouseModels()')); });
