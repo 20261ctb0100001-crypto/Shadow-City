@@ -22,7 +22,7 @@ test('drive physics accelerates a loaded truck and respects the speed cap', asyn
 });
 
 
-test('urban speed limit keeps the long city route at 30 km/h', async () => {
+test('urban speed limit allows trucks up to 80 km/h', async () => {
   const { stepTruckPhysics } = await loadPhysics();
   const next = stepTruckPhysics(
     { speed: 12, heading: 0 },
@@ -164,8 +164,8 @@ test('selected GLB model replaces the procedural player vehicle and uses car or 
   assert.ok(html.includes('three/addons/loaders/GLTFLoader.js'));
   assert.ok(html.includes('playerModelGroup.add(model)'));
   assert.ok(html.includes('vehicleIsCar?55.6:41.7'));
-  assert.ok(html.includes('vehicleIsCar?9.5:6.5'));
-  assert.ok(html.includes('vehicleIsCar?10.5:8.5'));
+  assert.ok(html.includes('acceleration:vehicleIsCar?14:11.5'));
+  assert.ok(html.includes('brakeForce:vehicleIsCar?13:12'));
 });
 
 test('house blocks include roofs, framed windows, garages and porches', async () => {
