@@ -62,7 +62,7 @@
 #workshopEnter{position:fixed;z-index:40;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);display:none;min-width:220px;padding:14px 20px;border:1px solid #ffffff80;border-radius:14px;background:linear-gradient(110deg,#f0b94b,#ffe09a);color:#241a08;font-weight:1000;font-size:14px;letter-spacing:1px;box-shadow:0 8px 28px #0009;pointer-events:auto}
 #workshopEnter small{display:block;font-size:10px;letter-spacing:.5px;margin-top:3px}
 /* Garagem com catálogo de 50 modelos 3D */
-#garage{position:fixed;inset:0;display:grid;place-items:center;padding:10px;background:radial-gradient(ellipse at 50% 15%,#354b55 0%,#17242c 58%,#0b1116 100%);z-index:50}
+#garage{position:fixed;inset:0;display:none;place-items:center;padding:10px;background:radial-gradient(ellipse at 50% 15%,#354b55 0%,#17242c 58%,#0b1116 100%);z-index:50}
 .garage-card{width:min(1120px,98vw);max-height:96vh;overflow:hidden;padding:clamp(12px,2vw,24px);border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#263943f5,#101920f7);box-shadow:0 18px 70px #000b;text-align:left;display:flex;flex-direction:column;gap:10px}
 .garage-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.garage-heading h1{margin:0 0 5px;font-size:clamp(19px,3vw,29px);letter-spacing:1px}.garage-heading .sub{margin:0;color:#c5d3d9;font-size:clamp(11px,1.4vw,14px)}.garage-count{display:flex;flex-direction:column;align-items:center;border:1px solid #ffffff24;border-radius:12px;padding:6px 12px;background:#0c151d}.garage-count strong{font-size:24px;color:#73e0b2}.garage-count span{font-size:9px;letter-spacing:1px;color:#bdcbd0}
 .garage-tabs{display:flex;gap:8px}.garage-tab{flex:1;padding:11px;border:1px solid #ffffff35;border-radius:10px;background:#0b151dcc;color:#e9f0f2;font-weight:900;letter-spacing:.7px}.garage-tab.active{background:#1b493f;border:2px solid #50d5a4;color:#fff}.garage-tab b{margin-left:5px;color:#83e7bf}
@@ -104,7 +104,7 @@ window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicl
  async function loadRealPhoto(img){const query=img.dataset.photoQuery;if(!query)return;let pending=photoCache.get(query);if(!pending){pending=fetchCommonsPhoto(query);photoCache.set(query,pending)}try{showPhoto(img,await pending)}catch(error){photoCache.delete(query);img.alt='Fotografia não encontrada para '+img.dataset.photoLabel;img.classList.add('photo-missing');const credit=img.parentElement.querySelector('.photo-credit');if(credit)credit.textContent='Foto indisponível · consultar fonte'}}
  function observePhoto(img){if('IntersectionObserver' in window){if(!window.vehiclePhotoObserver)window.vehiclePhotoObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){window.vehiclePhotoObserver.unobserve(entry.target);loadRealPhoto(entry.target)}}),{root:grid,rootMargin:'260px'});window.vehiclePhotoObserver.observe(img)}else loadRealPhoto(img)}
  function render(){const list=catalog[window.selectedVehicleType];grid.innerHTML=list.map(v=>'<button type="button" class="vehicle-choice'+(v.id===window.selectedVehicleId?' selected':'')+'" data-id="'+v.id+'"><img data-photo-query="'+v.photoQuery+'" data-photo-label="'+v.photoLabel+'" alt="Carregando fotografia real de '+v.photoLabel+'" loading="lazy" decoding="async"><b>'+v.photoLabel+'</b><small>'+v.category+' · veículo de referência</small><a class="photo-credit" href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Buscando foto real...</a></button>').join('');grid.querySelectorAll('img[data-photo-query]').forEach(observePhoto);tabs.forEach(b=>b.classList.toggle('active',b.dataset.type===window.selectedVehicleType));sync()}
- document.getElementById('workshopEnter').addEventListener('click',()=>{if(!window.gameReady)return;document.getElementById('garage').style.display='grid';status.textContent='Escolha seu veículo e personalize a cor.';});
+ document.getElementById('workshopEnter').addEventListener('click',()=>{if(!window.gameReady)return;window.workshopMenuOpen=true;document.getElementById('garage').style.display='grid';status.textContent='Escolha seu veículo, personalize a cor e confirme para sair da oficina.';});
  tabs.forEach(tab=>tab.addEventListener('click',()=>{window.selectedVehicleType=tab.dataset.type;window.selectedVehicleId=catalog[window.selectedVehicleType][0].id;color.value=window.selectedVehicleType==='cars'?'#2876b8':'#e8e8e2';render()}));
  grid.addEventListener('click',e=>{const card=e.target.closest('.vehicle-choice');if(!card)return;const item=catalog[window.selectedVehicleType].find(v=>v.id===card.dataset.id);if(item){window.selectedVehicleId=item.id;sync()}});
  color.addEventListener('input',sync);
@@ -114,7 +114,7 @@ window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicl
   try{if(typeof window.prepareSelectedVehicle!=='function')throw new Error('O carregador de veículos ainda não está pronto.');const loaded=await window.prepareSelectedVehicle(window.selectedVehicleId);if(!loaded)throw new Error('Não foi possível carregar esse modelo. Tente outro veículo.');
    const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
    if(mobile){try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}try{if(screen.orientation&&screen.orientation.lock){try{await screen.orientation.lock('landscape-primary')}catch(_){await screen.orientation.lock('landscape')}}}catch(_){}}
-   document.getElementById('garage').style.display='none';document.getElementById('workshopEnter').style.display='none';document.getElementById('mission').innerHTML='OFICINA<br>Dirija pela cidade e volte quando quiser trocar de veículo.';
+   document.getElementById('garage').style.display='none';window.workshopMenuOpen=false;document.getElementById('workshopEnter').style.display='none';document.getElementById('mission').innerHTML='OFICINA<br>Dirija pela cidade e volte quando quiser trocar de veículo.';
   }catch(err){status.textContent=err.message||'Falha ao carregar o veículo.'}finally{button.disabled=false;button.textContent='JOGAR'}
  });
  window.addEventListener('error',e=>{if(window.gameReady)return;status.textContent='Não foi possível iniciar o jogo: '+(e.message||'erro de inicialização')+'. Atualize a página.'});
@@ -420,6 +420,43 @@ workshopBox(.35,5.7,8.2,workshopGlass,-11.45,2.85,2.8);workshopBox(.3,2.6,3.8,wo
 workshopBox(1,.25,24,workshopTrim,-12.2,8.65,0);
 const signCanvas=document.createElement('canvas');signCanvas.width=768;signCanvas.height=180;const signCtx=signCanvas.getContext('2d');signCtx.fillStyle='#17252c';signCtx.fillRect(0,0,768,180);signCtx.fillStyle='#f4c45e';signCtx.font='bold 76px Arial';signCtx.textAlign='center';signCtx.fillText('OFICINA',384,112);const signTex=new THREE.CanvasTexture(signCanvas);signTex.colorSpace=THREE.SRGBColorSpace;const signMesh=new THREE.Mesh(new THREE.PlaneGeometry(12,2.8),new THREE.MeshBasicMaterial({map:signTex}));signMesh.position.set(-11.82,7.3,1.8);signMesh.rotation.y=-Math.PI/2;workshopGroup.add(signMesh);
 workshopGroup.position.copy(workshopPosition);scene.add(workshopGroup);
+// Detalhes gratuitos e leves da oficina: cobertura, pilares, iluminação, sinalização e área de serviço.
+const workshopYellow=mat(0xe5b13e,.72),workshopDark=mat(0x202a30,.82),workshopLight=new THREE.MeshStandardMaterial({color:0xffe2a1,emissive:0xffc45b,emissiveIntensity:1.1});
+workshopBox(2.2,.28,21,workshopRoof,-12.7,6.15,0); // marquise sobre os boxes
+for(const z of [-8.2,8.2]){
+ workshopBox(.55,6.1,.55,workshopYellow,-12.45,3.05,z);
+ workshopBox(.72,.2,.72,workshopDark,-12.45,.1,z);
+}
+for(const z of [-5.5,-1.5,2.5,6.5]){
+ workshopBox(.12,.12,7.2,workshopDark,-11.27,5.65,z);
+ workshopBox(.16,.18,6.7,workshopLight,-11.18,5.55,z);
+}
+for(const bay of [-1.5,7]){
+ // Guias amarelas no piso e faixas de segurança nas laterais.
+ for(const side of [-1,1]){
+  workshopBox(.18,.035,8.5,workshopYellow,side*3.7,.22,bay);
+  for(let stripe=0;stripe<5;stripe++)workshopBox(.08,.045,.42,workshopYellow,side*4.05,.24,bay-3.5+stripe*1.7);
+ }
+ // Armário de ferramentas e bancada de manutenção.
+ workshopBox(2.8,1.25,.65,workshopDark,8.9,.75,bay+1.8);
+ workshopBox(3,.12,.8,workshopYellow,8.9,1.42,bay+1.8);
+ for(let drawer=0;drawer<3;drawer++)workshopBox(.06,.2,.04,workshopTrim,7.9+drawer*.85,.9,bay+1.43);
+}
+// Janelas laterais, luminárias externas e pneus empilhados como decoração.
+for(const z of [-6.5,6.5]){
+ workshopBox(.12,1.7,3.2,workshopGlass,11.57,5.2,z);
+ workshopBox(.2,.14,3.45,workshopTrim,11.62,6.08,z);
+ workshopBox(.2,.14,3.45,workshopTrim,11.62,4.32,z);
+ const lamp=workshopBox(.32,.18,.65,workshopLight,-12.9,7.1,z);
+ lamp.material=workshopLight;
+}
+for(let tire=0;tire<3;tire++){
+ const wheel=new THREE.Mesh(new THREE.TorusGeometry(.62,.2,8,18),mat(0x202326,.95));
+ wheel.rotation.y=Math.PI/2;wheel.position.set(9.9,.65+tire*.05,-6.8+tire*1.25);workshopGroup.add(wheel);
+}
+const apron=workshopBox(18,.12,15,concretePavement,-22,.02,0);
+for(let mark=0;mark<4;mark++)workshopBox(.16,.025,8,workshopYellow,-28+mark*4,.1,0);
+
 
  
 // Casas completas em GLB: fachadas, telhados, portas, janelas e materiais próprios.
@@ -692,6 +729,7 @@ let last=performance.now();function loop(now){requestAnimationFrame(loop);try{co
 const dayPhase=now*.000035,orbit=dayPhase%(Math.PI*2),sunY=Math.sin(orbit)*150+20,night=THREE.MathUtils.clamp((35-sunY)/100,0,1);
 sunDisc.position.set(Math.cos(orbit)*190,sunY,-260);moonDisc.position.set(-Math.cos(orbit)*190,-sunY+20,-260);sun.position.copy(sunDisc.position);sun.target.position.set(0,0,0);scene.add(sun.target);sun.intensity=.25+2.0*(1-night);starField.visible=night>.55;scene.background.setRGB(.62*(1-night)+.035*night,.77*(1-night)+.055*night,.84*(1-night)+.12*night);scene.fog.color.copy(scene.background);renderer.setClearColor(scene.background);
 if(gameEnded){renderer.render(scene,camera);return;}
+if(window.workshopMenuOpen){speed=0;throttle=0;brake=0;steer=0;updateStats();renderer.render(scene,camera);return;}
 const forwardInput=(keys.w||keys.arrowup||dpadState.up)?1:0;const reverseInput=(keys.s||keys.arrowdown||dpadState.down)?1:0;const turn=(keys.d||keys.arrowright||dpadState.right?1:0)-(keys.a||keys.arrowleft||dpadState.left?1:0);const gasInput=gear==='D'?Math.max(throttle,forwardInput):gear==='R'?Math.max(throttle,reverseInput):0;const brakeInput=Math.max(brake,keys[' ' ]?1:0,gear==='D'&&dpadState.down?1:0);
 if(brakeInput>.3)cruiseOn=false;
 steer=THREE.MathUtils.damp(steer,THREE.MathUtils.clamp(turn,-1,1),7,dt);
@@ -711,7 +749,7 @@ ground.position.x=roadCenter(truck.position.z);ground.position.z=Math.max(truck.
 if(vehicleMixer)vehicleMixer.update(dt);
 const cockpit=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.28:2.45,-.35));const rearOffset=new THREE.Vector3(0,cameraHeight,cameraDistance);const rearCamera=truck.localToWorld(rearOffset);const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.3:2.4,-55));const outsideLook=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.15:2.2,-5));camera.lookAt(firstPerson?cabForward:outsideLook);
 for(const car of traffic){car.position.z+=car.userData.dir*dt*(car.userData.speed+Math.sin(now*.0004)*1.2);const range=car.userData.range||520;if(car.position.z>truck.position.z+range)car.position.z=truck.position.z-range;if(car.position.z<truck.position.z-range)car.position.z=truck.position.z+range;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<(car.userData.halfLength||2.6)+2.6){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
-const nearWorkshop=truck.position.distanceTo(workshopPosition)<48;const workshopButton=document.getElementById('workshopEnter');if(workshopButton)workshopButton.style.display=nearWorkshop?'block':'none';
+const nearWorkshop=truck.position.distanceTo(workshopPosition)<18;const workshopButton=document.getElementById('workshopEnter');if(workshopButton)workshopButton.style.display=nearWorkshop&&Math.abs(speed)<.8&&!window.workshopMenuOpen?'block':'none';
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
