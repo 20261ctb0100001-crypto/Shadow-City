@@ -517,40 +517,6 @@ for(let mark=0;mark<4;mark++)workshopBox(.16,.025,8,workshopYellow,-28+mark*4,.1
 
 
  
-// Casas completas em GLB: fachadas, telhados, portas, janelas e materiais próprios.
-const cityHouseModelUrls=[
- 'https://cdn.3dassets.dev/assets/37064/v1/model.glb',
- 'https://cdn.3dassets.dev/assets/37063/v1/model.glb',
- 'https://cdn.3dassets.dev/assets/37062/v1/model.glb',
- 'https://cdn.3dassets.dev/assets/37065/v1/model.glb'
-];
-async function loadCityHouseModels(){
- document.getElementById('garageStatus').textContent='Carregando casas 3D e bairros...';
- const results=await Promise.allSettled(cityHouseModelUrls.map(url=>vehicleLoader.loadAsync(url)));
- const housePool=results.filter(r=>r.status==='fulfilled').map(r=>r.value.scene);
- if(!housePool.length){window.cityHouseModelsReady=false;return}
- for(let i=0;i<cityHousePlacements.length;i++){
-  const spot=cityHousePlacements[i],house=housePool[(i+spot.style)%housePool.length].clone(true);
-  house.scale.setScalar(1);house.rotation.y=spot.side===1?-Math.PI/2:Math.PI/2;house.updateMatrixWorld(true);
-  const bounds=new THREE.Box3().setFromObject(house),size=bounds.getSize(new THREE.Vector3());
-  const scale=9.5/Math.max(1,size.y);house.scale.setScalar(scale);house.updateMatrixWorld(true);
-  const scaledBounds=new THREE.Box3().setFromObject(house),center=scaledBounds.getCenter(new THREE.Vector3());
-  house.position.set(spot.x-center.x,-scaledBounds.min.y,spot.z-center.z);
-  house.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
-  scene.add(house);
-  const garden=new THREE.Group();
-  const gardenMat=mat(0x477448,.95),pathMat=concretePavement;
-  const path=new THREE.Mesh(new THREE.BoxGeometry(3.2,.12,8),pathMat);path.position.set(0,.06,12);garden.add(path);
-  for(const side of [-1,1]){
-   const hedge=new THREE.Mesh(new THREE.BoxGeometry(1.1,1.05,12),gardenMat);hedge.position.set(side*8,.52,3);garden.add(hedge);
-   for(let shrub=0;shrub<3;shrub++){const bush=new THREE.Mesh(new THREE.IcosahedronGeometry(1.05,1),gardenMat);bush.position.set(side*10,.85,-5+shrub*5);garden.add(bush)}
-  }
-  garden.position.set(spot.x,0,spot.z);scene.add(garden);
- }
- window.cityHouseModelsReady=true;
-}
-
-
 // Cordilheiras dos dois lados, com picos irregulares e camadas de profundidade.
 const mountainMats=[mat(0x65766f,1),mat(0x78847b,1),mat(0x596b68,1),mat(0x8a9188,1)];
 for(let side of [-1,1])for(let i=0;i<34;i++){
@@ -820,7 +786,7 @@ const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();drawMinimap();renderer.render(scene,camera)}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Oficina pronta. Entre nela para escolher seu veículo.';load.remove();requestAnimationFrame(loop);loadCityHouseModels().then(()=>{renderer.render(scene,camera)}).catch(err=>console.warn('Casas 3D opcionais não carregaram:',err));
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Oficina pronta. Entre nela para escolher seu veículo.';load.remove();requestAnimationFrame(loop);window.cityHouseModelsReady=true;
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
