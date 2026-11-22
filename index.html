@@ -224,7 +224,7 @@ function buildCity(name,centerZ,style){
   [0xd9d1c2,0xb7c8cb,0xe8e1d4,0x9caeae,0xc4b7a2],
   [0xc7cbd0,0xe1ded5,0x9faeb5,0xd0c4b5,0x8799a2]
  ];
- const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=asphaltCity,sidewalk=concretePavement,roofCity=mat(0x50575a,.9),houseRoofMat=mat([0x914c3d,0x4c5962,0x9a6848,0x59636a][style],.92),frameMat=mat(0xe8e2d6,.72),garageMat=mat(0x777f83,.82);
+ const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=asphaltCity,sidewalk=concretePavement,roofCity=mat(0x50575a,.9),houseRoofMat=mat([0x343b40,0x4b5964,0x62584d,0x3f474d][style],.92),frameMat=mat(0xe8e2d6,.72),garageMat=mat(0x777f83,.82);
  const cx=roadCenter(centerZ);
  // Malha urbana expandida: bairros dos dois lados da rodovia, com ruas conectadas.
  const cityLength=8000,halfLength=cityLength/2;
@@ -288,7 +288,7 @@ function buildCity(name,centerZ,style){
    // Pequenos jardins internos, árvores e estacionamentos entre edifícios.
    const isTower=(style===1||style===3)?row%3!==0:(style===0&&row%4===0);
    const isModelHouse=false;
-   const h=isTower?22+((row*11+band*17+side*3+style*7)%54):7+((row*5+band*9)%10);
+   const h=isTower?22+((row*11+band*17+side*3+style*7)%54):7+((row*5+band*9)%4)*1.1;
    const width=isTower?27:24+(row%2)*5,depth=isTower?34:28;
    const body=new THREE.Mesh(new THREE.BoxGeometry(width,h,depth),mat(colors[(row+band+style)%colors.length],.78,.08));
    body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;body.visible=!isModelHouse;city.add(body);
@@ -314,7 +314,7 @@ function buildCity(name,centerZ,style){
    }
    if(!isTower&&!isModelHouse){
     roof.visible=false;
-    const roofMaterial=mat([0x7b3930,0x555b60,0x925d3e,0x454d55][(row+style)%4],.88);
+    const roofMaterial=mat([0x343b40,0x46545e,0x655b50,0x3d464c,0x59605d][(row+band+style)%5],.86);
     const trimHouse=frameMat,frontZ=z-depth/2-.16;
     const slope=Math.atan2(2.7,width/2+1.2),panelW=Math.sqrt((width/2+1.2)**2+2.7**2);
     for(const roofSide of [-1,1]){
@@ -350,6 +350,42 @@ function buildCity(name,centerZ,style){
     detailDummy.position.set(x,0.55,frontZ-.72);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();housePlanters.setMatrixAt(planterCount++,detailDummy.matrix);
     for(const roofSide of [-1,1])for(let line=0;line<3;line++){
      detailDummy.position.set(x+roofSide*(width*.13+line*2.1),h+1.25,z);detailDummy.rotation.set(0,0,roofSide===1?-slope:slope);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseRoofLines.setMatrixAt(roofLineCount++,detailDummy.matrix);
+    }
+    // Gables, molduras de fachada e cobertura com acabamento menos genérico.
+    const gableShape=new THREE.Shape();
+    gableShape.moveTo(-width*.5,h);gableShape.lineTo(width*.5,h);gableShape.lineTo(0,h+2.7);gableShape.closePath();
+    const gableGeo=new THREE.ShapeGeometry(gableShape);
+    const gableFront=new THREE.Mesh(gableGeo,mat(colors[(row+style+1)%colors.length],.9));
+    gableFront.position.set(x,0,z-depth/2-.12);city.add(gableFront);
+    const gableBack=new THREE.Mesh(gableGeo,mat(colors[(row+style+1)%colors.length],.9));
+    gableBack.position.set(x,0,z+depth/2+.12);gableBack.rotation.y=Math.PI;city.add(gableBack);
+    const roundVent=new THREE.Mesh(new THREE.CircleGeometry(.62,12),glassCity);
+    roundVent.position.set(x,h+1.55,z-depth/2-.16);city.add(roundVent);
+    // Colunas de canto e faixa de acabamento quebram a aparência de caixa lisa.
+    for(const corner of [-1,1]){
+     const pilaster=new THREE.Mesh(new THREE.BoxGeometry(.42,h-.25,.34),trimHouse);
+     pilaster.position.set(x+corner*(width/2-.35),h/2,z-depth/2-.22);city.add(pilaster);
+    }
+    const facadeCornice=new THREE.Mesh(new THREE.BoxGeometry(width+.7,.34,.42),trimHouse);
+    facadeCornice.position.set(x,h-.18,z-depth/2-.2);city.add(facadeCornice);
+    // Chaminé e pequenas águas-furtadas aparecem em parte das casas, variando a silhueta.
+    if((row+band+style)%3===0){
+     const chimney=new THREE.Mesh(new THREE.BoxGeometry(1.35,3.4,1.45),mat(0x77736c,.95));
+     chimney.position.set(x+width*.29,h+2.7,z+depth*.2);city.add(chimney);
+     const chimneyCap=new THREE.Mesh(new THREE.BoxGeometry(1.7,.22,1.8),mat(0x45494a,.9));
+     chimneyCap.position.set(x+width*.29,h+4.42,z+depth*.2);city.add(chimneyCap);
+     const dormer=new THREE.Mesh(new THREE.BoxGeometry(3.1,2.15,.35),mat(colors[(row+style+2)%colors.length],.9));
+     dormer.position.set(x-width*.2,h+1.55,z-depth*.28);city.add(dormer);
+     const dormerGlass=new THREE.Mesh(new THREE.BoxGeometry(1.9,1.25,.16),glassCity);
+     dormerGlass.position.set(x-width*.2,h+1.55,z-depth*.28-.22);city.add(dormerGlass);
+     const dormerRoof=new THREE.Mesh(new THREE.ConeGeometry(2.35,1.25,4),roofMaterial);
+     dormerRoof.position.set(x-width*.2,h+3.15,z-depth*.28);dormerRoof.rotation.y=Math.PI/4;city.add(dormerRoof);
+    }
+    // Nervuras discretas simulam telhas e reforçam as duas águas do telhado.
+    for(const roofSide of [-1,1])for(let rib=0;rib<4;rib++){
+     const ribLine=new THREE.Mesh(new THREE.BoxGeometry(.09,.11,depth+1.2),mat(0x252d32,.92));
+     ribLine.position.set(x+roofSide*(width*.12+rib*1.55),h+1.28,z);
+     ribLine.rotation.z=roofSide===1?-slope:slope;city.add(ribLine);
     }
     // Janelas laterais, molduras e pequenas grades nos limites dos jardins.
     for(const sideWall of [-1,1])for(let win=0;win<2;win++){
