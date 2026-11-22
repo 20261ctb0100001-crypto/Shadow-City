@@ -201,26 +201,21 @@ roadRibbon(-.24,.12,yellow,-.098);roadRibbon(.24,.12,yellow,-.098);
 const dashCount=1200,dashMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.2,.025,6),line,dashCount),dashDummy=new THREE.Object3D();
 for(let i=0;i<dashCount;i++){const z=640-i*25;dashDummy.position.set(roadCenter(z),-.095,z);dashDummy.rotation.y=Math.atan((roadCenter(z+1)-roadCenter(z-1))/2);dashDummy.updateMatrix();dashMesh.setMatrixAt(i,dashDummy.matrix)}
 dashMesh.instanceMatrix.needsUpdate=true;scene.add(dashMesh);
-// Paisagem rural: árvores com troncos, galhos e copas irregulares (sem bolas redondas).
+// Paisagem rural e urbana: árvores baixas de copa larga, sem silhuetas triangulares de montanhas.
 const barkMat=mat(0x59402c,1),leafMats=[mat(0x294f32,1),mat(0x37633a,1),mat(0x4c7440,1),mat(0x607c43,1)];
-const broadLeafGeo=new THREE.IcosahedronGeometry(1,1),pineGeo=new THREE.ConeGeometry(1,1,7);
+const broadLeafGeo=new THREE.IcosahedronGeometry(1,1);
 function branchBetween(group,a,b,r,material){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),v=B.clone().sub(A);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r*.55,r,v.length(),6),material);mesh.position.copy(A).add(B).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());mesh.castShadow=true;group.add(mesh)}
 for(let i=0;i<65;i++){
  const x=(Math.random()-.5)*650,z=(Math.random()-.5)*900;if(Math.abs(x)<19)continue;
- const h=7+Math.random()*15,tree=new THREE.Group(),conifer=i%4===0;
- const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.2,.48,h*.48,8),barkMat);trunk.position.y=h*.24;trunk.castShadow=true;tree.add(trunk);
- const crownMat=leafMats[i%leafMats.length];
- if(conifer){
-  for(let k=0;k<4;k++){const level=h*.35+k*h*.145,rad=(1-k*.16)*(1.7+Math.random()*.45);const crown=new THREE.Mesh(pineGeo,crownMat);crown.position.set((Math.random()-.5)*.3,level, (Math.random()-.5)*.3);crown.scale.set(rad, h*.34, rad);crown.rotation.y=Math.random()*Math.PI;crown.castShadow=true;tree.add(crown)}
- }else{
-  for(let k=0;k<5;k++){
-   const angle=k*Math.PI*2/5+Math.random()*.45,rad=.9+Math.random()*1.1,cy=h*.57+Math.random()*h*.2;
-   const px=Math.cos(angle)*rad*.72,pz=Math.sin(angle)*rad*.72;
-   branchBetween(tree,[0,h*.35,0],[px,cy-.3,pz],.16,barkMat);
-   const crown=new THREE.Mesh(broadLeafGeo,crownMat);crown.castShadow=false;crown.position.set(px,cy,pz);crown.scale.set(rad*(.85+Math.random()*.35),rad*(.7+Math.random()*.45),rad*(.8+Math.random()*.4));crown.rotation.set(Math.random()*.5,Math.random()*Math.PI,Math.random()*.5);crown.castShadow=true;tree.add(crown);
-  }
-  const top=new THREE.Mesh(broadLeafGeo,leafMats[(i+1)%leafMats.length]);top.castShadow=false;top.position.y=h*.82;top.scale.set(1.5,1.8,1.4);top.castShadow=true;tree.add(top);
+ const h=5.5+Math.random()*5.5,tree=new THREE.Group(),crownMat=leafMats[i%leafMats.length];
+ const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.18,.34,h*.48,8),barkMat);trunk.position.y=h*.24;trunk.castShadow=true;tree.add(trunk);
+ for(let k=0;k<5;k++){
+  const angle=k*Math.PI*2/5+Math.random()*.45,rad=1.5+Math.random()*1.15,cy=h*.58+Math.random()*h*.16;
+  const px=Math.cos(angle)*rad*.72,pz=Math.sin(angle)*rad*.72;
+  branchBetween(tree,[0,h*.35,0],[px,cy-.3,pz],.13,barkMat);
+  const crown=new THREE.Mesh(broadLeafGeo,crownMat);crown.position.set(px,cy,pz);crown.scale.set(rad*1.15,rad*.82,rad*1.08);crown.rotation.set(Math.random()*.35,Math.random()*Math.PI,Math.random()*.35);crown.castShadow=true;tree.add(crown);
  }
+ const top=new THREE.Mesh(broadLeafGeo,leafMats[(i+1)%leafMats.length]);top.position.y=h*.78;top.scale.set(1.7,1.25,1.55);top.castShadow=true;tree.add(top);
  tree.position.set(x,0,z);tree.rotation.y=Math.random()*Math.PI*2;scene.add(tree);
 }
 // Capim em pequenos tufos distribuídos pelo terreno; mantém a pista e o acostamento livres.
@@ -608,7 +603,13 @@ city.add(windows,windowFrames,garageDoors);
  if(style===0){
   const landmark=new THREE.Group();
   const body=new THREE.Mesh(new THREE.BoxGeometry(24,15,18),mat(0xe5e0d2));body.position.y=7.5;landmark.add(body);
-  const roof=new THREE.Mesh(new THREE.ConeGeometry(15,8,4),mat(0x7c4940));roof.position.y=19;roof.rotation.y=Math.PI/4;landmark.add(roof);
+  const landmarkRoof=mat(0x3e484d,.9);
+  for(const side of [-1,1]){
+   const slope=Math.atan2(4.2,13.2),panelLen=Math.sqrt(13.2*13.2+4.2*4.2);
+   const roofPanel=new THREE.Mesh(new THREE.BoxGeometry(panelLen,.38,19.5),landmarkRoof);
+   roofPanel.position.set(side*6.6,17.6,0);roofPanel.rotation.z=side===1?-slope:slope;landmark.add(roofPanel);
+  }
+  const ridge=new THREE.Mesh(new THREE.BoxGeometry(.5,.55,20),landmarkRoof);ridge.position.set(0,21.7,0);landmark.add(ridge);
   for(let x of [-7,7]){const tower=new THREE.Mesh(new THREE.BoxGeometry(4,23,5),mat(0xe7e2d5));tower.position.set(x,11,0);landmark.add(tower)}
   landmark.position.set(cx-75,0,centerZ+35);city.add(landmark);
   // Portal urbano visível na chegada a Ponta Grossa, com altura livre para caminhões.
