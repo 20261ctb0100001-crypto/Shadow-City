@@ -10,10 +10,10 @@
 <!-- Truck Simulator update: terrain, camera modes, traffic, refueling and cruise control -->
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#8eb4c5;color:#fff;font-family:Arial,sans-serif;touch-action:none}canvas{display:block}body>canvas{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;z-index:1!important;pointer-events:none}#hud{z-index:2}#controls{z-index:5}#garage{z-index:50}#rotateNotice{z-index:1000}
-#hud{position:fixed;inset:0;pointer-events:none}.panel{background:#101820d9;border:1px solid #ffffff30;border-radius:13px;padding:10px 13px;backdrop-filter:blur(8px);box-shadow:0 4px 18px #0003}#brand{position:absolute;top:12px;left:12px;font-weight:900;letter-spacing:1.5px;font-size:14px}#mission{position:absolute;top:12px;right:12px;text-align:right;font-size:12px;max-width:58%}#stats{position:absolute;left:12px;top:62px;font-size:12px;line-height:1.6}#help{position:absolute;bottom:12px;left:12px;font-size:11px;color:#e3edf1}
-#minimap{position:absolute;top:12px;left:12px;width:118px;height:104px;border:2px solid #ffffffa0;border-radius:10px;background:#18231dcc;box-shadow:0 4px 15px #0008;overflow:hidden}
-#minimap canvas{display:block;width:100%;height:100%}
-#brand{display:none}#mission{top:10px;right:10px;max-width:30%;padding:6px 9px;background:#101820b8;border:1px solid #ffffff22;border-radius:8px;font-size:9px;line-height:1.25;font-weight:700;backdrop-filter:blur(5px);box-shadow:0 2px 8px #0002}
+#hud{position:fixed;inset:0;pointer-events:none}.panel{background:#101820d9;border:1px solid #ffffff30;border-radius:13px;padding:10px 13px;backdrop-filter:blur(8px);box-shadow:0 4px 18px #0003}#brand{position:absolute;top:12px;left:12px;font-weight:900;letter-spacing:1.5px;font-size:14px}#stats{position:absolute;left:12px;top:62px;font-size:12px;line-height:1.6}#help{position:absolute;bottom:12px;left:12px;font-size:11px;color:#e3edf1}
+#minimap{position:absolute;top:12px;left:12px;width:118px;height:104px;border:2px solid #ffffffa0;border-radius:10px;background:#18231dcc;box-shadow:0 4px 15px #0008;overflow:hidden;padding:0;cursor:pointer;pointer-events:auto;color:#fff}
+#minimap canvas{display:block;width:100%;height:100%}.map-hint{position:absolute;left:0;right:0;bottom:0;padding:3px 2px;background:#071117c9;font-size:8px;font-weight:900;letter-spacing:1px;text-align:center}
+#brand{display:none}
 #stats{top:auto;left:12px;bottom:142px;min-width:116px;background:#101820c9;border-radius:10px}
 #help{display:none}
 #controls .pedals{bottom:22px;right:18px}
@@ -24,7 +24,7 @@
 #refuelBtn{position:absolute!important;top:206px!important;right:13px!important;font-size:10px;background:#b8862d;color:#fff!important}
 #gearHud{position:absolute;right:15px;top:250px;display:flex;flex-direction:column;gap:4px;padding:6px;background:#101820c9;border:1px solid #ffffff45;border-radius:10px;font-size:12px;font-weight:900;text-align:center}
 #gearHud button{padding:3px 8px;border-radius:5px;color:#b7c2c8;border:0;background:transparent;font:inherit;font-weight:900;cursor:pointer;min-width:28px}#gearHud .selected{background:#d9e1e5;color:#162028}
-@media(max-width:520px){#minimap{width:105px;height:90px}#stats{bottom:135px;font-size:10px;padding:7px 9px}#mission{font-size:8px;line-height:1.2;padding:5px 7px;max-width:30%;top:8px;right:8px}#cameraModes{top:8px!important}#cruiseBtn{top:110px!important}#refuelBtn{top:149px!important}#gearHud{top:229px;right:12px}}
+@media(max-width:520px){#minimap{width:105px;height:90px}#stats{bottom:135px;font-size:10px;padding:7px 9px}#cameraModes{top:8px!important}#cruiseBtn{top:110px!important}#refuelBtn{top:149px!important}#gearHud{top:229px;right:12px}}
 
 #controls{position:fixed;inset:0;pointer-events:none;z-index:5}.joy{position:absolute;left:22px;bottom:24px;width:120px;height:120px;border-radius:50%;background:#ffffff24;border:2px solid #ffffff80;pointer-events:auto;touch-action:none}.knob{position:absolute;left:34px;top:34px;width:48px;height:48px;border-radius:50%;background:#ffffffc9;box-shadow:0 2px 10px #0005}.pedals{position:absolute;right:14px;bottom:18px;display:flex;gap:12px;align-items:end;padding:10px 12px 8px;background:linear-gradient(145deg,#10171bd9,#29343bd9);border:1px solid #aebbc455;border-radius:18px 18px 13px 13px;box-shadow:0 7px 22px #0007;pointer-events:auto}.btn{position:relative;width:68px;height:112px;border:2px solid #7d898e;border-radius:12px 12px 9px 9px;clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);background:linear-gradient(100deg,#252d32,#667177 23%,#30393e 50%,#707b80 77%,#252d32);color:#fff;font-weight:900;font-size:10px;letter-spacing:.7px;text-shadow:0 1px 3px #000;touch-action:none;display:flex;align-items:end;justify-content:center;padding-bottom:12px;box-shadow:inset 0 0 0 2px #101719,0 4px 7px #0008; transform:perspective(140px) rotateX(7deg)}.btn:before{content:'';position:absolute;inset:9px 9px 31px;border-radius:5px;background:repeating-linear-gradient(0deg,#111a1f 0 5px,#8c969a 5px 8px,#20282d 8px 12px);border:1px solid #9ba5a866;opacity:.95}.btn span{position:relative;z-index:1}.btn.gas{height:98px;width:57px;background:linear-gradient(100deg,#203b36,#5b7770 25%,#263e39 55%,#718b82 78%,#203b36)}.btn.active{filter:brightness(1.55);border-color:#b7ffe4;box-shadow:0 0 0 2px #49d7a8,0 0 20px #49d7a888,inset 0 0 0 2px #101719;transform:perspective(140px) rotateX(13deg) translateY(3px)}.btn:active{filter:brightness(1.45)}#load{position:fixed;inset:0;display:grid;place-items:center;background:#101820;color:#fff;z-index:20;font-weight:bold}#gameover{position:fixed;inset:0;z-index:30;display:none;place-items:center;background:#080d12eF;text-align:center;padding:24px}#gameover .card{width:min(92vw,420px);padding:28px 22px;border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#25313b,#10171d);box-shadow:0 18px 60px #0009}#gameover h1{font-size:34px;margin:0 0 10px;color:#ff5c52;letter-spacing:2px}#gameover p{color:#d5e0e5;line-height:1.5}#restart{border:0;border-radius:13px;background:#39c995;color:#09231a;font-size:18px;font-weight:900;padding:15px 28px;margin-top:10px}
 @media(min-width:800px){.joy{width:140px;height:140px}.knob{left:44px;top:44px}#help{font-size:13px}}
@@ -110,6 +110,24 @@
 .wheel-grip{position:absolute;width:13px;height:22px;background:linear-gradient(90deg,#090b0d,#343a40,#090b0d);border-radius:5px;left:calc(50% - 6px)}.grip-top{top:1px}.grip-bottom{bottom:1px}
 #steeringWheel.dragging{border-color:#dce7ed;box-shadow:0 5px 22px #000b,0 0 0 2px #dce7ed55}
 @media(max-width:520px){#steeringWheel{width:118px;height:118px;left:9px;bottom:9px}#steeringWheel:before{inset:7px;border-width:10px}.spoke-top{height:39px}.spoke-left,.spoke-right{width:46px}.wheel-center{width:42px;height:36px}}
+
+#cityMapOverlay{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;padding:16px;background:#05090ddd;backdrop-filter:blur(9px);pointer-events:auto}
+#cityMapOverlay.open{display:flex}
+#cityMapPanel{width:min(980px,96vw);height:min(92vh,900px);overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(145deg,#15232b,#0b1218);border:1px solid #71828b88;border-radius:18px;box-shadow:0 18px 70px #000b;color:#edf3f5}
+.city-map-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid #ffffff20}
+.city-map-header small{font-size:10px;letter-spacing:2px;color:#d8b96b;font-weight:900}.city-map-header h2{margin:5px 0 2px;font-size:25px}.city-map-header p{margin:0;color:#aebdc5;font-size:12px}
+#closeCityMap{width:42px;height:42px;border:1px solid #ffffff40;border-radius:50%;background:#26343c;color:#fff;font-size:28px;line-height:1;cursor:pointer}
+.city-map-layout{display:grid;grid-template-columns:minmax(220px,.85fr) minmax(300px,1.15fr);gap:18px;padding:18px;min-height:0;flex:1}
+.route-map-wrap{position:relative;min-height:0;border:1px solid #ffffff22;border-radius:14px;overflow:hidden;background:#101c23}
+#fullRouteMap{width:100%;height:100%;display:block}
+.map-legend{position:absolute;bottom:8px;left:8px;right:8px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;font-size:9px;color:#c7d2d8;background:#0b141bd9;padding:7px;border-radius:8px}
+.city-map-list{display:flex;flex-direction:column;gap:10px;overflow:auto}
+.city-stop{display:flex;gap:13px;align-items:flex-start;padding:14px;border:1px solid #ffffff20;border-radius:12px;background:#ffffff08;cursor:pointer;transition:background .15s,border-color .15s}
+.city-stop.active{background:#b9974b24;border-color:#d8b96b}
+.city-index{flex:0 0 36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#d7b45c;color:#172129;font-weight:900}
+.city-stop h3{margin:0 0 5px;font-size:17px}.city-stop p{margin:0 0 8px;color:#b8c5cb;font-size:12px;line-height:1.4}.city-stop small{font-size:9px;letter-spacing:1px;color:#d8b96b;font-weight:900}
+.city-map-footer{padding:11px 18px;border-top:1px solid #ffffff20;color:#aebdc5;font-size:10px}
+@media(max-width:650px){#cityMapOverlay{padding:7px}#cityMapPanel{width:100%;height:94vh;border-radius:13px}.city-map-header{padding:12px}.city-map-header h2{font-size:20px}.city-map-layout{grid-template-columns:1fr;grid-template-rows:minmax(180px,.9fr) minmax(190px,1.1fr);gap:10px;padding:10px}.city-map-list{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:7px}.city-stop{padding:9px;gap:8px}.city-index{flex-basis:28px;height:28px;font-size:11px}.city-stop h3{font-size:13px}.city-stop p{font-size:10px}.city-stop small{font-size:8px}.city-map-footer{font-size:9px;padding:8px 10px}}
 </style></head>
 <body><div id="garage"><div class="garage-card">
  <div class="garage-heading"><div><h1>GARAGEM DE VEÍCULOS</h1><p class="sub">Escolha seu veículo. O modelo selecionado será o que você vai dirigir.</p></div><div class="garage-count"><strong>50</strong><span>MODELOS</span></div></div>
@@ -121,12 +139,26 @@
  </div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
 <button id="workshopEnter" type="button">ENTRAR NA OFICINA<small>TOQUE PARA ESCOLHER SEU VEÍCULO</small></button><div id="load">Preparando seu caminhão...</div><div id="runtimeError" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:2000;padding:12px 14px;border:2px solid #ff6258;border-radius:12px;background:#241416;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:35vh;overflow:auto"></div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
- <div id="minimap" aria-label="Mapa da rota"><canvas id="minimapCanvas" width="220" height="150"></canvas></div>
- <div id="mission" class="panel">ENTREGA 01<br>Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.</div>
+ <button id="minimap" type="button" aria-label="Abrir mapa completo das quatro cidades" title="Abrir mapa das cidades"><canvas id="minimapCanvas" width="220" height="150"></canvas><span class="map-hint">ABRIR MAPA</span></button>
  <div id="stats" class="panel"><b style="font-size:18px"><span id="speed">0</span> <small>KM/H</small></b><br>Combustível: <b id="fuel">100</b>%</div><div id="gearHud" aria-label="Câmbio"><button id="gearD" class="selected" data-gear="D" aria-label="Drive">D</button><button id="gearN" data-gear="N" aria-label="Neutro">N</button><button id="gearR" data-gear="R" aria-label="Ré">R</button><button id="gearP" data-gear="P" aria-label="Estacionar">P</button></div>
  <div id="help" class="panel">WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão</div>
 </div>
-<div id="controls"><div id="steeringWheel" role="slider" aria-label="Volante virtual: arraste para virar" aria-valuemin="-135" aria-valuemax="135" aria-valuenow="0" tabindex="0"><div class="wheel-rotor" id="wheelRotor"><span class="wheel-spoke spoke-top"></span><span class="wheel-spoke spoke-left"></span><span class="wheel-spoke spoke-right"></span><span class="wheel-center"><b>SC</b><small>TRUCK</small></span><span class="wheel-grip grip-top"></span><span class="wheel-grip grip-bottom"></span></div></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><div id="cameraModes" aria-label="Modos de câmera"><button id="camera2" class="cameraMode" title="Visão interna">2</button><button id="camera3" class="cameraMode active" title="Visão externa">3</button></div><div id="zoomControls" aria-label="Zoom da câmera"><button id="zoomOut" type="button" aria-label="Afastar câmera">−</button><span id="zoomLabel">ZOOM</span><button id="zoomIn" type="button" aria-label="Aproximar câmera">+</button></div><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
+
+<div id="cityMapOverlay" aria-hidden="true">
+ <section id="cityMapPanel" role="dialog" aria-modal="true" aria-labelledby="cityMapTitle">
+  <header class="city-map-header"><div><small>ESTRADAS DO BRASIL</small><h2 id="cityMapTitle">Mapa das cidades</h2><p>Rota completa pelo Sul e litoral brasileiro</p></div><button id="closeCityMap" type="button" aria-label="Fechar mapa">×</button></header>
+  <div class="city-map-layout">
+   <div class="route-map-wrap"><canvas id="fullRouteMap" width="420" height="900"></canvas><div class="map-legend"><span>● Sua posição</span><span>● Cidades</span><span>◆ Posto</span></div></div>
+   <div class="city-map-list">
+    <article class="city-stop"><span class="city-index">01</span><div><h3>Ponta Grossa</h3><p>Campos Gerais do Paraná · portal de entrada, bairros residenciais e áreas comerciais</p><small>PR · PRIMEIRA REGIÃO</small></div></article>
+    <article class="city-stop"><span class="city-index">02</span><div><h3>Curitiba</h3><p>Capital paranaense · avenidas urbanas, prédios, áreas verdes e parques</p><small>PR · SEGUNDA REGIÃO</small></div></article>
+    <article class="city-stop"><span class="city-index">03</span><div><h3>Florianópolis</h3><p>Ilha e litoral catarinense · baía, orla, ponte e bairros costeiros</p><small>SC · TERCEIRA REGIÃO</small></div></article>
+    <article class="city-stop"><span class="city-index">04</span><div><h3>Santos</h3><p>Litoral paulista · porto, armazéns, contêineres e guindastes</p><small>SP · DESTINO</small></div></article>
+   </div>
+  </div>
+  <footer class="city-map-footer">Toque em uma cidade no mapa para destacar a região. A rota é contínua e acompanha a estrada do jogo.</footer>
+ </section>
+</div><div id="controls"><div id="steeringWheel" role="slider" aria-label="Volante virtual: arraste para virar" aria-valuemin="-135" aria-valuemax="135" aria-valuenow="0" tabindex="0"><div class="wheel-rotor" id="wheelRotor"><span class="wheel-spoke spoke-top"></span><span class="wheel-spoke spoke-left"></span><span class="wheel-spoke spoke-right"></span><span class="wheel-center"><b>SC</b><small>TRUCK</small></span><span class="wheel-grip grip-top"></span><span class="wheel-grip grip-bottom"></span></div></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><div id="cameraModes" aria-label="Modos de câmera"><button id="camera2" class="cameraMode" title="Visão interna">2</button><button id="camera3" class="cameraMode active" title="Visão externa">3</button></div><div id="zoomControls" aria-label="Zoom da câmera"><button id="zoomOut" type="button" aria-label="Afastar câmera">−</button><span id="zoomLabel">ZOOM</span><button id="zoomIn" type="button" aria-label="Aproximar câmera">+</button></div><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
 <script src="./scripts/vehicle-catalog.js"></script>
 <script>
 window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicleId='truck-flatbed-recovery';window.selectedVehicleColor='#e8e8e2';
@@ -860,8 +892,7 @@ window.prepareSelectedVehicle=async function(id){
   model.traverse(o=>{if(!o.isMesh||!o.material)return;for(const m of (Array.isArray(o.material)?o.material:[o.material])){const n=(m.name||'').toLowerCase();if(m.color&&!m.transparent&&!/glass|window|tire|rubber|wheel|chrome|metal|light|interior|trim/.test(n))m.color.copy(chosenTint)}});
   speed=0;truck.position.set(roadCenter(65),0,65);truck.rotation.y=0;gear='D';firstPerson=false;
   cameraDistance=vehicleIsCar?14:23;cameraHeight=vehicleIsCar?3.8:7.2;
-  document.getElementById('mission').innerHTML=(vehicleIsCar?'DIRIJAÇÃO LIVRE':'ENTREGA 01')+'<br>'+(vehicleIsCar?'Explore as cidades brasileiras.':'Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.');
-  document.getElementById('help').textContent=vehicleIsCar?'WASD / setas: dirigir · Espaço: freio · R: reiniciar veículo':'WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão';
+  document.getElementById('help').textContent=vehicleIsCar?'Arraste o volante para dirigir · Pedais para acelerar e frear':'Arraste o volante para dirigir · Pedais para acelerar e frear';
   return true;
  }catch(err){console.error('Falha no modelo selecionado:',err);return false}
 };
@@ -956,6 +987,33 @@ function drawMinimap(){
  const playerY=mapY(truck.position.z);ctx.save();ctx.translate(routeX,playerY);ctx.rotate(-truck.rotation.y);ctx.fillStyle='#ffffff';ctx.strokeStyle='#0a151a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(6,6);ctx.lineTo(0,3);ctx.lineTo(-6,6);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
  ctx.fillStyle='#dce6e9';ctx.font='bold 9px Arial';ctx.fillText('ROTA 30 KM',7,h-7);
 }
+function drawFullRouteMap(){
+ const canvas=document.getElementById('fullRouteMap');if(!canvas)return;
+ const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#101c23';ctx.fillRect(0,0,w,h);
+ for(let x=22;x<w;x+=34){ctx.strokeStyle='#ffffff09';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+ for(let y=18;y<h;y+=34){ctx.strokeStyle='#ffffff09';ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ const routeX=w*.48,top=35,bottom=h-45,routeLength=64465;
+ const mapY=z=>top+THREE.MathUtils.clamp((65-z)/routeLength,0,1)*(bottom-top);
+ ctx.strokeStyle='#52636b';ctx.lineWidth=28;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(routeX,top);ctx.lineTo(routeX,bottom);ctx.stroke();
+ ctx.strokeStyle='#e2c46c';ctx.lineWidth=2;ctx.setLineDash([9,10]);ctx.beginPath();ctx.moveTo(routeX,top);ctx.lineTo(routeX,bottom);ctx.stroke();ctx.setLineDash([]);
+ const cities=[{name:'PONTA GROSSA',z:-4000,sub:'PARANÁ',color:'#d8b96b'},{name:'CURITIBA',z:-19000,sub:'PARANÁ',color:'#8ec9a5'},{name:'FLORIANÓPOLIS',z:-34000,sub:'SANTA CATARINA',color:'#7bc5d9'},{name:'SANTOS',z:-49000,sub:'SÃO PAULO',color:'#e79a80'}];
+ ctx.textBaseline='middle';ctx.font='bold 14px Arial';
+ for(let i=0;i<cities.length;i++){const c=cities[i],y=mapY(c.z);ctx.fillStyle=c.color;ctx.beginPath();ctx.arc(routeX,y,9,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#101c23';ctx.lineWidth=3;ctx.stroke();ctx.fillStyle='#edf3f5';ctx.fillText(c.name,routeX+22,y-5);ctx.font='10px Arial';ctx.fillStyle='#9fb0b9';ctx.fillText(c.sub,routeX+22,y+11);ctx.font='bold 14px Arial';
+  if(window.selectedMapCity===i){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(routeX,y,15,0,Math.PI*2);ctx.stroke()}
+ }
+ const stationY=mapY(-10000);ctx.fillStyle='#47d5ad';ctx.fillRect(routeX-5,stationY-5,10,10);
+ const playerY=mapY(truck.position.z);ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(routeX,playerY-12);ctx.lineTo(routeX+9,playerY+8);ctx.lineTo(routeX,playerY+4);ctx.lineTo(routeX-9,playerY+8);ctx.closePath();ctx.fill();ctx.strokeStyle='#111';ctx.lineWidth=2;ctx.stroke();
+ ctx.fillStyle='#d8e2e7';ctx.font='bold 11px Arial';ctx.fillText('INÍCIO',12,top);ctx.fillText('DESTINO · PORTO',12,bottom+20);
+}
+window.selectedMapCity=-1;
+function openCityMap(){const overlay=document.getElementById('cityMapOverlay');overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');drawFullRouteMap();document.body.style.overflow='hidden'}
+function closeCityMap(){const overlay=document.getElementById('cityMapOverlay');overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+document.getElementById('minimap').addEventListener('click',openCityMap);
+document.getElementById('closeCityMap').addEventListener('click',closeCityMap);
+document.getElementById('cityMapOverlay').addEventListener('click',e=>{if(e.target.id==='cityMapOverlay')closeCityMap()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCityMap()});
+document.querySelectorAll('.city-stop').forEach((card,i)=>card.addEventListener('click',()=>{window.selectedMapCity=i;document.querySelectorAll('.city-stop').forEach((item,j)=>item.classList.toggle('active',i===j));drawFullRouteMap()}));
 function updateStats(){document.getElementById('speed').textContent=Math.round(Math.abs(speed)*3.6);for(const b of document.querySelectorAll('#gearHud button'))b.classList.toggle('selected',b.dataset.gear===gear);document.getElementById('fuel').textContent=Math.round(fuel)}
 function setHold(id,fn){const el=document.getElementById(id);let held=false;const start=e=>{e.preventDefault();held=true;fn(true);el.classList.add('active');try{el.setPointerCapture(e.pointerId)}catch(_){}};const end=()=>{if(!held)return;held=false;fn(false);el.classList.remove('active')};el.addEventListener('pointerdown',start);el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);el.addEventListener('lostpointercapture',end);window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);}
 setHold('gas',v=>throttle=v?1:0);setHold('brake',v=>brake=v?1:0);
@@ -996,7 +1054,7 @@ const offRoad=Math.abs(truck.position.x-roadCenter(truck.position.z))>13;
 const inCity=cityCenters.some(center=>Math.abs(truck.position.z-center)<=4000);
 const driveStep=stepTruckPhysics(
  {speed,heading:truck.rotation.y},
- {throttle:cruiseOn&&gear==='D'?Math.max(gasInput,Math.min(1,(cruiseSpeed/3.6-speed)*.45)):gasInput,brake:brakeInput,turn:steer,gear,dt,offRoad,speedLimit:inCity?(vehicleIsCar?27.8:22.2):(vehicleIsCar?55.6:41.7),acceleration:vehicleIsCar?14:11.5,brakeForce:vehicleIsCar?13:12,steeringScale:vehicleIsCar?1.12:1}
+ {throttle:cruiseOn&&gear==='D'?Math.max(gasInput,Math.min(1,(cruiseSpeed/3.6-speed)*.45)):gasInput,brake:brakeInput,turn:steer,gear,dt,offRoad,speedLimit:inCity?(vehicleIsCar?27.8:30.5):(vehicleIsCar?55.6:50),acceleration:vehicleIsCar?14:16,brakeForce:vehicleIsCar?13:13,steeringScale:vehicleIsCar?1.12:1}
 );
 speed=driveStep.speed;
 truck.rotation.y=driveStep.heading;
