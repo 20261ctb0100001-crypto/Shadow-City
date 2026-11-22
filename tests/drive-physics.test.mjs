@@ -164,7 +164,7 @@ test('all four cities have a large connected street grid and dense blocks', asyn
   assert.ok(html.includes('for(let row=0;row<61;row++)'));
   assert.ok(html.includes('for(let band=0;band<2;band++)for(let row=0;row<60;row++)'));
   assert.ok(html.includes('steps=13000,startZ=-65000,endZ=700'));
-  assert.ok(html.includes('speedLimit:inCity?(vehicleIsCar?27.8:22.2):(vehicleIsCar?55.6:41.7)'));
+  assert.ok(html.includes('speedLimit:inCity?(vehicleIsCar?27.8:30.5):(vehicleIsCar?55.6:50)'));
   assert.ok(html.includes('vehicleMixer.update(dt)'));
   assert.ok(html.includes('window.prepareSelectedVehicle=async function(id)'));
   assert.ok(html.includes('function makeTrafficTruck'));
@@ -188,7 +188,7 @@ test('selected GLB model replaces the procedural player vehicle and uses car or 
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   assert.ok(html.includes('three/addons/loaders/GLTFLoader.js'));
   assert.ok(html.includes('playerModelGroup.add(model)'));
-  assert.ok(html.includes('vehicleIsCar?55.6:41.7'));
+  assert.ok(html.includes('vehicleIsCar?55.6:50'));
   assert.ok(html.includes('acceleration:vehicleIsCar?14:11.5'));
   assert.ok(html.includes('brakeForce:vehicleIsCar?13:12'));
 });
@@ -212,14 +212,18 @@ test('car physics is quicker than truck physics while retaining separate speed l
 });
 
 
-test('city neighborhoods place complete GLB house models in the street grid', async () => {
+test('four city grids use detailed procedural buildings and facade features', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   assert.ok(html.includes('const cityHousePlacements=[]'));
-  assert.ok(html.includes('cityHouseModelUrls'));
-  assert.ok(html.includes('loadCityHouseModels().then(()=>{renderer.render(scene,camera)})'));
-  assert.ok(html.includes('housePool[(i+spot.style)%housePool.length].clone(true)'));
-  assert.ok(html.includes('window.cityHouseModelsReady=true'));
+  assert.ok(html.includes('const isModelHouse=false'));
+  assert.ok(html.includes('houseBalconies'));
+  assert.ok(html.includes('houseRoofLines'));
+  assert.ok(html.includes('windowFrames'));
+  assert.ok(html.includes('garageDoors'));
+  assert.ok(html.includes('const awning=new THREE.Mesh'));
+  assert.ok(html.includes('const ridge=new THREE.Mesh'));
+  assert.ok(html.includes('for(let band=0;band<2;band++)for(let row=0;row<60;row++)'));
 });
 
 test('selected vehicle GLB is rotated to match the simulator forward axis', async () => { const html = await readFile(new URL('../index.html', import.meta.url), 'utf8'); assert.ok(html.includes('model.rotation.y=Math.PI')); });
-test('game becomes playable before optional neighborhood house assets finish downloading', async () => { const html = await readFile(new URL('../index.html', import.meta.url), 'utf8'); const ready=html.indexOf('window.gameReady=true'); const houses=html.indexOf('loadCityHouseModels().then'); assert.ok(ready>=0 && houses>ready); assert.ok(!html.includes('await loadCityHouseModels()')); });
+test('game becomes playable with procedural city buildings ready', async () => { const html = await readFile(new URL('../index.html', import.meta.url), 'utf8'); assert.ok(html.includes('window.gameReady=true')); assert.ok(html.includes('window.cityHouseModelsReady=true')); assert.ok(!html.includes('loadCityHouseModels')); });
