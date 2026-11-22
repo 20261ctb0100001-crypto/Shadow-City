@@ -218,25 +218,91 @@ for(let i=0;i<75;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if
 // Casas brasileiras detalhadas, com telhados inclinados, janelas, portas, garagens e quintais.
 const townBuildings=[];
 function buildHouse(x,z,variant=0){
- const g=new THREE.Group(),colors=[0xd9c6a4,0xc9d2d1,0xe1d7c3,0xb8c7b5,0xd6b6a0],wall=mat(colors[variant%5],.92),roof=mat([0x8a3e2e,0x4c5558,0x9b6845,0x555b60][variant%4],.88),trim=mat(0xf0e9d9),windowMat=mat(0x527783,.28,.12),door=mat(0x674632),concrete=mat(0xaaa99f);
- const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);o.castShadow=true;o.receiveShadow=true;g.add(o);return o};
- const w=9+Math.random()*4,d=8+Math.random()*4,h=3.4+Math.random()*1.1;
+ const g=new THREE.Group();
+ const wallMats=[0xd8c9ad,0xc4cfca,0xe0d7c7,0xb9c8b5,0xd2b8a2,0xc8c6bd];
+ const roofMats=[0x454c50,0x596168,0x62584d,0x3d484b,0x6b6257];
+ const wall=mat(wallMats[variant%wallMats.length],.9),roof=mat(roofMats[variant%roofMats.length],.86),trim=mat(0xe8e2d5,.9),glass=mat(0x456b78,.24,.18),dark=mat(0x343b3e,.9),wood=mat(0x654832,.9),stone=mat(0xaaa69b,.95);
+ const add=(geo,m,px,py,pz,rz=0)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);o.rotation.z=rz;o.castShadow=true;o.receiveShadow=true;g.add(o);return o};
+ const w=11+(variant%3)*1.7,d=10+(variant%2)*2,h=variant%3===1?6.4:4.1;
+ // Corpo principal com rodapé e volumes laterais para fugir do formato de caixa única.
  add(new THREE.BoxGeometry(w,h,d),wall,0,h/2,0);
- const roofMesh=add(new THREE.ConeGeometry(Math.max(w,d)*.78,2.5,4),roof,0,h+1,0);roofMesh.rotation.y=Math.PI/4;
- add(new THREE.BoxGeometry(w+.3,.18,d+.3),trim,0,.16,0);
- for(const side of [-1,1]){add(new THREE.BoxGeometry(1.25,1.05,.13),windowMat,side*w*.29,2.05,-d/2-.08);add(new THREE.BoxGeometry(1.42,.12,.2),trim,side*w*.29,2.62,-d/2-.1);add(new THREE.BoxGeometry(.1,1.12,.16),trim,side*w*.29,2.05,-d/2-.11)}
- add(new THREE.BoxGeometry(1.05,2.15,.16),door,0,1.12,-d/2-.1);
- add(new THREE.BoxGeometry(2.1,.16,1.6),roof,0,2.9,-d/2-.85);
- add(new THREE.BoxGeometry(5,.16,3),concrete,0,.08,-d/2-2.2);
- if(variant%2===0){add(new THREE.BoxGeometry(3.5,2.8,4),wall,w*.55,1.4,.4);add(new THREE.BoxGeometry(3.2,2.1,.12),trim,w*.55,1.2,-1.66);add(new THREE.BoxGeometry(3.4,.18,4.2),roof,w*.55,2.9,.4)}
- for(const side of [-1,1])for(let k=0;k<5;k++)add(new THREE.BoxGeometry(.12,.85,.12),trim,side*w*.72,.42,-d/2-2+k*.9);
- add(new THREE.BoxGeometry(.12,.12,4.4),trim,w*.72,.8,-d/2-1.8);
- const trunk=add(new THREE.CylinderGeometry(.13,.2,1.8,7),mat(0x6d4b32),-w*.72,.9,d*.18);
- const crown=add(new THREE.IcosahedronGeometry(1.25,1),mat([0x466d43,0x527a49,0x66834c][variant%3]),-w*.72,2.25,d*.18);crown.scale.set(1,1.25,.95);
- add(new THREE.BoxGeometry(.38,.55,.28),mat(0x344c58),w*.78,.85,-d/2-2.4);
- g.position.set(x,0,z);g.rotation.y=(Math.random()-.5)*.14;scene.add(g);townBuildings.push(g);
+ add(new THREE.BoxGeometry(w+.28,.42,d+.28),stone,0,.22,0);
+ if(variant%2===0){
+  add(new THREE.BoxGeometry(w*.42,2.8,d*.48),wall,w*.31,1.4,d*.17);
+  add(new THREE.BoxGeometry(w*.45,.28,d*.51),trim,w*.31,2.82,d*.17);
+ }
+ // Telhado de duas águas: duas águas inclinadas, cumeeira, beirais e telhas em linhas.
+ const rise=variant%3===1?3.1:2.55,half=w/2+.85,slope=Math.atan2(rise,half),panel=Math.sqrt(half*half+rise*rise);
+ for(const side of [-1,1]){
+  add(new THREE.BoxGeometry(panel,.34,d+1.35),roof,side*half/2,h+rise/2,0,side===1?-slope:slope);
+  add(new THREE.BoxGeometry(.22,.2,d+1.55),dark,side*(w/2+.72),h+.08,0);
+  for(let rib=0;rib<5;rib++){
+   const xx=side*(.9+rib*(half-.9)/5);
+   add(new THREE.BoxGeometry(.1,.09,d+.9),dark,xx,h+rise*(1-xx/half)+.18,0,side===1?-slope:slope);
+  }
+ }
+ add(new THREE.BoxGeometry(.42,.46,d+1.5),dark,0,h+rise,0);
+ // Fachada frontal com molduras, janelas de verdade, divisórias e peitoris.
+ const front=-d/2-.13;
+ const windowXs=[-w*.29,w*.29];
+ for(const wx of windowXs){
+  add(new THREE.BoxGeometry(2.25,2.05,.22),trim,wx,2.55,front);
+  add(new THREE.BoxGeometry(1.88,1.68,.12),glass,wx,2.55,front-.15);
+  add(new THREE.BoxGeometry(.12,1.72,.12),trim,wx,2.55,front-.23);
+  add(new THREE.BoxGeometry(1.95,.13,.2),trim,wx,2.55,front-.24);
+  add(new THREE.BoxGeometry(2.5,.2,.5),stone,wx,1.48,front-.25);
+  add(new THREE.BoxGeometry(.12,1.9,.16),wood,wx-1.18,2.55,front-.2);
+  add(new THREE.BoxGeometry(.12,1.9,.16),wood,wx+1.18,2.55,front-.2);
+ }
+ // Porta recuada, moldura, degraus e cobertura de entrada.
+ const doorX=variant%2===0?0:w*.08;
+ add(new THREE.BoxGeometry(1.65,2.85,.24),trim,doorX,1.52,front-.04);
+ add(new THREE.BoxGeometry(1.28,2.55,.12),wood,doorX,1.4,front-.2);
+ add(new THREE.BoxGeometry(.42,.82,.08),glass,doorX,2.05,front-.29);
+ add(new THREE.SphereGeometry(.075,10,8),mat(0xd1b36e,.35,.55),doorX+.42,1.35,front-.3);
+ add(new THREE.BoxGeometry(3.5,.24,2.25),roof,doorX,3.12,front-1.05);
+ for(const px of [-1.45,1.45])add(new THREE.BoxGeometry(.16,2.8,.16),trim,doorX+px,1.4,front-1.9);
+ add(new THREE.BoxGeometry(3.6,.22,1.15),stone,doorX,.12,front-1.45);
+ // Garagem lateral com portão ripado e calçada de acesso.
+ const garageX=w*.31,garageZ=front-.2;
+ add(new THREE.BoxGeometry(4.1,2.8,.22),trim,garageX,1.48,garageZ);
+ add(new THREE.BoxGeometry(3.72,2.48,.12),dark,garageX,1.42,garageZ-.16);
+ for(let line=0;line<6;line++)add(new THREE.BoxGeometry(3.55,.075,.08),stone,garageX,.42+line*.38,garageZ-.25);
+ add(new THREE.BoxGeometry(5.2,.16,4.5),stone,garageX,.08,front-3.05);
+ // Platibanda, chaminé e pequenos detalhes de cobertura.
+ add(new THREE.BoxGeometry(w+.45,.32,.42),trim,0,h-.12,front-.08);
+ if(variant%2===1){
+  add(new THREE.BoxGeometry(1.25,2.3,1.35),stone,w*.28,h+rise+1, d*.12);
+  add(new THREE.BoxGeometry(1.55,.18,1.65),dark,w*.28,h+rise+2.18,d*.12);
+ }
+ // Casa de dois pavimentos em algumas variações, com sacada e guarda-corpo.
+ if(variant%3===1){
+  const balconyY=4.45;
+  add(new THREE.BoxGeometry(4.7,.22,1.5),stone,0,balconyY,front-1.0);
+  add(new THREE.BoxGeometry(4.7,.12,.12),trim,0,balconyY+1.05,front-1.68);
+  for(let k=0;k<7;k++)add(new THREE.BoxGeometry(.09,1,.09),trim,-2.15+k*.72,balconyY+.52,front-1.68);
+  add(new THREE.BoxGeometry(3.4,1.8,.18),glass,0,5.25,front-.12);
+  add(new THREE.BoxGeometry(3.7,.16,.3),trim,0,6.2,front-.2);
+ }
+ // Vasos, arbustos, luminárias e cerca frontal.
+ for(const side of [-1,1]){
+  add(new THREE.BoxGeometry(.18,1.35,.18),trim,side*(w*.58),.68,front-2.1);
+  const bush=add(new THREE.IcosahedronGeometry(.72,1),mat(side===1?0x55754a:0x466b43),side*(w*.58),.9,front-2.45);
+  bush.scale.set(1,.8,1.15);
+  add(new THREE.BoxGeometry(.25,.48,.2),mat(0xe6d6a5,.35),side*(w*.42),2.85,front-.32);
+ }
+ for(let k=0;k<7;k++){
+  const fx=-w*.48+k*(w*.16);
+  add(new THREE.BoxGeometry(.12,.82,.12),trim,fx,.42,front-4.2);
+ }
+ add(new THREE.BoxGeometry(w*.98,.12,.12),trim,0,.78,front-4.2);
+ // Árvore de quintal com copa irregular.
+ add(new THREE.CylinderGeometry(.16,.23,2.2,8),mat(0x6d4b32),-w*.72,1.1,d*.22);
+ const crown=add(new THREE.IcosahedronGeometry(1.35,1),mat([0x466d43,0x527a49,0x66834d][variant%3]),-w*.72,2.65,d*.22);
+ crown.scale.set(1.05,1.35,.95);
+ g.position.set(x,0,z);g.rotation.y=(Math.random()-.5)*.1;scene.add(g);townBuildings.push(g);
 }
-for(let i=0;i<38;i++){const z=-590+i*31,side=i%2?1:-1;buildHouse(roadCenter(z)+side*(58+(i%3)*13),z,i%4)}
+for(let i=0;i<38;i++){const z=-590+i*31,side=i%2?1:-1;buildHouse(roadCenter(z)+side*(58+(i%3)*13),z,i%6)}
 // Lojas, mercados e galpões próximos à rodovia.
 for(let i=0;i<8;i++){const z=-540+i*145,side=i%2?1:-1,g=new THREE.Group(),w=15,h=5,d=11;const facade=mat(i%2?0xd8d2bd:0xbfc9c8),roof=mat(i%2?0x9a3f32:0x4b555a),windowMat=mat(0x426674,.22,.15);const add=(geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;g.add(o)};add(new THREE.BoxGeometry(w,h,d),facade,0,h/2,0);add(new THREE.BoxGeometry(w+1,.35,d+1),roof,0,h+.15,0);add(new THREE.BoxGeometry(8,2.2,.15),windowMat,0,2.2,-d/2-.1);add(new THREE.BoxGeometry(2,2.8,.18),mat(0x654833),-5,1.4,-d/2-.12);add(new THREE.BoxGeometry(17,.18,3),mat(0xaaa99f),0,.09,-d/2-2);g.position.set(roadCenter(z)+side*66,0,z);scene.add(g);townBuildings.push(g)}
 
