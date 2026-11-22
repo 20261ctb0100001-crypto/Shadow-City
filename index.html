@@ -240,6 +240,12 @@ function buildCity(name,centerZ,style){
  const houseFencePosts=new THREE.InstancedMesh(new THREE.BoxGeometry(.22,1.05,.22),frameMat,7200);
  const houseYardTrees=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1.15,1),mat(0x477448),2400);
  const detailDummy=new THREE.Object3D();let balconyCount=0,planterCount=0,roofLineCount=0,sideWindowCount=0,fenceCount=0,yardTreeCount=0;
+ // Fachadas de prédios: sacadas, coroamento de cobertura e detalhes verticais em instâncias.
+ const towerBalconies=new THREE.InstancedMesh(new THREE.BoxGeometry(27.8,.22,.95),mat(0x9ba5a7,.62),5200);
+ const towerRoofCaps=new THREE.InstancedMesh(new THREE.BoxGeometry(30,1.1,37),mat(0x414b52,.86),1400);
+ const towerFins=new THREE.InstancedMesh(new THREE.BoxGeometry(.28,1,35.2),mat(0xd0d3d0,.65),2800);
+ const towerTanks=new THREE.InstancedMesh(new THREE.CylinderGeometry(1.25,1.35,2.2,10),mat(0x9da6a8,.72),1400);
+ let towerBalconyCount=0,towerRoofCount=0,towerFinCount=0,towerTankCount=0;
  for(const side of [-1,1]){
   // Cinco avenidas paralelas por lado, todas conectadas pelas ruas transversais.
   for(let lane=0;lane<parallelOffsets.length;lane++){
@@ -281,7 +287,7 @@ function buildCity(name,centerZ,style){
    lot.position.set(x,.015,z);city.add(lot);
    // Pequenos jardins internos, árvores e estacionamentos entre edifícios.
    const isTower=(style===1||style===3)?row%3!==0:(style===0&&row%4===0);
-   const isModelHouse=!isTower&&row%10===0;
+   const isModelHouse=false;
    const h=isTower?22+((row*11+band*17+side*3+style*7)%54):7+((row*5+band*9)%10);
    const width=isTower?27:24+(row%2)*5,depth=isTower?34:28;
    const body=new THREE.Mesh(new THREE.BoxGeometry(width,h,depth),mat(colors[(row+band+style)%colors.length],.78,.08));
@@ -289,6 +295,23 @@ function buildCity(name,centerZ,style){
    if(isModelHouse)cityHousePlacements.push({x,z,side,style});
    const roof=isTower?new THREE.Mesh(new THREE.BoxGeometry(width+.7,.55,depth+.7),roofCity):new THREE.Mesh(new THREE.ConeGeometry(Math.max(width,depth)*.72,3.8,4),houseRoofMat);
    roof.position.set(x,isTower?h+.25:h+1.9,z);roof.rotation.y=Math.PI/4;roof.castShadow=true;roof.visible=!isModelHouse;city.add(roof);
+   if(isTower){
+    // Prédios com fachada completa, sacadas, platibanda e cobertura técnica.
+    const towerFront=z-depth/2-.22;
+    for(let floor=1;floor<Math.floor(h/6);floor+=2){
+     detailDummy.position.set(x,floor*6,towerFront-.28);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();towerBalconies.setMatrixAt(towerBalconyCount++,detailDummy.matrix);
+    }
+    // Cobertura plana com casa de máquinas e reservatório no topo.
+    detailDummy.position.set(x,h+.35,z);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();towerRoofCaps.setMatrixAt(towerRoofCount++,detailDummy.matrix);
+    for(const finSide of [-1,1]){
+     detailDummy.position.set(x+finSide*(width/2-.8),h*.52,z);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,h,1);detailDummy.updateMatrix();towerFins.setMatrixAt(towerFinCount++,detailDummy.matrix);
+    }
+    detailDummy.position.set(x+width*.28,h+2.05,z+depth*.18);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();towerTanks.setMatrixAt(towerTankCount++,detailDummy.matrix);
+    // Moldura de entrada e marquise no térreo.
+    const lobby=new THREE.Mesh(new THREE.BoxGeometry(width*.62,3.2,.22),glassCity);lobby.position.set(x,1.8,towerFront-.16);city.add(lobby);
+    const lobbyCanopy=new THREE.Mesh(new THREE.BoxGeometry(width*.72,.28,2.1),frameMat);lobbyCanopy.position.set(x,3.55,towerFront-1);city.add(lobbyCanopy);
+    const roofLip=new THREE.Mesh(new THREE.BoxGeometry(width+1,.28,depth+1),frameMat);roofLip.position.set(x,h+.95,z);city.add(roofLip);
+   }
    if(!isTower&&!isModelHouse){
     roof.visible=false;
     const roofMaterial=mat([0x7b3930,0x555b60,0x925d3e,0x454d55][(row+style)%4],.88);
@@ -396,6 +419,7 @@ function buildCity(name,centerZ,style){
  }
  windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;windowFrames.count=windowCount;windowFrames.instanceMatrix.needsUpdate=true;garageDoors.count=garageCount;garageDoors.instanceMatrix.needsUpdate=true;
  for(const [mesh,count] of [[houseBalconies,balconyCount],[housePlanters,planterCount],[houseRoofLines,roofLineCount],[houseSideWindows,sideWindowCount],[houseFencePosts,fenceCount],[houseYardTrees,yardTreeCount]]){mesh.count=count;mesh.instanceMatrix.needsUpdate=true;city.add(mesh)}
+ for(const [mesh,count] of [[towerBalconies,towerBalconyCount],[towerRoofCaps,towerRoofCount],[towerFins,towerFinCount],[towerTanks,towerTankCount]]){mesh.count=count;mesh.instanceMatrix.needsUpdate=true;city.add(mesh)}
  // Modelos GLB também recebem calçada de acesso e paisagismo simples ao redor.
 city.add(windows,windowFrames,garageDoors);
  // Marcos urbanos próprios de cada destino.
