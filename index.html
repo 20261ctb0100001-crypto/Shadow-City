@@ -276,6 +276,37 @@ function buildCity(name,centerZ,style){
    if(isModelHouse)cityHousePlacements.push({x,z,side,style});
    const roof=isTower?new THREE.Mesh(new THREE.BoxGeometry(width+.7,.55,depth+.7),roofCity):new THREE.Mesh(new THREE.ConeGeometry(Math.max(width,depth)*.72,3.8,4),houseRoofMat);
    roof.position.set(x,isTower?h+.25:h+1.9,z);roof.rotation.y=Math.PI/4;roof.castShadow=true;roof.visible=!isModelHouse;city.add(roof);
+   if(!isTower&&!isModelHouse){
+    roof.visible=false;
+    const roofMaterial=mat([0x7b3930,0x555b60,0x925d3e,0x454d55][(row+style)%4],.88);
+    const trimHouse=frameMat,frontZ=z-depth/2-.16;
+    const slope=Math.atan2(2.7,width/2+1.2),panelW=Math.sqrt((width/2+1.2)**2+2.7**2);
+    for(const roofSide of [-1,1]){
+     const panel=new THREE.Mesh(new THREE.BoxGeometry(panelW,.32,depth+1.5),roofMaterial);
+     panel.position.set(x+roofSide*(width/4+.3),h+1.25,z);
+     panel.rotation.z=roofSide===1?-slope:slope;panel.castShadow=true;panel.receiveShadow=true;city.add(panel);
+     const gutter=new THREE.Mesh(new THREE.BoxGeometry(.18,.2,depth+1.65),trimHouse);
+     gutter.position.set(x+roofSide*(width/2+1.05),h+.08,z);city.add(gutter);
+    }
+    const ridge=new THREE.Mesh(new THREE.BoxGeometry(.42,.42,depth+1.7),roofMaterial);
+    ridge.position.set(x,h+2.65,z);ridge.castShadow=true;city.add(ridge);
+    for(let win=0;win<2;win++){
+     const wx=x-width*.25+win*width*.5,wy=2.35;
+     const frame=new THREE.Mesh(new THREE.BoxGeometry(3.35,2.35,.2),trimHouse);frame.position.set(wx,wy,frontZ);city.add(frame);
+     const pane=new THREE.Mesh(new THREE.BoxGeometry(2.85,1.88,.12),glassCity);pane.position.set(wx,wy,frontZ-.13);city.add(pane);
+     const mullion=new THREE.Mesh(new THREE.BoxGeometry(.12,1.9,.16),trimHouse);mullion.position.set(wx,wy,frontZ-.22);city.add(mullion);
+     const sill=new THREE.Mesh(new THREE.BoxGeometry(3.6,.18,.42),trimHouse);sill.position.set(wx,1.12,frontZ-.2);city.add(sill);
+    }
+    const entryX=x+width*.18;
+    const entryFrame=new THREE.Mesh(new THREE.BoxGeometry(2.35,3.05,.2),trimHouse);entryFrame.position.set(entryX,1.55,frontZ);city.add(entryFrame);
+    const entryDoor=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.65,.14),mat(0x62452f,.8));entryDoor.position.set(entryX,1.4,frontZ-.15);city.add(entryDoor);
+    const knob=new THREE.Mesh(new THREE.SphereGeometry(.09,8,6),mat(0xd4b36d,.3,.65));knob.position.set(entryX+.58,1.4,frontZ-.25);city.add(knob);
+    const step=new THREE.Mesh(new THREE.BoxGeometry(3.1,.22,1.25),concretePavement);step.position.set(entryX,.14,frontZ-.7);city.add(step);
+    const awning=new THREE.Mesh(new THREE.BoxGeometry(3.4,.2,1.8),roofMaterial);awning.position.set(entryX,h*.72,frontZ-.72);city.add(awning);
+    for(const postX of [-1,1]){const post=new THREE.Mesh(new THREE.BoxGeometry(.13,2.15,.13),trimHouse);post.position.set(entryX+postX*1.48,1.08,frontZ-1.42);city.add(post)}
+    const baseTrim=new THREE.Mesh(new THREE.BoxGeometry(width+.15,.28,.2),mat(0x8b8980,.95));baseTrim.position.set(x,.22,frontZ);city.add(baseTrim);
+    for(const lampSide of [-1,1]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(.24,.42,.16),mat(0xe9d6a1,.45,.05));lamp.position.set(x+lampSide*(width*.42),2.9,frontZ-.18);city.add(lamp)}
+   }
    // Janelas repetidas em instâncias para manter a cidade leve no celular.
    const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
    for(let floor=0;floor<floors;floor++)for(let col=0;col<cols;col++){
