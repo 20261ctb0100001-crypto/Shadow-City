@@ -1054,7 +1054,7 @@ const offRoad=Math.abs(truck.position.x-roadCenter(truck.position.z))>13;
 const inCity=cityCenters.some(center=>Math.abs(truck.position.z-center)<=4000);
 const driveStep=stepTruckPhysics(
  {speed,heading:truck.rotation.y},
- {throttle:cruiseOn&&gear==='D'?Math.max(gasInput,Math.min(1,(cruiseSpeed/3.6-speed)*.45)):gasInput,brake:brakeInput,turn:steer,gear,dt,offRoad,speedLimit:inCity?(vehicleIsCar?27.8:30.5):(vehicleIsCar?55.6:50),acceleration:vehicleIsCar?14:16,brakeForce:vehicleIsCar?13:13,steeringScale:vehicleIsCar?1.12:1}
+ {throttle:cruiseOn&&gear==='D'?Math.max(gasInput,Math.min(1,(cruiseSpeed/3.6-speed)*.45)):gasInput,brake:brakeInput,turn:steer,gear,dt,offRoad,speedLimit:inCity?(vehicleIsCar?27.8:38.9):(vehicleIsCar?55.6:66.7),acceleration:vehicleIsCar?14:26,brakeForce:vehicleIsCar?13:13,steeringScale:vehicleIsCar?1.12:1}
 );
 speed=driveStep.speed;
 truck.rotation.y=driveStep.heading;
