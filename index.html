@@ -414,9 +414,10 @@ buildCity('Santos',-49000,3);
 const workshopPosition=new THREE.Vector3(roadCenter(65)+34,0,65),workshopGroup=new THREE.Group();
 const workshopWall=mat(0xb9b8ae,.92),workshopRoof=mat(0x3b454a,.9),workshopTrim=mat(0xe4e0d4,.8),workshopGlass=mat(0x315365,.25,.15),workshopDoor=mat(0x59636a,.8);
 function workshopBox(w,h,d,material,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;workshopGroup.add(m);return m}
-workshopBox(23,8,19,workshopWall,0,4,0);workshopBox(24,.65,20,workshopRoof,0,8.25,0);
-workshopBox(.25,5.4,8,workshopDoor,-11.65,2.8,-1.5);workshopBox(.3,5.4,8,workshopDoor,-11.65,2.8,7);
-workshopBox(.35,5.7,8.2,workshopGlass,-11.45,2.85,2.8);workshopBox(.3,2.6,3.8,workshopGlass,-11.42,6.35,-5.2);
+// Paredes laterais e fundo; a fachada fica aberta para os dois boxes de serviço.
+workshopBox(.4,8,19,workshopWall,11.3,4,0);workshopBox(23,8,.4,workshopWall,0,4,-9.3);workshopBox(23,8,.4,workshopWall,0,4,9.3);
+workshopBox(.55,8,.55,workshopWall,-11.3,4,-9.3);workshopBox(.55,8,.55,workshopWall,-11.3,4,0);workshopBox(.55,8,.55,workshopWall,-11.3,4,9.3);
+workshopBox(.55,.65,19,workshopRoof,-11.3,7.7,0);workshopBox(24,.65,20,workshopRoof,0,8.25,0);
 workshopBox(1,.25,24,workshopTrim,-12.2,8.65,0);
 const signCanvas=document.createElement('canvas');signCanvas.width=768;signCanvas.height=180;const signCtx=signCanvas.getContext('2d');signCtx.fillStyle='#17252c';signCtx.fillRect(0,0,768,180);signCtx.fillStyle='#f4c45e';signCtx.font='bold 76px Arial';signCtx.textAlign='center';signCtx.fillText('OFICINA',384,112);const signTex=new THREE.CanvasTexture(signCanvas);signTex.colorSpace=THREE.SRGBColorSpace;const signMesh=new THREE.Mesh(new THREE.PlaneGeometry(12,2.8),new THREE.MeshBasicMaterial({map:signTex}));signMesh.position.set(-11.82,7.3,1.8);signMesh.rotation.y=-Math.PI/2;workshopGroup.add(signMesh);
 workshopGroup.position.copy(workshopPosition);scene.add(workshopGroup);
@@ -431,7 +432,7 @@ for(const z of [-5.5,-1.5,2.5,6.5]){
  workshopBox(.12,.12,7.2,workshopDark,-11.27,5.65,z);
  workshopBox(.16,.18,6.7,workshopLight,-11.18,5.55,z);
 }
-for(const bay of [-1.5,7]){
+for(const bay of [-4.5,4.5]){
  // Guias amarelas no piso e faixas de segurança nas laterais.
  for(const side of [-1,1]){
   workshopBox(.18,.035,8.5,workshopYellow,side*3.7,.22,bay);
@@ -441,6 +442,8 @@ for(const bay of [-1.5,7]){
  workshopBox(2.8,1.25,.65,workshopDark,8.9,.75,bay+1.8);
  workshopBox(3,.12,.8,workshopYellow,8.9,1.42,bay+1.8);
  for(let drawer=0;drawer<3;drawer++)workshopBox(.06,.2,.04,workshopTrim,7.9+drawer*.85,.9,bay+1.43);
+ // Colunas de elevador automotivo dentro de cada box.
+ for(const liftX of [-1.5,3.8]){workshopBox(.35,3.4,.38,workshopYellow,liftX,1.7,bay-2.4);workshopBox(.35,3.4,.38,workshopYellow,liftX,1.7,bay+2.4);workshopBox(2.3,.16,.32,workshopDark,liftX+1.1,.85,bay-2.4);workshopBox(2.3,.16,.32,workshopDark,liftX+1.1,.85,bay+2.4);}
 }
 // Janelas laterais, luminárias externas e pneus empilhados como decoração.
 for(const z of [-6.5,6.5]){
