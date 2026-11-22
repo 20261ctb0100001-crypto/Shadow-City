@@ -35,6 +35,32 @@
 #dpad button:active,#dpad button.pressed{background:#d2dce2;color:#172129;transform:scale(.94)}
 #dpad .left{grid-column:1;grid-row:1}#dpad .right{grid-column:2;grid-row:1}
 @media(max-width:520px){#dpad{left:12px;bottom:14px;width:82px;height:38px;grid-template-columns:repeat(2,39px);grid-template-rows:38px;gap:4px}#dpad button{font-size:17px}.pedals{right:10px;bottom:14px}}
+
+/* HUD compacto: mais espaço livre para a paisagem e a estrada. */
+#minimap{width:78px;height:56px;top:10px;left:10px;border-width:1px;opacity:.78;border-radius:7px}
+#mission{top:10px;right:10px;max-width:23%;font-size:8px;line-height:1.15;padding:5px 7px;opacity:.82}
+#stats{left:10px;bottom:125px;min-width:0;padding:5px 7px;font-size:9px;line-height:1.25;border-radius:7px;opacity:.78}
+#stats b[style]{font-size:14px!important}
+#gearHud{top:10px;right:10px;flex-direction:row;gap:2px;padding:3px 5px;border-radius:8px;opacity:.72}
+#gearHud button{min-width:22px;padding:3px 5px;font-size:10px}
+#cruiseBtn{top:48px!important;right:10px!important;padding:5px 7px!important;font-size:9px!important;opacity:.72}
+#refuelBtn{top:80px!important;right:10px!important;padding:5px 7px!important;font-size:9px!important;opacity:.72}
+#cameraModes{top:8px!important;gap:3px;padding:3px;opacity:.72}
+.cameraMode{width:26px;height:26px;font-size:10px}
+#zoomControls{top:43px;opacity:.48;transform:translateX(-50%) scale(.82)}
+#controls .joy{width:94px;height:94px;left:14px;bottom:14px}
+#controls .knob{width:40px;height:40px;left:25px;top:25px}
+#controls .pedals{right:12px;bottom:12px;transform:scale(.88);transform-origin:bottom right}
+@media(max-width:520px){
+ #minimap{width:70px;height:50px}
+ #mission{max-width:24%;font-size:7px;padding:4px 5px}
+ #stats{bottom:112px;font-size:8px;padding:4px 6px}
+ #gearHud{top:8px;right:8px}
+ #cruiseBtn{top:42px!important;right:8px!important}
+ #refuelBtn{top:72px!important;right:8px!important}
+ #cameraModes{top:7px!important}
+ #zoomControls{top:39px}
+}
 </style>
 <style>
 #garage{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:14px;overflow:auto;background:radial-gradient(ellipse at 50% 20%,#354b55 0%,#17242c 52%,#0b1116 100%)}
@@ -592,12 +618,56 @@ for(let mark=0;mark<4;mark++)workshopBox(.16,.025,8,workshopYellow,-28+mark*4,.1
 
 
  
-// Cordilheiras dos dois lados, com picos irregulares e camadas de profundidade.
-const mountainMats=[mat(0x65766f,1),mat(0x78847b,1),mat(0x596b68,1),mat(0x8a9188,1)];
-for(let side of [-1,1])for(let i=0;i<34;i++){
- const z=-620+i*37+(Math.random()-.5)*18,baseX=roadCenter(z)+side*(82+Math.random()*72),h=24+Math.random()*58,r=20+Math.random()*28;
- const peak=new THREE.Mesh(new THREE.ConeGeometry(r,h,5+Math.floor(Math.random()*3),1),mountainMats[i%mountainMats.length]);
- peak.position.set(baseX,h*.48-1,z);peak.rotation.y=Math.random()*Math.PI;peak.rotation.z=(Math.random()-.5)*.12;peak.scale.set(1.25,.9,1.5);peak.castShadow=true;peak.receiveShadow=true;scene.add(peak);
+// Bairros urbanos laterais no lugar das antigas cordilheiras.
+const roadsideCityWalls=[mat(0xc7c2b8,.92),mat(0xb8c5c8,.9),mat(0xd1c7b7,.92),mat(0x9daeb3,.9),mat(0xc3b6a8,.92),mat(0xaeb9ad,.92)];
+const roadsideGlass=mat(0x456575,.24,.18),roadsideTrim=mat(0xe0ded5,.8),roadsideRoof=mat(0x454c50,.92);
+for(const side of [-1,1]){
+ for(let i=0;i<30;i++){
+  const z=-650+i*44+(Math.random()-.5)*13;
+  const lane=i%3,baseX=roadCenter(z)+side*(258+lane*47+Math.random()*13);
+  const w=19+Math.random()*17,d=23+Math.random()*18,h=15+Math.random()*43;
+  const wall=roadsideCityWalls[(i+lane*2+(side>0?1:0))%roadsideCityWalls.length];
+  const building=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),wall);
+  body.position.y=h/2;body.castShadow=true;body.receiveShadow=true;building.add(body);
+  const roofDeck=new THREE.Mesh(new THREE.BoxGeometry(w+1,.7,d+1),roadsideRoof);
+  roofDeck.position.y=h+.3;building.add(roofDeck);
+  const parapet=new THREE.Mesh(new THREE.BoxGeometry(w+1,1.15,.65),roadsideTrim);
+  parapet.position.set(0,h+.85,-d/2);building.add(parapet);
+  const roadFace=-side*(w/2+.14);
+  const floors=Math.max(2,Math.floor((h-3)/4.2));
+  for(let floor=0;floor<floors;floor++)for(let col=0;col<2;col++){
+   const wz=-d*.25+col*d*.5,wy=2.5+floor*4.1;
+   const frame=new THREE.Mesh(new THREE.BoxGeometry(.24,2.45,3.05),roadsideTrim);
+   frame.position.set(roadFace,wy,wz);building.add(frame);
+   const glass=new THREE.Mesh(new THREE.BoxGeometry(.13,2.05,2.62),roadsideGlass);
+   glass.position.set(roadFace-side*.08,wy,wz);building.add(glass);
+   const mullion=new THREE.Mesh(new THREE.BoxGeometry(.1,2.08,.12),roadsideTrim);
+   mullion.position.set(roadFace-side*.16,wy,wz);building.add(mullion);
+  }
+  const shopfront=new THREE.Mesh(new THREE.BoxGeometry(.18,2.8,d*.68),roadsideGlass);
+  shopfront.position.set(roadFace,1.55,0);building.add(shopfront);
+  const awning=new THREE.Mesh(new THREE.BoxGeometry(2.4,.28,d*.72),mat(i%2?0x536d78:0x68735e,.85));
+  awning.position.set(roadFace-side*1.05,3.15,0);building.add(awning);
+  if(i%3===0){
+   const tank=new THREE.Mesh(new THREE.CylinderGeometry(1.35,1.35,2.5,12),mat(0xd6d9d5,.8));
+   tank.position.set(w*.23,h+1.9,d*.2);building.add(tank);
+   const tankBase=new THREE.Mesh(new THREE.BoxGeometry(4,.35,4),roadsideTrim);
+   tankBase.position.set(w*.23,h+1,d*.2);building.add(tankBase);
+  }
+  const sideStrip=new THREE.Mesh(new THREE.BoxGeometry(.45,h*.82,.35),roadsideTrim);
+  sideStrip.position.set(side*w*.48,h*.5,-d/2-.2);building.add(sideStrip);
+  building.position.set(baseX,0,z);scene.add(building);
+ }
+ // Ruas transversais e calçadas conectam os quarteirões à cidade.
+ for(let street=0;street<7;street++){
+  const z=-600+street*190;
+  const road=new THREE.Mesh(new THREE.BoxGeometry(82,.12,8),asphaltCity);
+  road.position.set(roadCenter(z)+side*315,.015,z);scene.add(road);
+  const sidewalkA=new THREE.Mesh(new THREE.BoxGeometry(82,.18,2.2),concretePavement);
+  sidewalkA.position.set(roadCenter(z)+side*315,.08,z-5.2);scene.add(sidewalkA);
+  const sidewalkB=sidewalkA.clone();sidewalkB.position.z=z+5.2;scene.add(sidewalkB);
+ }
 }
 // Posto de combustível na lateral da estrada.
 
