@@ -57,6 +57,10 @@
 #load{z-index:30}
 @media(max-width:650px){.garage-card{padding:13px;border-radius:16px}#truckChoices{gap:5px}.truck-choice{min-height:82px;padding:6px 3px}.customize{margin:10px 0;padding:9px}}
 
+/* Oficina física: o catálogo só aparece ao entrar no prédio. */
+#garage{display:none}
+#workshopEnter{position:fixed;z-index:40;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);display:none;min-width:220px;padding:14px 20px;border:1px solid #ffffff80;border-radius:14px;background:linear-gradient(110deg,#f0b94b,#ffe09a);color:#241a08;font-weight:1000;font-size:14px;letter-spacing:1px;box-shadow:0 8px 28px #0009;pointer-events:auto}
+#workshopEnter small{display:block;font-size:10px;letter-spacing:.5px;margin-top:3px}
 /* Garagem com catálogo de 50 modelos 3D */
 #garage{position:fixed;inset:0;display:grid;place-items:center;padding:10px;background:radial-gradient(ellipse at 50% 15%,#354b55 0%,#17242c 58%,#0b1116 100%);z-index:50}
 .garage-card{width:min(1120px,98vw);max-height:96vh;overflow:hidden;padding:clamp(12px,2vw,24px);border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#263943f5,#101920f7);box-shadow:0 18px 70px #000b;text-align:left;display:flex;flex-direction:column;gap:10px}
@@ -74,7 +78,7 @@
  <button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o catálogo de veículos...</p>
  <p class="garage-credit">Fotos reais com créditos e licenças · Wikimedia Commons. Modelos 3D genéricos CC0 · 3DAssets.dev</p>
  </div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
-<div id="load">Preparando seu caminhão...</div><div id="runtimeError" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:2000;padding:12px 14px;border:2px solid #ff6258;border-radius:12px;background:#241416;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:35vh;overflow:auto"></div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
+<button id="workshopEnter" type="button">ENTRAR NA OFICINA<small>TOQUE PARA ESCOLHER SEU VEÍCULO</small></button><div id="load">Preparando seu caminhão...</div><div id="runtimeError" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:2000;padding:12px 14px;border:2px solid #ff6258;border-radius:12px;background:#241416;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:35vh;overflow:auto"></div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
  <div id="minimap" aria-label="Mapa da rota"><canvas id="minimapCanvas" width="220" height="150"></canvas></div>
  <div id="mission" class="panel">ENTREGA 01<br>Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.</div>
@@ -100,6 +104,7 @@ window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicl
  async function loadRealPhoto(img){const query=img.dataset.photoQuery;if(!query)return;let pending=photoCache.get(query);if(!pending){pending=fetchCommonsPhoto(query);photoCache.set(query,pending)}try{showPhoto(img,await pending)}catch(error){photoCache.delete(query);img.alt='Fotografia não encontrada para '+img.dataset.photoLabel;img.classList.add('photo-missing');const credit=img.parentElement.querySelector('.photo-credit');if(credit)credit.textContent='Foto indisponível · consultar fonte'}}
  function observePhoto(img){if('IntersectionObserver' in window){if(!window.vehiclePhotoObserver)window.vehiclePhotoObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){window.vehiclePhotoObserver.unobserve(entry.target);loadRealPhoto(entry.target)}}),{root:grid,rootMargin:'260px'});window.vehiclePhotoObserver.observe(img)}else loadRealPhoto(img)}
  function render(){const list=catalog[window.selectedVehicleType];grid.innerHTML=list.map(v=>'<button type="button" class="vehicle-choice'+(v.id===window.selectedVehicleId?' selected':'')+'" data-id="'+v.id+'"><img data-photo-query="'+v.photoQuery+'" data-photo-label="'+v.photoLabel+'" alt="Carregando fotografia real de '+v.photoLabel+'" loading="lazy" decoding="async"><b>'+v.photoLabel+'</b><small>'+v.category+' · veículo de referência</small><a class="photo-credit" href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Buscando foto real...</a></button>').join('');grid.querySelectorAll('img[data-photo-query]').forEach(observePhoto);tabs.forEach(b=>b.classList.toggle('active',b.dataset.type===window.selectedVehicleType));sync()}
+ document.getElementById('workshopEnter').addEventListener('click',()=>{if(!window.gameReady)return;document.getElementById('garage').style.display='grid';status.textContent='Escolha seu veículo e personalize a cor.';});
  tabs.forEach(tab=>tab.addEventListener('click',()=>{window.selectedVehicleType=tab.dataset.type;window.selectedVehicleId=catalog[window.selectedVehicleType][0].id;color.value=window.selectedVehicleType==='cars'?'#2876b8':'#e8e8e2';render()}));
  grid.addEventListener('click',e=>{const card=e.target.closest('.vehicle-choice');if(!card)return;const item=catalog[window.selectedVehicleType].find(v=>v.id===card.dataset.id);if(item){window.selectedVehicleId=item.id;sync()}});
  color.addEventListener('input',sync);
@@ -109,7 +114,7 @@ window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicl
   try{if(typeof window.prepareSelectedVehicle!=='function')throw new Error('O carregador de veículos ainda não está pronto.');const loaded=await window.prepareSelectedVehicle(window.selectedVehicleId);if(!loaded)throw new Error('Não foi possível carregar esse modelo. Tente outro veículo.');
    const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
    if(mobile){try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}try{if(screen.orientation&&screen.orientation.lock){try{await screen.orientation.lock('landscape-primary')}catch(_){await screen.orientation.lock('landscape')}}}catch(_){}}
-   document.getElementById('garage').style.display='none';
+   document.getElementById('garage').style.display='none';document.getElementById('workshopEnter').style.display='none';document.getElementById('mission').innerHTML='OFICINA<br>Dirija pela cidade e volte quando quiser trocar de veículo.';
   }catch(err){status.textContent=err.message||'Falha ao carregar o veículo.'}finally{button.disabled=false;button.textContent='JOGAR'}
  });
  window.addEventListener('error',e=>{if(window.gameReady)return;status.textContent='Não foi possível iniciar o jogo: '+(e.message||'erro de inicialização')+'. Atualize a página.'});
@@ -403,7 +408,19 @@ function buildCity(name,centerZ,style){
 buildCity('Ponta Grossa',-4000,0);
 buildCity('Curitiba',-19000,1);
 buildCity('Florianópolis',-34000,2);
+
 buildCity('Santos',-49000,3);
+// Oficina principal posicionada junto ao ponto inicial da rodovia.
+const workshopPosition=new THREE.Vector3(roadCenter(65)+34,0,65),workshopGroup=new THREE.Group();
+const workshopWall=mat(0xb9b8ae,.92),workshopRoof=mat(0x3b454a,.9),workshopTrim=mat(0xe4e0d4,.8),workshopGlass=mat(0x315365,.25,.15),workshopDoor=mat(0x59636a,.8);
+function workshopBox(w,h,d,material,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;workshopGroup.add(m);return m}
+workshopBox(23,8,19,workshopWall,0,4,0);workshopBox(24,.65,20,workshopRoof,0,8.25,0);
+workshopBox(.25,5.4,8,workshopDoor,-11.65,2.8,-1.5);workshopBox(.3,5.4,8,workshopDoor,-11.65,2.8,7);
+workshopBox(.35,5.7,8.2,workshopGlass,-11.45,2.85,2.8);workshopBox(.3,2.6,3.8,workshopGlass,-11.42,6.35,-5.2);
+workshopBox(1,.25,24,workshopTrim,-12.2,8.65,0);
+const signCanvas=document.createElement('canvas');signCanvas.width=768;signCanvas.height=180;const signCtx=signCanvas.getContext('2d');signCtx.fillStyle='#17252c';signCtx.fillRect(0,0,768,180);signCtx.fillStyle='#f4c45e';signCtx.font='bold 76px Arial';signCtx.textAlign='center';signCtx.fillText('OFICINA',384,112);const signTex=new THREE.CanvasTexture(signCanvas);signTex.colorSpace=THREE.SRGBColorSpace;const signMesh=new THREE.Mesh(new THREE.PlaneGeometry(12,2.8),new THREE.MeshBasicMaterial({map:signTex}));signMesh.position.set(-11.82,7.3,1.8);signMesh.rotation.y=-Math.PI/2;workshopGroup.add(signMesh);
+workshopGroup.position.copy(workshopPosition);scene.add(workshopGroup);
+
  
 // Casas completas em GLB: fachadas, telhados, portas, janelas e materiais próprios.
 const cityHouseModelUrls=[
@@ -694,11 +711,12 @@ ground.position.x=roadCenter(truck.position.z);ground.position.z=Math.max(truck.
 if(vehicleMixer)vehicleMixer.update(dt);
 const cockpit=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.28:2.45,-.35));const rearOffset=new THREE.Vector3(0,cameraHeight,cameraDistance);const rearCamera=truck.localToWorld(rearOffset);const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.3:2.4,-55));const outsideLook=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.15:2.2,-5));camera.lookAt(firstPerson?cabForward:outsideLook);
 for(const car of traffic){car.position.z+=car.userData.dir*dt*(car.userData.speed+Math.sin(now*.0004)*1.2);const range=car.userData.range||520;if(car.position.z>truck.position.z+range)car.position.z=truck.position.z-range;if(car.position.z<truck.position.z-range)car.position.z=truck.position.z+range;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<(car.userData.halfLength||2.6)+2.6){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
+const nearWorkshop=truck.position.distanceTo(workshopPosition)<48;const workshopButton=document.getElementById('workshopEnter');if(workshopButton)workshopButton.style.display=nearWorkshop?'block':'none';
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();drawMinimap();renderer.render(scene,camera)}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha um dos 50 veículos e toque em JOGAR.';load.remove();requestAnimationFrame(loop);loadCityHouseModels().then(()=>{renderer.render(scene,camera)}).catch(err=>console.warn('Casas 3D opcionais não carregaram:',err));
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Oficina pronta. Entre nela para escolher seu veículo.';load.remove();requestAnimationFrame(loop);loadCityHouseModels().then(()=>{renderer.render(scene,camera)}).catch(err=>console.warn('Casas 3D opcionais não carregaram:',err));
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
