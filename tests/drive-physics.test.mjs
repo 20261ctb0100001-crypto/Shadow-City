@@ -139,16 +139,16 @@ test('steering uses a draggable virtual wheel and no directional arrow pad', asy
 
 test('truck has a higher acceleration and top speed after the update', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.ok(html.includes('vehicleIsCar?27.8:30.5'));
-  assert.ok(html.includes('vehicleIsCar?55.6:50'));
-  assert.ok(html.includes('acceleration:vehicleIsCar?14:16'));
+  assert.ok(html.includes('vehicleIsCar?27.8:38.9'));
+  assert.ok(html.includes('vehicleIsCar?55.6:66.7'));
+  assert.ok(html.includes('acceleration:vehicleIsCar?14:26'));
   const { stepTruckPhysics } = await loadPhysics();
   let state = { speed: 0, heading: 0 };
   for (let i = 0; i < 100; i++) state = stepTruckPhysics(state, {
     throttle: 1, brake: 0, turn: 0, gear: 'D', dt: 0.1,
     offRoad: false, speedLimit: 50, acceleration: 16
   });
-  assert.ok(state.speed > 41.7 && state.speed <= 50, 'truck must reach the new 180 km/h highway cap');
+  assert.ok(state.speed > 41.7 && state.speed <= 66.7, 'truck must reach the new 240 km/h highway cap');
 });
 
 test('Pages deployment waits for artifact metadata propagation', async () => {
@@ -164,7 +164,7 @@ test('all four cities have a large connected street grid and dense blocks', asyn
   assert.ok(html.includes('for(let row=0;row<61;row++)'));
   assert.ok(html.includes('for(let band=0;band<2;band++)for(let row=0;row<60;row++)'));
   assert.ok(html.includes('steps=13000,startZ=-65000,endZ=700'));
-  assert.ok(html.includes('speedLimit:inCity?(vehicleIsCar?27.8:30.5):(vehicleIsCar?55.6:50)'));
+  assert.ok(html.includes('speedLimit:inCity?(vehicleIsCar?27.8:38.9):(vehicleIsCar?55.6:66.7)'));
   assert.ok(html.includes('vehicleMixer.update(dt)'));
   assert.ok(html.includes('window.prepareSelectedVehicle=async function(id)'));
   assert.ok(html.includes('function makeTrafficTruck'));
@@ -188,8 +188,8 @@ test('selected GLB model replaces the procedural player vehicle and uses car or 
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   assert.ok(html.includes('three/addons/loaders/GLTFLoader.js'));
   assert.ok(html.includes('playerModelGroup.add(model)'));
-  assert.ok(html.includes('vehicleIsCar?55.6:50'));
-  assert.ok(html.includes('acceleration:vehicleIsCar?14:16'));
+  assert.ok(html.includes('vehicleIsCar?55.6:66.7'));
+  assert.ok(html.includes('acceleration:vehicleIsCar?14:26'));
   assert.ok(html.includes('brakeForce:vehicleIsCar?13:13'));
 });
 
