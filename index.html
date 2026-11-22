@@ -13,7 +13,7 @@
 #hud{position:fixed;inset:0;pointer-events:none}.panel{background:#101820d9;border:1px solid #ffffff30;border-radius:13px;padding:10px 13px;backdrop-filter:blur(8px);box-shadow:0 4px 18px #0003}#brand{position:absolute;top:12px;left:12px;font-weight:900;letter-spacing:1.5px;font-size:14px}#mission{position:absolute;top:12px;right:12px;text-align:right;font-size:12px;max-width:58%}#stats{position:absolute;left:12px;top:62px;font-size:12px;line-height:1.6}#help{position:absolute;bottom:12px;left:12px;font-size:11px;color:#e3edf1}
 #minimap{position:absolute;top:12px;left:12px;width:118px;height:104px;border:2px solid #ffffffa0;border-radius:10px;background:#18231dcc;box-shadow:0 4px 15px #0008;overflow:hidden}
 #minimap canvas{display:block;width:100%;height:100%}
-#brand{display:none}#mission{top:12px;right:12px;max-width:48%;background:#101820c9;border-radius:10px;font-weight:700}
+#brand{display:none}#mission{top:10px;right:10px;max-width:30%;padding:6px 9px;background:#101820b8;border:1px solid #ffffff22;border-radius:8px;font-size:9px;line-height:1.25;font-weight:700;backdrop-filter:blur(5px);box-shadow:0 2px 8px #0002}
 #stats{top:auto;left:12px;bottom:142px;min-width:116px;background:#101820c9;border-radius:10px}
 #help{display:none}
 #controls .pedals{bottom:22px;right:18px}
@@ -24,17 +24,43 @@
 #refuelBtn{position:absolute!important;top:206px!important;right:13px!important;font-size:10px;background:#b8862d;color:#fff!important}
 #gearHud{position:absolute;right:15px;top:250px;display:flex;flex-direction:column;gap:4px;padding:6px;background:#101820c9;border:1px solid #ffffff45;border-radius:10px;font-size:12px;font-weight:900;text-align:center}
 #gearHud button{padding:3px 8px;border-radius:5px;color:#b7c2c8;border:0;background:transparent;font:inherit;font-weight:900;cursor:pointer;min-width:28px}#gearHud .selected{background:#d9e1e5;color:#162028}
-@media(max-width:520px){#minimap{width:105px;height:90px}#stats{bottom:135px;font-size:10px;padding:7px 9px}#mission{font-size:10px;padding:8px;max-width:48%}#cameraModes{top:8px!important}#cruiseBtn{top:110px!important}#refuelBtn{top:149px!important}#gearHud{top:229px;right:12px}}
+@media(max-width:520px){#minimap{width:105px;height:90px}#stats{bottom:135px;font-size:10px;padding:7px 9px}#mission{font-size:8px;line-height:1.2;padding:5px 7px;max-width:30%;top:8px;right:8px}#cameraModes{top:8px!important}#cruiseBtn{top:110px!important}#refuelBtn{top:149px!important}#gearHud{top:229px;right:12px}}
 
 #controls{position:fixed;inset:0;pointer-events:none;z-index:5}.joy{position:absolute;left:22px;bottom:24px;width:120px;height:120px;border-radius:50%;background:#ffffff24;border:2px solid #ffffff80;pointer-events:auto;touch-action:none}.knob{position:absolute;left:34px;top:34px;width:48px;height:48px;border-radius:50%;background:#ffffffc9;box-shadow:0 2px 10px #0005}.pedals{position:absolute;right:14px;bottom:18px;display:flex;gap:12px;align-items:end;padding:10px 12px 8px;background:linear-gradient(145deg,#10171bd9,#29343bd9);border:1px solid #aebbc455;border-radius:18px 18px 13px 13px;box-shadow:0 7px 22px #0007;pointer-events:auto}.btn{position:relative;width:68px;height:112px;border:2px solid #7d898e;border-radius:12px 12px 9px 9px;clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);background:linear-gradient(100deg,#252d32,#667177 23%,#30393e 50%,#707b80 77%,#252d32);color:#fff;font-weight:900;font-size:10px;letter-spacing:.7px;text-shadow:0 1px 3px #000;touch-action:none;display:flex;align-items:end;justify-content:center;padding-bottom:12px;box-shadow:inset 0 0 0 2px #101719,0 4px 7px #0008; transform:perspective(140px) rotateX(7deg)}.btn:before{content:'';position:absolute;inset:9px 9px 31px;border-radius:5px;background:repeating-linear-gradient(0deg,#111a1f 0 5px,#8c969a 5px 8px,#20282d 8px 12px);border:1px solid #9ba5a866;opacity:.95}.btn span{position:relative;z-index:1}.btn.gas{height:98px;width:57px;background:linear-gradient(100deg,#203b36,#5b7770 25%,#263e39 55%,#718b82 78%,#203b36)}.btn.active{filter:brightness(1.55);border-color:#b7ffe4;box-shadow:0 0 0 2px #49d7a8,0 0 20px #49d7a888,inset 0 0 0 2px #101719;transform:perspective(140px) rotateX(13deg) translateY(3px)}.btn:active{filter:brightness(1.45)}#load{position:fixed;inset:0;display:grid;place-items:center;background:#101820;color:#fff;z-index:20;font-weight:bold}#gameover{position:fixed;inset:0;z-index:30;display:none;place-items:center;background:#080d12eF;text-align:center;padding:24px}#gameover .card{width:min(92vw,420px);padding:28px 22px;border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#25313b,#10171d);box-shadow:0 18px 60px #0009}#gameover h1{font-size:34px;margin:0 0 10px;color:#ff5c52;letter-spacing:2px}#gameover p{color:#d5e0e5;line-height:1.5}#restart{border:0;border-radius:13px;background:#39c995;color:#09231a;font-size:18px;font-weight:900;padding:15px 28px;margin-top:10px}
 @media(min-width:800px){.joy{width:140px;height:140px}.knob{left:44px;top:44px}#help{font-size:13px}}
 @media(max-width:520px){#stats{top:61px;font-size:11px}.panel{padding:8px 10px}.joy{width:108px;height:108px;left:14px;bottom:17px}.knob{width:44px;height:44px;left:30px;top:30px}.pedals{right:12px;bottom:18px;gap:7px}.btn{width:61px;height:100px;font-size:9px}.btn.gas{width:51px;height:88px}}
 #controls .joy{display:none!important}
-#dpad{position:absolute;left:18px;bottom:20px;width:132px;height:116px;display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,34px);gap:3px;pointer-events:auto;touch-action:none;opacity:.82}
+#dpad{position:absolute;left:18px;bottom:20px;width:92px;height:44px;display:grid;grid-template-columns:repeat(2,44px);grid-template-rows:44px;gap:5px;pointer-events:auto;touch-action:none;opacity:.72}
 #dpad button{border:1px solid #ffffff75;border-radius:8px;background:linear-gradient(145deg,#28343bcc,#101820dd);color:#fff;font-size:20px;font-weight:900;box-shadow:0 2px 7px #0006;touch-action:none;padding:0}
 #dpad button:active,#dpad button.pressed{background:#d2dce2;color:#172129;transform:scale(.94)}
-#dpad .up{grid-column:2;grid-row:1}#dpad .left{grid-column:1;grid-row:2}#dpad .right{grid-column:3;grid-row:2}#dpad .down{grid-column:2;grid-row:3}
-@media(max-width:520px){#dpad{left:12px;bottom:14px;width:116px;height:104px;grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,30px);gap:2px}#dpad button{font-size:18px}.pedals{right:10px;bottom:14px}}
+#dpad .left{grid-column:1;grid-row:1}#dpad .right{grid-column:2;grid-row:1}
+@media(max-width:520px){#dpad{left:12px;bottom:14px;width:82px;height:38px;grid-template-columns:repeat(2,39px);grid-template-rows:38px;gap:4px}#dpad button{font-size:17px}.pedals{right:10px;bottom:14px}}
+
+/* HUD compacto: mais espaço livre para a paisagem e a estrada. */
+#minimap{width:78px;height:56px;top:10px;left:10px;border-width:1px;opacity:.78;border-radius:7px}
+#mission{top:10px;right:10px;max-width:23%;font-size:8px;line-height:1.15;padding:5px 7px;opacity:.82}
+#stats{left:10px;bottom:125px;min-width:0;padding:5px 7px;font-size:9px;line-height:1.25;border-radius:7px;opacity:.78}
+#stats b[style]{font-size:14px!important}
+#gearHud{top:10px;right:10px;flex-direction:row;gap:2px;padding:3px 5px;border-radius:8px;opacity:.72}
+#gearHud button{min-width:22px;padding:3px 5px;font-size:10px}
+#cruiseBtn{top:48px!important;right:10px!important;padding:5px 7px!important;font-size:9px!important;opacity:.72}
+#refuelBtn{top:80px!important;right:10px!important;padding:5px 7px!important;font-size:9px!important;opacity:.72}
+#cameraModes{top:8px!important;gap:3px;padding:3px;opacity:.72}
+.cameraMode{width:26px;height:26px;font-size:10px}
+#zoomControls{top:43px;opacity:.48;transform:translateX(-50%) scale(.82)}
+#controls .joy{width:94px;height:94px;left:14px;bottom:14px}
+#controls .knob{width:40px;height:40px;left:25px;top:25px}
+#controls .pedals{right:12px;bottom:12px;transform:scale(.88);transform-origin:bottom right}
+@media(max-width:520px){
+ #minimap{width:70px;height:50px}
+ #mission{max-width:24%;font-size:7px;padding:4px 5px}
+ #stats{bottom:112px;font-size:8px;padding:4px 6px}
+ #gearHud{top:8px;right:8px}
+ #cruiseBtn{top:42px!important;right:8px!important}
+ #refuelBtn{top:72px!important;right:8px!important}
+ #cameraModes{top:7px!important}
+ #zoomControls{top:39px}
+}
 </style>
 <style>
 #garage{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:14px;overflow:auto;background:radial-gradient(ellipse at 50% 20%,#354b55 0%,#17242c 52%,#0b1116 100%)}
@@ -57,15 +83,34 @@
 #load{z-index:30}
 @media(max-width:650px){.garage-card{padding:13px;border-radius:16px}#truckChoices{gap:5px}.truck-choice{min-height:82px;padding:6px 3px}.customize{margin:10px 0;padding:9px}}
 
+/* Oficina física: o catálogo só aparece ao entrar no prédio. */
+#garage{display:none}
+#workshopEnter{position:fixed;z-index:40;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);display:none;min-width:220px;padding:14px 20px;border:1px solid #ffffff80;border-radius:14px;background:linear-gradient(110deg,#f0b94b,#ffe09a);color:#241a08;font-weight:1000;font-size:14px;letter-spacing:1px;box-shadow:0 8px 28px #0009;pointer-events:auto}
+#workshopEnter small{display:block;font-size:10px;letter-spacing:.5px;margin-top:3px}
 /* Garagem com catálogo de 50 modelos 3D */
-#garage{position:fixed;inset:0;display:grid;place-items:center;padding:10px;background:radial-gradient(ellipse at 50% 15%,#354b55 0%,#17242c 58%,#0b1116 100%);z-index:50}
+#garage{position:fixed;inset:0;display:none;place-items:center;padding:10px;background:radial-gradient(ellipse at 50% 15%,#354b55 0%,#17242c 58%,#0b1116 100%);z-index:50}
 .garage-card{width:min(1120px,98vw);max-height:96vh;overflow:hidden;padding:clamp(12px,2vw,24px);border:1px solid #ffffff35;border-radius:22px;background:linear-gradient(145deg,#263943f5,#101920f7);box-shadow:0 18px 70px #000b;text-align:left;display:flex;flex-direction:column;gap:10px}
 .garage-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.garage-heading h1{margin:0 0 5px;font-size:clamp(19px,3vw,29px);letter-spacing:1px}.garage-heading .sub{margin:0;color:#c5d3d9;font-size:clamp(11px,1.4vw,14px)}.garage-count{display:flex;flex-direction:column;align-items:center;border:1px solid #ffffff24;border-radius:12px;padding:6px 12px;background:#0c151d}.garage-count strong{font-size:24px;color:#73e0b2}.garage-count span{font-size:9px;letter-spacing:1px;color:#bdcbd0}
 .garage-tabs{display:flex;gap:8px}.garage-tab{flex:1;padding:11px;border:1px solid #ffffff35;border-radius:10px;background:#0b151dcc;color:#e9f0f2;font-weight:900;letter-spacing:.7px}.garage-tab.active{background:#1b493f;border:2px solid #50d5a4;color:#fff}.garage-tab b{margin-left:5px;color:#83e7bf}
 .vehicle-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;overflow-y:auto;overscroll-behavior:contain;min-height:0;max-height:52vh;padding:2px 4px 4px 2px}.vehicle-choice{min-width:0;min-height:122px;padding:6px;border:1px solid #ffffff30;border-radius:11px;background:#0c151dcc;color:#fff;display:flex;flex-direction:column;align-items:stretch;gap:4px;text-align:left;overflow:hidden}.vehicle-choice.selected{border:2px solid #50d5a4;background:#1b493f;box-shadow:0 0 0 2px #50d5a433}.vehicle-choice img{width:100%;height:78px;object-fit:cover;object-position:center;border-radius:6px;background:linear-gradient(135deg,#35434b,#11191e)}.vehicle-choice img.photo-missing{object-fit:contain;background:#293943}.vehicle-choice .photo-credit{font-size:8px;line-height:1.15;color:#82d9b3;text-decoration:underline;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.vehicle-choice b{font-size:11px;line-height:1.2}.vehicle-choice small{font-size:9px;color:#a9c0c7}.customize{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:9px 12px;border-radius:10px;background:#0b141bbd;font-size:13px}.customize label{color:#c5d3d9}#truckSelected{font-weight:800;margin-bottom:3px}#truckColor{width:62px;height:38px;border:0;background:transparent;cursor:pointer}#playTruck{width:100%;padding:12px 24px;border:0;border-radius:12px;background:linear-gradient(100deg,#35c58f,#8be0b4);color:#092219;font-size:18px;font-weight:1000;letter-spacing:1.5px}#garageStatus{min-height:16px;margin:0;color:#c5d3d9;font-size:12px;text-align:center}.garage-credit{margin:0;color:#84979d;font-size:9px;text-align:center}
 @media(max-width:700px){.garage-card{gap:7px;padding:10px;border-radius:15px}.vehicle-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-height:48vh}.vehicle-choice{min-height:104px;padding:5px}.vehicle-choice img{height:62px}.vehicle-choice .photo-credit{font-size:7px}.vehicle-choice b{font-size:10px}.vehicle-choice small{font-size:8px}.garage-tab{padding:9px;font-size:11px}.customize{padding:7px 9px}}
 @media(min-width:701px) and (max-height:650px){.vehicle-grid{max-height:43vh}.vehicle-choice{min-height:100px}.vehicle-choice img{height:62px}}
-</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script></head>
+</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script><style>#garage{display:none}
+/* Volante virtual tátil no lugar das setas. */
+#dpad{display:none!important}
+#steeringWheel{position:absolute;left:14px;bottom:12px;width:142px;height:142px;border-radius:50%;display:grid;place-items:center;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;z-index:8;background:radial-gradient(circle,#252b30 0 34%,#080a0c 35% 100%);border:3px solid #879097;box-shadow:0 5px 18px #0009,inset 0 2px 5px #ffffff30}
+#steeringWheel:before{content:'';position:absolute;inset:8px;border:12px solid #171a1d;border-radius:50%;box-shadow:inset 0 2px 4px #ffffff25,0 1px 3px #000;pointer-events:none}
+.wheel-rotor{position:absolute;inset:8px;border-radius:50%;transform:rotate(0deg);transition:transform .28s ease-out;pointer-events:none}
+.wheel-spoke{position:absolute;display:block;background:linear-gradient(90deg,#626a70,#171b1f 48%,#090b0d 72%,#626a70);border:1px solid #899198;box-shadow:0 2px 4px #0009}
+.spoke-top{width:24px;height:47px;left:calc(50% - 12px);top:13%;border-radius:7px}
+.spoke-left{width:56px;height:18px;left:13%;top:55%;transform:rotate(25deg);border-radius:6px}
+.spoke-right{width:56px;height:18px;right:13%;top:55%;transform:rotate(-25deg);border-radius:6px}
+.wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:49px;height:43px;border-radius:13px 13px 17px 17px;background:linear-gradient(145deg,#555d64,#171b20 60%,#090b0d);border:1px solid #92999e;box-shadow:0 2px 7px #000b;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#e8edf0;font-size:13px;letter-spacing:1px}
+.wheel-center small{font-size:5px;letter-spacing:1.4px;color:#aeb8be;margin-top:2px}
+.wheel-grip{position:absolute;width:13px;height:22px;background:linear-gradient(90deg,#090b0d,#343a40,#090b0d);border-radius:5px;left:calc(50% - 6px)}.grip-top{top:1px}.grip-bottom{bottom:1px}
+#steeringWheel.dragging{border-color:#dce7ed;box-shadow:0 5px 22px #000b,0 0 0 2px #dce7ed55}
+@media(max-width:520px){#steeringWheel{width:118px;height:118px;left:9px;bottom:9px}#steeringWheel:before{inset:7px;border-width:10px}.spoke-top{height:39px}.spoke-left,.spoke-right{width:46px}.wheel-center{width:42px;height:36px}}
+</style></head>
 <body><div id="garage"><div class="garage-card">
  <div class="garage-heading"><div><h1>GARAGEM DE VEÍCULOS</h1><p class="sub">Escolha seu veículo. O modelo selecionado será o que você vai dirigir.</p></div><div class="garage-count"><strong>50</strong><span>MODELOS</span></div></div>
  <div class="garage-tabs"><button class="garage-tab active" data-type="trucks">CAMINHÕES <b>25</b></button><button class="garage-tab" data-type="cars">CARROS <b>25</b></button></div>
@@ -74,14 +119,14 @@
  <button id="playTruck">JOGAR</button><p id="garageStatus" role="status">Preparando o catálogo de veículos...</p>
  <p class="garage-credit">Fotos reais com créditos e licenças · Wikimedia Commons. Modelos 3D genéricos CC0 · 3DAssets.dev</p>
  </div></div><div id="rotateNotice"><div class="inner"><span class="phone">📱 ↻</span>Vire o celular para jogar<br><small style="display:block;margin-top:12px;font-size:14px;font-weight:400">Este jogo funciona somente com a tela deitada.</small></div></div>
-<div id="load">Preparando seu caminhão...</div><div id="runtimeError" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:2000;padding:12px 14px;border:2px solid #ff6258;border-radius:12px;background:#241416;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:35vh;overflow:auto"></div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
+<button id="workshopEnter" type="button">ENTRAR NA OFICINA<small>TOQUE PARA ESCOLHER SEU VEÍCULO</small></button><div id="load">Preparando seu caminhão...</div><div id="runtimeError" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:2000;padding:12px 14px;border:2px solid #ff6258;border-radius:12px;background:#241416;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:35vh;overflow:auto"></div><div id="gameover"><div class="card"><h1>FIM DE JOGO</h1><p>Você bateu em outro veículo.<br>A carga e a viagem foram interrompidas.</p><button id="restart">JOGAR DE NOVO</button></div></div>
 <div id="hud">
  <div id="minimap" aria-label="Mapa da rota"><canvas id="minimapCanvas" width="220" height="150"></canvas></div>
  <div id="mission" class="panel">ENTREGA 01<br>Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.</div>
  <div id="stats" class="panel"><b style="font-size:18px"><span id="speed">0</span> <small>KM/H</small></b><br>Combustível: <b id="fuel">100</b>%</div><div id="gearHud" aria-label="Câmbio"><button id="gearD" class="selected" data-gear="D" aria-label="Drive">D</button><button id="gearN" data-gear="N" aria-label="Neutro">N</button><button id="gearR" data-gear="R" aria-label="Ré">R</button><button id="gearP" data-gear="P" aria-label="Estacionar">P</button></div>
  <div id="help" class="panel">WASD / setas: dirigir · Espaço: freio · R: reiniciar caminhão</div>
 </div>
-<div id="controls"><div id="dpad" aria-label="Direção do caminhão"><button class="up" data-dir="up" aria-label="Frente">▲</button><button class="left" data-dir="left" aria-label="Esquerda">◀</button><button class="right" data-dir="right" aria-label="Direita">▶</button><button class="down" data-dir="down" aria-label="Ré">▼</button></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><div id="cameraModes" aria-label="Modos de câmera"><button id="camera2" class="cameraMode" title="Visão interna">2</button><button id="camera3" class="cameraMode active" title="Visão externa">3</button></div><div id="zoomControls" aria-label="Zoom da câmera"><button id="zoomOut" type="button" aria-label="Afastar câmera">−</button><span id="zoomLabel">ZOOM</span><button id="zoomIn" type="button" aria-label="Aproximar câmera">+</button></div><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
+<div id="controls"><div id="steeringWheel" role="slider" aria-label="Volante virtual: arraste para virar" aria-valuemin="-135" aria-valuemax="135" aria-valuenow="0" tabindex="0"><div class="wheel-rotor" id="wheelRotor"><span class="wheel-spoke spoke-top"></span><span class="wheel-spoke spoke-left"></span><span class="wheel-spoke spoke-right"></span><span class="wheel-center"><b>SC</b><small>TRUCK</small></span><span class="wheel-grip grip-top"></span><span class="wheel-grip grip-bottom"></span></div></div><div style="position:absolute;top:105px;right:12px;display:flex;gap:7px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:58%"><div id="cameraModes" aria-label="Modos de câmera"><button id="camera2" class="cameraMode" title="Visão interna">2</button><button id="camera3" class="cameraMode active" title="Visão externa">3</button></div><div id="zoomControls" aria-label="Zoom da câmera"><button id="zoomOut" type="button" aria-label="Afastar câmera">−</button><span id="zoomLabel">ZOOM</span><button id="zoomIn" type="button" aria-label="Aproximar câmera">+</button></div><button id="cruiseBtn" class="panel" style="color:white;border:1px solid #ffffff66">LIMITADOR: OFF</button><button id="refuelBtn" class="panel" style="color:white;border:1px solid #ffffff66;display:none">ABASTECER</button></div><div class="pedals" aria-label="Pedais do caminhão"><button class="btn" id="brake" aria-label="Pedal de freio"><span>FREIO</span></button><button class="btn gas" id="gas" aria-label="Pedal do acelerador"><span>ACELERAR</span></button></div></div>
 <script src="./scripts/vehicle-catalog.js"></script>
 <script>
 window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicleId='truck-flatbed-recovery';window.selectedVehicleColor='#e8e8e2';
@@ -100,6 +145,7 @@ window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicl
  async function loadRealPhoto(img){const query=img.dataset.photoQuery;if(!query)return;let pending=photoCache.get(query);if(!pending){pending=fetchCommonsPhoto(query);photoCache.set(query,pending)}try{showPhoto(img,await pending)}catch(error){photoCache.delete(query);img.alt='Fotografia não encontrada para '+img.dataset.photoLabel;img.classList.add('photo-missing');const credit=img.parentElement.querySelector('.photo-credit');if(credit)credit.textContent='Foto indisponível · consultar fonte'}}
  function observePhoto(img){if('IntersectionObserver' in window){if(!window.vehiclePhotoObserver)window.vehiclePhotoObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){window.vehiclePhotoObserver.unobserve(entry.target);loadRealPhoto(entry.target)}}),{root:grid,rootMargin:'260px'});window.vehiclePhotoObserver.observe(img)}else loadRealPhoto(img)}
  function render(){const list=catalog[window.selectedVehicleType];grid.innerHTML=list.map(v=>'<button type="button" class="vehicle-choice'+(v.id===window.selectedVehicleId?' selected':'')+'" data-id="'+v.id+'"><img data-photo-query="'+v.photoQuery+'" data-photo-label="'+v.photoLabel+'" alt="Carregando fotografia real de '+v.photoLabel+'" loading="lazy" decoding="async"><b>'+v.photoLabel+'</b><small>'+v.category+' · veículo de referência</small><a class="photo-credit" href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Buscando foto real...</a></button>').join('');grid.querySelectorAll('img[data-photo-query]').forEach(observePhoto);tabs.forEach(b=>b.classList.toggle('active',b.dataset.type===window.selectedVehicleType));sync()}
+ document.getElementById('workshopEnter').addEventListener('click',()=>{if(!window.gameReady)return;window.workshopMenuOpen=true;document.getElementById('garage').style.display='grid';status.textContent='Escolha seu veículo, personalize a cor e confirme para sair da oficina.';});
  tabs.forEach(tab=>tab.addEventListener('click',()=>{window.selectedVehicleType=tab.dataset.type;window.selectedVehicleId=catalog[window.selectedVehicleType][0].id;color.value=window.selectedVehicleType==='cars'?'#2876b8':'#e8e8e2';render()}));
  grid.addEventListener('click',e=>{const card=e.target.closest('.vehicle-choice');if(!card)return;const item=catalog[window.selectedVehicleType].find(v=>v.id===card.dataset.id);if(item){window.selectedVehicleId=item.id;sync()}});
  color.addEventListener('input',sync);
@@ -109,7 +155,7 @@ window.gameReady=false;window.selectedVehicleType='trucks';window.selectedVehicl
   try{if(typeof window.prepareSelectedVehicle!=='function')throw new Error('O carregador de veículos ainda não está pronto.');const loaded=await window.prepareSelectedVehicle(window.selectedVehicleId);if(!loaded)throw new Error('Não foi possível carregar esse modelo. Tente outro veículo.');
    const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches);
    if(mobile){try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch(_){}try{if(screen.orientation&&screen.orientation.lock){try{await screen.orientation.lock('landscape-primary')}catch(_){await screen.orientation.lock('landscape')}}}catch(_){}}
-   document.getElementById('garage').style.display='none';
+   document.getElementById('garage').style.display='none';window.workshopMenuOpen=false;document.getElementById('workshopEnter').style.display='none';document.getElementById('mission').innerHTML='OFICINA<br>Dirija pela cidade e volte quando quiser trocar de veículo.';
   }catch(err){status.textContent=err.message||'Falha ao carregar o veículo.'}finally{button.disabled=false;button.textContent='JOGAR'}
  });
  window.addEventListener('error',e=>{if(window.gameReady)return;status.textContent='Não foi possível iniciar o jogo: '+(e.message||'erro de inicialização')+'. Atualize a página.'});
@@ -123,20 +169,22 @@ const load=document.getElementById('load');
 let THREE,GLTFLoader,vehicleLoader;
 try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e2){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível baixar o motor 3D. Confira a conexão e atualize a página.';load.textContent='Falha ao carregar o motor 3D';throw e2}}
 try{({GLTFLoader}=await import('three/addons/loaders/GLTFLoader.js'));vehicleLoader=new GLTFLoader()}catch(e){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível iniciar o carregador dos veículos 3D.';throw e}
-let SkyClass=null;try{({Sky:SkyClass}=await import('three/addons/objects/Sky.js'))}catch(e){SkyClass=null}
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,150,900);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1200);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<700?1.5:2));renderer.domElement.id='gameCanvas';renderer.domElement.style.position='fixed';renderer.domElement.style.inset='0';renderer.domElement.style.width='100vw';renderer.domElement.style.height='100vh';renderer.domElement.style.zIndex='1';renderer.domElement.style.pointerEvents='none';document.body.appendChild(renderer.domElement);renderer.setSize(innerWidth,innerHeight,false);renderer.domElement.width=Math.round(innerWidth*renderer.getPixelRatio());renderer.domElement.height=Math.round(innerHeight*renderer.getPixelRatio());renderer.setClearColor(0x9fc3d2,1);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
-const hemi=new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0);scene.add(hemi);const sun=new THREE.DirectionalLight(0xffe5bd,2.35);sun.position.set(-80,120,65);sun.castShadow=true;const shadowRes=innerWidth<700?1024:(innerWidth>=1100&&renderer.capabilities.maxTextureSize>=8192?4096:2048),shadowR=innerWidth<700?70:90;sun.shadow.mapSize.set(shadowRes,shadowRes);sun.shadow.camera.left=-shadowR;sun.shadow.camera.right=shadowR;sun.shadow.camera.top=shadowR;sun.shadow.camera.bottom=-shadowR;sun.shadow.camera.near=10;sun.shadow.camera.far=650;sun.shadow.bias=-.0003;sun.shadow.normalBias=.05;scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xe5f5ff,0x59634c,2.0));const sun=new THREE.DirectionalLight(0xffe5bd,2.35);sun.position.set(-80,120,65);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<700?1024:2048,innerWidth<700?1024:2048);sun.shadow.camera.left=-110;sun.shadow.camera.right=110;sun.shadow.camera.top=110;sun.shadow.camera.bottom=-110;scene.add(sun);
 const sunDisc=new THREE.Mesh(new THREE.SphereGeometry(8,24,16),new THREE.MeshBasicMaterial({color:0xffd477}));scene.add(sunDisc);
 const moonDisc=new THREE.Mesh(new THREE.SphereGeometry(5.5,24,16),new THREE.MeshBasicMaterial({color:0xe7efff}));scene.add(moonDisc);
 const starField=new THREE.Group();for(let i=0;i<120;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.35,6,6),new THREE.MeshBasicMaterial({color:0xffffff}));star.position.set((Math.random()-.5)*850,100+Math.random()*180,(Math.random()-.5)*850);starField.add(star)}scene.add(starField);
-const maxAniso=Math.min(8,renderer.capabilities.getMaxAnisotropy());function polishMats(o){for(const m of (Array.isArray(o.material)?o.material:[o.material])){if(m&&m.map)m.map.anisotropy=maxAniso}}
 const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
 const truckPaint=mat(0xf2f2ed,.42,.18);
-const asphaltCanvas=document.createElement('canvas');asphaltCanvas.width=512;asphaltCanvas.height=512;const asphaltCtx=asphaltCanvas.getContext('2d');asphaltCtx.fillStyle='#34393d';asphaltCtx.fillRect(0,0,512,512);for(let i=0;i<26000;i++){const x=Math.random()*512,y=Math.random()*512,v=35+Math.floor(Math.random()*35);asphaltCtx.fillStyle='rgba('+v+','+(v+3)+','+(v+5)+','+(.12+Math.random()*.2)+')';asphaltCtx.fillRect(x,y,1+Math.random()*2,1+Math.random()*2)}const asphaltTex=new THREE.CanvasTexture(asphaltCanvas);asphaltTex.wrapS=asphaltTex.wrapT=THREE.RepeatWrapping;asphaltTex.repeat.set(3,1100);asphaltTex.colorSpace=THREE.SRGBColorSpace;asphaltTex.anisotropy=maxAniso;const asphalt=new THREE.MeshStandardMaterial({map:asphaltTex,roughness:.96});const grass=mat(0x587b50),line=mat(0xe9e3c8),white=mat(0xe8e8df),rubber=mat(0x141719),glass=mat(0x243f4b,.22,.25);
+const asphaltCanvas=document.createElement('canvas');asphaltCanvas.width=512;asphaltCanvas.height=512;const asphaltCtx=asphaltCanvas.getContext('2d');asphaltCtx.fillStyle='#34393d';asphaltCtx.fillRect(0,0,512,512);for(let i=0;i<26000;i++){const x=Math.random()*512,y=Math.random()*512,v=35+Math.floor(Math.random()*35);asphaltCtx.fillStyle='rgba('+v+','+(v+3)+','+(v+5)+','+(.12+Math.random()*.2)+')';asphaltCtx.fillRect(x,y,1+Math.random()*2,1+Math.random()*2)}const asphaltTex=new THREE.CanvasTexture(asphaltCanvas);asphaltTex.wrapS=asphaltTex.wrapT=THREE.RepeatWrapping;asphaltTex.repeat.set(3,1100);asphaltTex.colorSpace=THREE.SRGBColorSpace;const asphalt=new THREE.MeshStandardMaterial({map:asphaltTex,bumpMap:asphaltTex,bumpScale:.075,roughness:.98});
+const asphaltCityTex=asphaltTex.clone();asphaltCityTex.repeat.set(1,42);asphaltCityTex.needsUpdate=true;
+const asphaltCity=new THREE.MeshStandardMaterial({map:asphaltCityTex,bumpMap:asphaltCityTex,bumpScale:.055,roughness:.98});
+const concreteCanvas=document.createElement('canvas');concreteCanvas.width=256;concreteCanvas.height=256;const concreteCtx=concreteCanvas.getContext('2d');concreteCtx.fillStyle='#aaa99f';concreteCtx.fillRect(0,0,256,256);for(let i=0;i<9000;i++){const v=105+Math.floor(Math.random()*75);concreteCtx.fillStyle='rgba('+v+','+v+','+Math.max(90,v-5)+','+(.08+Math.random()*.16)+')';concreteCtx.fillRect(Math.random()*256,Math.random()*256,1+Math.random()*2,1+Math.random()*2)}const concreteTex=new THREE.CanvasTexture(concreteCanvas);concreteTex.wrapS=concreteTex.wrapT=THREE.RepeatWrapping;concreteTex.repeat.set(5,35);concreteTex.colorSpace=THREE.SRGBColorSpace;
+const concretePavement=new THREE.MeshStandardMaterial({map:concreteTex,bumpMap:concreteTex,bumpScale:.035,roughness:1});const grass=mat(0x587b50),line=mat(0xe9e3c8),white=mat(0xe8e8df),rubber=mat(0x141719),glass=mat(0x243f4b,.22,.25);
 // Textura procedural de terra e capim em vez de um plano verde liso.
-const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanvas.height=512;const ctx=turfCanvas.getContext('2d');ctx.fillStyle='#637d4b';ctx.fillRect(0,0,512,512);for(let i=0;i<18000;i++){const x=Math.random()*512,y=Math.random()*512;ctx.fillStyle=['#3f653e','#78905a','#8a8759','#a08c65','#526f42'][Math.floor(Math.random()*5)];ctx.globalAlpha=.18+Math.random()*.32;ctx.fillRect(x,y,1+Math.random()*3,1+Math.random()*2)}ctx.globalAlpha=1;const turfTex=new THREE.CanvasTexture(turfCanvas);turfTex.wrapS=turfTex.wrapT=THREE.RepeatWrapping;turfTex.repeat.set(34,34);turfTex.colorSpace=THREE.SRGBColorSpace;turfTex.anisotropy=maxAniso;const groundMat=new THREE.MeshStandardMaterial({map:turfTex,roughness:1});const ground=new THREE.Mesh(new THREE.PlaneGeometry(1200,1200),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
+const turfCanvas=document.createElement('canvas');turfCanvas.width=512;turfCanvas.height=512;const ctx=turfCanvas.getContext('2d');ctx.fillStyle='#637d4b';ctx.fillRect(0,0,512,512);for(let i=0;i<18000;i++){const x=Math.random()*512,y=Math.random()*512;ctx.fillStyle=['#3f653e','#78905a','#8a8759','#a08c65','#526f42'][Math.floor(Math.random()*5)];ctx.globalAlpha=.18+Math.random()*.32;ctx.fillRect(x,y,1+Math.random()*3,1+Math.random()*2)}ctx.globalAlpha=1;const turfTex=new THREE.CanvasTexture(turfCanvas);turfTex.wrapS=turfTex.wrapT=THREE.RepeatWrapping;turfTex.repeat.set(34,34);turfTex.colorSpace=THREE.SRGBColorSpace;const groundMat=new THREE.MeshStandardMaterial({map:turfTex,roughness:1});const ground=new THREE.Mesh(new THREE.PlaneGeometry(1200,1200),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-.18;ground.receiveShadow=true;scene.add(ground);
 
 const edgeMat=mat(0xe6e1d0),yellow=mat(0xf1c84b);
 // Rodovia sinuosa em malha contínua: a pista acompanha curvas suaves pelo vale.
@@ -185,25 +233,91 @@ for(let i=0;i<75;i++){const x=(Math.random()-.5)*620,z=(Math.random()-.5)*900;if
 // Casas brasileiras detalhadas, com telhados inclinados, janelas, portas, garagens e quintais.
 const townBuildings=[];
 function buildHouse(x,z,variant=0){
- const g=new THREE.Group(),colors=[0xd9c6a4,0xc9d2d1,0xe1d7c3,0xb8c7b5,0xd6b6a0],wall=mat(colors[variant%5],.92),roof=mat([0x8a3e2e,0x4c5558,0x9b6845,0x555b60][variant%4],.88),trim=mat(0xf0e9d9),windowMat=mat(0x527783,.28,.12),door=mat(0x674632),concrete=mat(0xaaa99f);
- const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);o.castShadow=true;o.receiveShadow=true;g.add(o);return o};
- const w=9+Math.random()*4,d=8+Math.random()*4,h=3.4+Math.random()*1.1;
+ const g=new THREE.Group();
+ const wallMats=[0xd8c9ad,0xc4cfca,0xe0d7c7,0xb9c8b5,0xd2b8a2,0xc8c6bd];
+ const roofMats=[0x454c50,0x596168,0x62584d,0x3d484b,0x6b6257];
+ const wall=mat(wallMats[variant%wallMats.length],.9),roof=mat(roofMats[variant%roofMats.length],.86),trim=mat(0xe8e2d5,.9),glass=mat(0x456b78,.24,.18),dark=mat(0x343b3e,.9),wood=mat(0x654832,.9),stone=mat(0xaaa69b,.95);
+ const add=(geo,m,px,py,pz,rz=0)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);o.rotation.z=rz;o.castShadow=true;o.receiveShadow=true;g.add(o);return o};
+ const w=11+(variant%3)*1.7,d=10+(variant%2)*2,h=variant%3===1?6.4:4.1;
+ // Corpo principal com rodapé e volumes laterais para fugir do formato de caixa única.
  add(new THREE.BoxGeometry(w,h,d),wall,0,h/2,0);
- const roofMesh=add(new THREE.ConeGeometry(Math.max(w,d)*.78,2.5,4),roof,0,h+1,0);roofMesh.rotation.y=Math.PI/4;
- add(new THREE.BoxGeometry(w+.3,.18,d+.3),trim,0,.16,0);
- for(const side of [-1,1]){add(new THREE.BoxGeometry(1.25,1.05,.13),windowMat,side*w*.29,2.05,-d/2-.08);add(new THREE.BoxGeometry(1.42,.12,.2),trim,side*w*.29,2.62,-d/2-.1);add(new THREE.BoxGeometry(.1,1.12,.16),trim,side*w*.29,2.05,-d/2-.11)}
- add(new THREE.BoxGeometry(1.05,2.15,.16),door,0,1.12,-d/2-.1);
- add(new THREE.BoxGeometry(2.1,.16,1.6),roof,0,2.9,-d/2-.85);
- add(new THREE.BoxGeometry(5,.16,3),concrete,0,.08,-d/2-2.2);
- if(variant%2===0){add(new THREE.BoxGeometry(3.5,2.8,4),wall,w*.55,1.4,.4);add(new THREE.BoxGeometry(3.2,2.1,.12),trim,w*.55,1.2,-1.66);add(new THREE.BoxGeometry(3.4,.18,4.2),roof,w*.55,2.9,.4)}
- for(const side of [-1,1])for(let k=0;k<5;k++)add(new THREE.BoxGeometry(.12,.85,.12),trim,side*w*.72,.42,-d/2-2+k*.9);
- add(new THREE.BoxGeometry(.12,.12,4.4),trim,w*.72,.8,-d/2-1.8);
- const trunk=add(new THREE.CylinderGeometry(.13,.2,1.8,7),mat(0x6d4b32),-w*.72,.9,d*.18);
- const crown=add(new THREE.IcosahedronGeometry(1.25,1),mat([0x466d43,0x527a49,0x66834c][variant%3]),-w*.72,2.25,d*.18);crown.scale.set(1,1.25,.95);
- add(new THREE.BoxGeometry(.38,.55,.28),mat(0x344c58),w*.78,.85,-d/2-2.4);
- g.position.set(x,0,z);g.rotation.y=(Math.random()-.5)*.14;scene.add(g);townBuildings.push(g);
+ add(new THREE.BoxGeometry(w+.28,.42,d+.28),stone,0,.22,0);
+ if(variant%2===0){
+  add(new THREE.BoxGeometry(w*.42,2.8,d*.48),wall,w*.31,1.4,d*.17);
+  add(new THREE.BoxGeometry(w*.45,.28,d*.51),trim,w*.31,2.82,d*.17);
+ }
+ // Telhado de duas águas: duas águas inclinadas, cumeeira, beirais e telhas em linhas.
+ const rise=variant%3===1?3.1:2.55,half=w/2+.85,slope=Math.atan2(rise,half),panel=Math.sqrt(half*half+rise*rise);
+ for(const side of [-1,1]){
+  add(new THREE.BoxGeometry(panel,.34,d+1.35),roof,side*half/2,h+rise/2,0,side===1?-slope:slope);
+  add(new THREE.BoxGeometry(.22,.2,d+1.55),dark,side*(w/2+.72),h+.08,0);
+  for(let rib=0;rib<5;rib++){
+   const xx=side*(.9+rib*(half-.9)/5);
+   add(new THREE.BoxGeometry(.1,.09,d+.9),dark,xx,h+rise*(1-xx/half)+.18,0,side===1?-slope:slope);
+  }
+ }
+ add(new THREE.BoxGeometry(.42,.46,d+1.5),dark,0,h+rise,0);
+ // Fachada frontal com molduras, janelas de verdade, divisórias e peitoris.
+ const front=-d/2-.13;
+ const windowXs=[-w*.29,w*.29];
+ for(const wx of windowXs){
+  add(new THREE.BoxGeometry(2.25,2.05,.22),trim,wx,2.55,front);
+  add(new THREE.BoxGeometry(1.88,1.68,.12),glass,wx,2.55,front-.15);
+  add(new THREE.BoxGeometry(.12,1.72,.12),trim,wx,2.55,front-.23);
+  add(new THREE.BoxGeometry(1.95,.13,.2),trim,wx,2.55,front-.24);
+  add(new THREE.BoxGeometry(2.5,.2,.5),stone,wx,1.48,front-.25);
+  add(new THREE.BoxGeometry(.12,1.9,.16),wood,wx-1.18,2.55,front-.2);
+  add(new THREE.BoxGeometry(.12,1.9,.16),wood,wx+1.18,2.55,front-.2);
+ }
+ // Porta recuada, moldura, degraus e cobertura de entrada.
+ const doorX=variant%2===0?0:w*.08;
+ add(new THREE.BoxGeometry(1.65,2.85,.24),trim,doorX,1.52,front-.04);
+ add(new THREE.BoxGeometry(1.28,2.55,.12),wood,doorX,1.4,front-.2);
+ add(new THREE.BoxGeometry(.42,.82,.08),glass,doorX,2.05,front-.29);
+ add(new THREE.SphereGeometry(.075,10,8),mat(0xd1b36e,.35,.55),doorX+.42,1.35,front-.3);
+ add(new THREE.BoxGeometry(3.5,.24,2.25),roof,doorX,3.12,front-1.05);
+ for(const px of [-1.45,1.45])add(new THREE.BoxGeometry(.16,2.8,.16),trim,doorX+px,1.4,front-1.9);
+ add(new THREE.BoxGeometry(3.6,.22,1.15),stone,doorX,.12,front-1.45);
+ // Garagem lateral com portão ripado e calçada de acesso.
+ const garageX=w*.31,garageZ=front-.2;
+ add(new THREE.BoxGeometry(4.1,2.8,.22),trim,garageX,1.48,garageZ);
+ add(new THREE.BoxGeometry(3.72,2.48,.12),dark,garageX,1.42,garageZ-.16);
+ for(let line=0;line<6;line++)add(new THREE.BoxGeometry(3.55,.075,.08),stone,garageX,.42+line*.38,garageZ-.25);
+ add(new THREE.BoxGeometry(5.2,.16,4.5),stone,garageX,.08,front-3.05);
+ // Platibanda, chaminé e pequenos detalhes de cobertura.
+ add(new THREE.BoxGeometry(w+.45,.32,.42),trim,0,h-.12,front-.08);
+ if(variant%2===1){
+  add(new THREE.BoxGeometry(1.25,2.3,1.35),stone,w*.28,h+rise+1, d*.12);
+  add(new THREE.BoxGeometry(1.55,.18,1.65),dark,w*.28,h+rise+2.18,d*.12);
+ }
+ // Casa de dois pavimentos em algumas variações, com sacada e guarda-corpo.
+ if(variant%3===1){
+  const balconyY=4.45;
+  add(new THREE.BoxGeometry(4.7,.22,1.5),stone,0,balconyY,front-1.0);
+  add(new THREE.BoxGeometry(4.7,.12,.12),trim,0,balconyY+1.05,front-1.68);
+  for(let k=0;k<7;k++)add(new THREE.BoxGeometry(.09,1,.09),trim,-2.15+k*.72,balconyY+.52,front-1.68);
+  add(new THREE.BoxGeometry(3.4,1.8,.18),glass,0,5.25,front-.12);
+  add(new THREE.BoxGeometry(3.7,.16,.3),trim,0,6.2,front-.2);
+ }
+ // Vasos, arbustos, luminárias e cerca frontal.
+ for(const side of [-1,1]){
+  add(new THREE.BoxGeometry(.18,1.35,.18),trim,side*(w*.58),.68,front-2.1);
+  const bush=add(new THREE.IcosahedronGeometry(.72,1),mat(side===1?0x55754a:0x466b43),side*(w*.58),.9,front-2.45);
+  bush.scale.set(1,.8,1.15);
+  add(new THREE.BoxGeometry(.25,.48,.2),mat(0xe6d6a5,.35),side*(w*.42),2.85,front-.32);
+ }
+ for(let k=0;k<7;k++){
+  const fx=-w*.48+k*(w*.16);
+  add(new THREE.BoxGeometry(.12,.82,.12),trim,fx,.42,front-4.2);
+ }
+ add(new THREE.BoxGeometry(w*.98,.12,.12),trim,0,.78,front-4.2);
+ // Árvore de quintal com copa irregular.
+ add(new THREE.CylinderGeometry(.16,.23,2.2,8),mat(0x6d4b32),-w*.72,1.1,d*.22);
+ const crown=add(new THREE.IcosahedronGeometry(1.35,1),mat([0x466d43,0x527a49,0x66834d][variant%3]),-w*.72,2.65,d*.22);
+ crown.scale.set(1.05,1.35,.95);
+ g.position.set(x,0,z);g.rotation.y=(Math.random()-.5)*.1;scene.add(g);townBuildings.push(g);
 }
-for(let i=0;i<38;i++){const z=-590+i*31,side=i%2?1:-1;buildHouse(roadCenter(z)+side*(58+(i%3)*13),z,i%4)}
+for(let i=0;i<38;i++){const z=-590+i*31,side=i%2?1:-1;buildHouse(roadCenter(z)+side*(58+(i%3)*13),z,i%6)}
 // Lojas, mercados e galpões próximos à rodovia.
 for(let i=0;i<8;i++){const z=-540+i*145,side=i%2?1:-1,g=new THREE.Group(),w=15,h=5,d=11;const facade=mat(i%2?0xd8d2bd:0xbfc9c8),roof=mat(i%2?0x9a3f32:0x4b555a),windowMat=mat(0x426674,.22,.15);const add=(geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;g.add(o)};add(new THREE.BoxGeometry(w,h,d),facade,0,h/2,0);add(new THREE.BoxGeometry(w+1,.35,d+1),roof,0,h+.15,0);add(new THREE.BoxGeometry(8,2.2,.15),windowMat,0,2.2,-d/2-.1);add(new THREE.BoxGeometry(2,2.8,.18),mat(0x654833),-5,1.4,-d/2-.12);add(new THREE.BoxGeometry(17,.18,3),mat(0xaaa99f),0,.09,-d/2-2);g.position.set(roadCenter(z)+side*66,0,z);scene.add(g);townBuildings.push(g)}
 
@@ -217,7 +331,7 @@ function buildCity(name,centerZ,style){
   [0xd9d1c2,0xb7c8cb,0xe8e1d4,0x9caeae,0xc4b7a2],
   [0xc7cbd0,0xe1ded5,0x9faeb5,0xd0c4b5,0x8799a2]
  ];
- const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=mat(0x343a3d,.95),sidewalk=mat(0xb9b8ad),roofCity=mat(0x50575a,.9),houseRoofMat=mat([0x914c3d,0x4c5962,0x9a6848,0x59636a][style],.92),frameMat=mat(0xe8e2d6,.72),garageMat=mat(0x777f83,.82);
+ const colors=palettes[style],glassCity=mat(0x52717d,.24,.22),roadCity=asphaltCity,sidewalk=concretePavement,roofCity=mat(0x50575a,.9),houseRoofMat=mat([0x343b40,0x4b5964,0x62584d,0x3f474d][style],.92),frameMat=mat(0xe8e2d6,.72),garageMat=mat(0x777f83,.82);
  const cx=roadCenter(centerZ);
  // Malha urbana expandida: bairros dos dois lados da rodovia, com ruas conectadas.
  const cityLength=8000,halfLength=cityLength/2;
@@ -225,6 +339,20 @@ function buildCity(name,centerZ,style){
  const roadMat=roadCity,sidewalkMat=sidewalk,lineMat=mat(0xe6dfb8,.9);
  const roadY=.018;
  const windowGeo=new THREE.BoxGeometry(1.05,1.25,.08),windows=new THREE.InstancedMesh(windowGeo,glassCity,18000),windowFrames=new THREE.InstancedMesh(new THREE.BoxGeometry(1.24,1.44,.1),frameMat,18000),garageDoors=new THREE.InstancedMesh(new THREE.BoxGeometry(5.4,2.35,.14),garageMat,240),windowDummy=new THREE.Object3D(),garageDummy=new THREE.Object3D();let windowCount=0,garageCount=0;
+ // Detalhes de fachada em instâncias: mais variedade sem milhares de chamadas de desenho.
+ const houseBalconies=new THREE.InstancedMesh(new THREE.BoxGeometry(3.8,.16,.62),mat(0x777f82,.75),2400);
+ const housePlanters=new THREE.InstancedMesh(new THREE.BoxGeometry(3.4,.48,.62),mat(0x76614a,.9),1200);
+ const houseRoofLines=new THREE.InstancedMesh(new THREE.BoxGeometry(.075,.055,30),mat(0x342f2c,.95),7200);
+ const houseSideWindows=new THREE.InstancedMesh(new THREE.BoxGeometry(1.25,1.5,.1),glassCity,4800);
+ const houseFencePosts=new THREE.InstancedMesh(new THREE.BoxGeometry(.22,1.05,.22),frameMat,7200);
+ const houseYardTrees=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1.15,1),mat(0x477448),2400);
+ const detailDummy=new THREE.Object3D();let balconyCount=0,planterCount=0,roofLineCount=0,sideWindowCount=0,fenceCount=0,yardTreeCount=0;
+ // Fachadas de prédios: sacadas, coroamento de cobertura e detalhes verticais em instâncias.
+ const towerBalconies=new THREE.InstancedMesh(new THREE.BoxGeometry(27.8,.22,.95),mat(0x9ba5a7,.62),5200);
+ const towerRoofCaps=new THREE.InstancedMesh(new THREE.BoxGeometry(30,1.1,37),mat(0x414b52,.86),1400);
+ const towerFins=new THREE.InstancedMesh(new THREE.BoxGeometry(.28,1,35.2),mat(0xd0d3d0,.65),2800);
+ const towerTanks=new THREE.InstancedMesh(new THREE.CylinderGeometry(1.25,1.35,2.2,10),mat(0x9da6a8,.72),1400);
+ let towerBalconyCount=0,towerRoofCount=0,towerFinCount=0,towerTankCount=0;
  for(const side of [-1,1]){
   // Cinco avenidas paralelas por lado, todas conectadas pelas ruas transversais.
   for(let lane=0;lane<parallelOffsets.length;lane++){
@@ -266,14 +394,157 @@ function buildCity(name,centerZ,style){
    lot.position.set(x,.015,z);city.add(lot);
    // Pequenos jardins internos, árvores e estacionamentos entre edifícios.
    const isTower=(style===1||style===3)?row%3!==0:(style===0&&row%4===0);
-   const isModelHouse=!isTower&&row%10===0;
-   const h=isTower?22+((row*11+band*17+side*3+style*7)%54):7+((row*5+band*9)%10);
+   const isModelHouse=false;
+   const h=isTower?22+((row*11+band*17+side*3+style*7)%54):7+((row*5+band*9)%4)*1.1;
    const width=isTower?27:24+(row%2)*5,depth=isTower?34:28;
    const body=new THREE.Mesh(new THREE.BoxGeometry(width,h,depth),mat(colors[(row+band+style)%colors.length],.78,.08));
    body.position.set(x,h/2,z);body.castShadow=true;body.receiveShadow=true;body.visible=!isModelHouse;city.add(body);
    if(isModelHouse)cityHousePlacements.push({x,z,side,style});
    const roof=isTower?new THREE.Mesh(new THREE.BoxGeometry(width+.7,.55,depth+.7),roofCity):new THREE.Mesh(new THREE.ConeGeometry(Math.max(width,depth)*.72,3.8,4),houseRoofMat);
    roof.position.set(x,isTower?h+.25:h+1.9,z);roof.rotation.y=Math.PI/4;roof.castShadow=true;roof.visible=!isModelHouse;city.add(roof);
+   if(isTower){
+    // Prédios com fachada completa, sacadas, platibanda e cobertura técnica.
+    const towerFront=z-depth/2-.22;
+    for(let floor=1;floor<Math.floor(h/6);floor+=2){
+     detailDummy.position.set(x,floor*6,towerFront-.28);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();towerBalconies.setMatrixAt(towerBalconyCount++,detailDummy.matrix);
+    }
+    // Cobertura plana com casa de máquinas e reservatório no topo.
+    detailDummy.position.set(x,h+.35,z);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();towerRoofCaps.setMatrixAt(towerRoofCount++,detailDummy.matrix);
+    for(const finSide of [-1,1]){
+     detailDummy.position.set(x+finSide*(width/2-.8),h*.52,z);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,h,1);detailDummy.updateMatrix();towerFins.setMatrixAt(towerFinCount++,detailDummy.matrix);
+    }
+    detailDummy.position.set(x+width*.28,h+2.05,z+depth*.18);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();towerTanks.setMatrixAt(towerTankCount++,detailDummy.matrix);
+    // Moldura de entrada e marquise no térreo.
+    const lobby=new THREE.Mesh(new THREE.BoxGeometry(width*.62,3.2,.22),glassCity);lobby.position.set(x,1.8,towerFront-.16);city.add(lobby);
+    const lobbyCanopy=new THREE.Mesh(new THREE.BoxGeometry(width*.72,.28,2.1),frameMat);lobbyCanopy.position.set(x,3.55,towerFront-1);city.add(lobbyCanopy);
+    const roofLip=new THREE.Mesh(new THREE.BoxGeometry(width+1,.28,depth+1),frameMat);roofLip.position.set(x,h+.95,z);city.add(roofLip);
+   }
+   if(!isTower&&!isModelHouse){
+    roof.visible=false;
+    const roofMaterial=mat([0x343b40,0x46545e,0x655b50,0x3d464c,0x59605d][(row+band+style)%5],.86);
+    const trimHouse=frameMat,frontZ=z-depth/2-.16;
+    const slope=Math.atan2(2.7,width/2+1.2),panelW=Math.sqrt((width/2+1.2)**2+2.7**2);
+    for(const roofSide of [-1,1]){
+     const panel=new THREE.Mesh(new THREE.BoxGeometry(panelW,.32,depth+1.5),roofMaterial);
+     panel.position.set(x+roofSide*(width/4+.3),h+1.25,z);
+     panel.rotation.z=roofSide===1?-slope:slope;panel.castShadow=true;panel.receiveShadow=true;city.add(panel);
+     const gutter=new THREE.Mesh(new THREE.BoxGeometry(.18,.2,depth+1.65),trimHouse);
+     gutter.position.set(x+roofSide*(width/2+1.05),h+.08,z);city.add(gutter);
+    }
+    const ridge=new THREE.Mesh(new THREE.BoxGeometry(.42,.42,depth+1.7),roofMaterial);
+    ridge.position.set(x,h+2.65,z);ridge.castShadow=true;city.add(ridge);
+    for(let win=0;win<2;win++){
+     const wx=x-width*.25+win*width*.5,wy=2.35;
+     const frame=new THREE.Mesh(new THREE.BoxGeometry(3.35,2.35,.2),trimHouse);frame.position.set(wx,wy,frontZ);city.add(frame);
+     const pane=new THREE.Mesh(new THREE.BoxGeometry(2.85,1.88,.12),glassCity);pane.position.set(wx,wy,frontZ-.13);city.add(pane);
+     const mullion=new THREE.Mesh(new THREE.BoxGeometry(.12,1.9,.16),trimHouse);mullion.position.set(wx,wy,frontZ-.22);city.add(mullion);
+     const sill=new THREE.Mesh(new THREE.BoxGeometry(3.6,.18,.42),trimHouse);sill.position.set(wx,1.12,frontZ-.2);city.add(sill);
+    }
+    const entryX=x+width*.18;
+    const entryFrame=new THREE.Mesh(new THREE.BoxGeometry(2.35,3.05,.2),trimHouse);entryFrame.position.set(entryX,1.55,frontZ);city.add(entryFrame);
+    const entryDoor=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.65,.14),mat(0x62452f,.8));entryDoor.position.set(entryX,1.4,frontZ-.15);city.add(entryDoor);
+    const knob=new THREE.Mesh(new THREE.SphereGeometry(.09,8,6),mat(0xd4b36d,.3,.65));knob.position.set(entryX+.58,1.4,frontZ-.25);city.add(knob);
+    const step=new THREE.Mesh(new THREE.BoxGeometry(3.1,.22,1.25),concretePavement);step.position.set(entryX,.14,frontZ-.7);city.add(step);
+    const awning=new THREE.Mesh(new THREE.BoxGeometry(3.4,.2,1.8),roofMaterial);awning.position.set(entryX,h*.72,frontZ-.72);city.add(awning);
+    for(const postX of [-1,1]){const post=new THREE.Mesh(new THREE.BoxGeometry(.13,2.15,.13),trimHouse);post.position.set(entryX+postX*1.48,1.08,frontZ-1.42);city.add(post)}
+    const baseTrim=new THREE.Mesh(new THREE.BoxGeometry(width+.15,.28,.2),mat(0x8b8980,.95));baseTrim.position.set(x,.22,frontZ);city.add(baseTrim);
+    for(const lampSide of [-1,1]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(.24,.42,.16),mat(0xe9d6a1,.45,.05));lamp.position.set(x+lampSide*(width*.42),2.9,frontZ-.18);city.add(lamp)}
+    // Varandas pequenas com guarda-corpo, floreiras e acabamento de telhado.
+    for(let win=0;win<2;win++){
+     const wx=x-width*.25+win*width*.5;
+     detailDummy.position.set(wx,1.12,frontZ-.42);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseBalconies.setMatrixAt(balconyCount++,detailDummy.matrix);
+    }
+    detailDummy.position.set(x,0.55,frontZ-.72);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();housePlanters.setMatrixAt(planterCount++,detailDummy.matrix);
+    for(const roofSide of [-1,1])for(let line=0;line<3;line++){
+     detailDummy.position.set(x+roofSide*(width*.13+line*2.1),h+1.25,z);detailDummy.rotation.set(0,0,roofSide===1?-slope:slope);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseRoofLines.setMatrixAt(roofLineCount++,detailDummy.matrix);
+    }
+    // Gables, molduras de fachada e cobertura com acabamento menos genérico.
+    const gableShape=new THREE.Shape();
+    gableShape.moveTo(-width*.5,h);gableShape.lineTo(width*.5,h);gableShape.lineTo(0,h+2.7);gableShape.closePath();
+    const gableGeo=new THREE.ShapeGeometry(gableShape);
+    const gableFront=new THREE.Mesh(gableGeo,mat(colors[(row+style+1)%colors.length],.9));
+    gableFront.position.set(x,0,z-depth/2-.12);city.add(gableFront);
+    const gableBack=new THREE.Mesh(gableGeo,mat(colors[(row+style+1)%colors.length],.9));
+    gableBack.position.set(x,0,z+depth/2+.12);gableBack.rotation.y=Math.PI;city.add(gableBack);
+    const roundVent=new THREE.Mesh(new THREE.CircleGeometry(.62,12),glassCity);
+    roundVent.position.set(x,h+1.55,z-depth/2-.16);city.add(roundVent);
+    // Colunas de canto e faixa de acabamento quebram a aparência de caixa lisa.
+    for(const corner of [-1,1]){
+     const pilaster=new THREE.Mesh(new THREE.BoxGeometry(.42,h-.25,.34),trimHouse);
+     pilaster.position.set(x+corner*(width/2-.35),h/2,z-depth/2-.22);city.add(pilaster);
+    }
+    const facadeCornice=new THREE.Mesh(new THREE.BoxGeometry(width+.7,.34,.42),trimHouse);
+    facadeCornice.position.set(x,h-.18,z-depth/2-.2);city.add(facadeCornice);
+    // Chaminé e pequenas águas-furtadas aparecem em parte das casas, variando a silhueta.
+    if((row+band+style)%3===0){
+     const chimney=new THREE.Mesh(new THREE.BoxGeometry(1.35,3.4,1.45),mat(0x77736c,.95));
+     chimney.position.set(x+width*.29,h+2.7,z+depth*.2);city.add(chimney);
+     const chimneyCap=new THREE.Mesh(new THREE.BoxGeometry(1.7,.22,1.8),mat(0x45494a,.9));
+     chimneyCap.position.set(x+width*.29,h+4.42,z+depth*.2);city.add(chimneyCap);
+     const dormer=new THREE.Mesh(new THREE.BoxGeometry(3.1,2.15,.35),mat(colors[(row+style+2)%colors.length],.9));
+     dormer.position.set(x-width*.2,h+1.55,z-depth*.28);city.add(dormer);
+     const dormerGlass=new THREE.Mesh(new THREE.BoxGeometry(1.9,1.25,.16),glassCity);
+     dormerGlass.position.set(x-width*.2,h+1.55,z-depth*.28-.22);city.add(dormerGlass);
+     const dormerRoof=new THREE.Mesh(new THREE.ConeGeometry(2.35,1.25,4),roofMaterial);
+     dormerRoof.position.set(x-width*.2,h+3.15,z-depth*.28);dormerRoof.rotation.y=Math.PI/4;city.add(dormerRoof);
+    }
+    // Nervuras discretas simulam telhas e reforçam as duas águas do telhado.
+    for(const roofSide of [-1,1])for(let rib=0;rib<4;rib++){
+     const ribLine=new THREE.Mesh(new THREE.BoxGeometry(.09,.11,depth+1.2),mat(0x252d32,.92));
+     ribLine.position.set(x+roofSide*(width*.12+rib*1.55),h+1.28,z);
+     ribLine.rotation.z=roofSide===1?-slope:slope;city.add(ribLine);
+    }
+    // Janelas laterais, molduras e pequenas grades nos limites dos jardins.
+    for(const sideWall of [-1,1])for(let win=0;win<2;win++){
+     detailDummy.position.set(x+sideWall*(width/2+.08),2.5,z-depth*.25+win*depth*.5);detailDummy.rotation.set(0,sideWall===1?Math.PI/2:-Math.PI/2,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseSideWindows.setMatrixAt(sideWindowCount++,detailDummy.matrix);
+    }
+    for(let post=0;post<6;post++){
+     const px=x-width*.55+post*(width*1.1/5);
+     detailDummy.position.set(px,.53,frontZ-5.1);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseFencePosts.setMatrixAt(fenceCount++,detailDummy.matrix);
+    }
+    for(const shrub of [-1,1]){
+     detailDummy.position.set(x+shrub*(width*.42),1.05,frontZ-3.1);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseYardTrees.setMatrixAt(yardTreeCount++,detailDummy.matrix);
+    }
+   }
+   // Fachada principal voltada para a rodovia: portas, garagem e janelas visíveis de quem dirige.
+   if(!isTower&&!isModelHouse){
+    const roadFaceX=x-side*(width/2+.16),faceTrim=frameMat;
+    const roadWindowZ1=z-depth*.27,roadWindowZ2=z+depth*.27;
+    for(const wz of [roadWindowZ1,roadWindowZ2]){
+     const surround=new THREE.Mesh(new THREE.BoxGeometry(.22,2.35,3.55),faceTrim);
+     surround.position.set(roadFaceX,Math.min(h-1.35,2.8),wz);city.add(surround);
+     const pane=new THREE.Mesh(new THREE.BoxGeometry(.12,1.9,3.05),glassCity);
+     pane.position.set(roadFaceX-side*.14,Math.min(h-1.35,2.8),wz);city.add(pane);
+     const sill=new THREE.Mesh(new THREE.BoxGeometry(.48,.18,3.8),mat(0xddd7c9,.8));
+     sill.position.set(roadFaceX-side*.2,1.58,wz);city.add(sill);
+     const mullion=new THREE.Mesh(new THREE.BoxGeometry(.14,1.95,.12),faceTrim);
+     mullion.position.set(roadFaceX-side*.22,Math.min(h-1.35,2.8),wz);city.add(mullion);
+    }
+    const roadDoorZ=z+depth*.02;
+    const doorFrame=new THREE.Mesh(new THREE.BoxGeometry(.24,2.95,2.05),faceTrim);
+    doorFrame.position.set(roadFaceX,1.55,roadDoorZ);city.add(doorFrame);
+    const roadDoor=new THREE.Mesh(new THREE.BoxGeometry(.14,2.62,1.62),mat(0x59402f,.82));
+    roadDoor.position.set(roadFaceX-side*.17,1.42,roadDoorZ);city.add(roadDoor);
+    const doorGlass=new THREE.Mesh(new THREE.BoxGeometry(.08,.72,.72),glassCity);
+    doorGlass.position.set(roadFaceX-side*.26,2.05,roadDoorZ);city.add(doorGlass);
+    const roadGarageZ=z-depth*.31;
+    const garageFrame=new THREE.Mesh(new THREE.BoxGeometry(.3,2.9,6.8),faceTrim);
+    garageFrame.position.set(roadFaceX,1.52,roadGarageZ);city.add(garageFrame);
+    const roadGarage=new THREE.Mesh(new THREE.BoxGeometry(.16,2.55,6.35),garageMat);
+    roadGarage.position.set(roadFaceX-side*.2,1.42,roadGarageZ);city.add(roadGarage);
+    for(let stripe=0;stripe<4;stripe++){
+     const groove=new THREE.Mesh(new THREE.BoxGeometry(.08,.09,6.2),mat(0x41494c,.9));
+     groove.position.set(roadFaceX-side*.3,.55+stripe*.56,roadGarageZ);city.add(groove);
+    }
+    const porchRoof=new THREE.Mesh(new THREE.BoxGeometry(2.6,.28,depth*.82),houseRoofMat);
+    porchRoof.position.set(roadFaceX-side*1.35,h-.2,z);city.add(porchRoof);
+    for(const postZ of [z-depth*.38,z+depth*.38]){
+     const porchPost=new THREE.Mesh(new THREE.BoxGeometry(2.3,h*.48,.22),faceTrim);
+     porchPost.position.set(roadFaceX-side*1.25,(h*.48)/2,postZ);city.add(porchPost);
+    }
+    const facadeBand=new THREE.Mesh(new THREE.BoxGeometry(.28,.32,depth+.4),mat(colors[(row+style+2)%colors.length],.8));
+    facadeBand.position.set(roadFaceX, h-.35,z);city.add(facadeBand);
+   }
    // Janelas repetidas em instâncias para manter a cidade leve no celular.
    const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
    for(let floor=0;floor<floors;floor++)for(let col=0;col<cols;col++){
@@ -328,7 +599,11 @@ function buildCity(name,centerZ,style){
    }
   }
  }
- windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;windowFrames.count=windowCount;windowFrames.instanceMatrix.needsUpdate=true;garageDoors.count=garageCount;garageDoors.instanceMatrix.needsUpdate=true;city.add(windows,windowFrames,garageDoors);
+ windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;windowFrames.count=windowCount;windowFrames.instanceMatrix.needsUpdate=true;garageDoors.count=garageCount;garageDoors.instanceMatrix.needsUpdate=true;
+ for(const [mesh,count] of [[houseBalconies,balconyCount],[housePlanters,planterCount],[houseRoofLines,roofLineCount],[houseSideWindows,sideWindowCount],[houseFencePosts,fenceCount],[houseYardTrees,yardTreeCount]]){mesh.count=count;mesh.instanceMatrix.needsUpdate=true;city.add(mesh)}
+ for(const [mesh,count] of [[towerBalconies,towerBalconyCount],[towerRoofCaps,towerRoofCount],[towerFins,towerFinCount],[towerTanks,towerTankCount]]){mesh.count=count;mesh.instanceMatrix.needsUpdate=true;city.add(mesh)}
+ // Modelos GLB também recebem calçada de acesso e paisagismo simples ao redor.
+city.add(windows,windowFrames,garageDoors);
  // Marcos urbanos próprios de cada destino.
  if(style===0){
   const landmark=new THREE.Group();
@@ -370,40 +645,110 @@ function buildCity(name,centerZ,style){
 buildCity('Ponta Grossa',-4000,0);
 buildCity('Curitiba',-19000,1);
 buildCity('Florianópolis',-34000,2);
+
 buildCity('Santos',-49000,3);
- 
-// Casas completas em GLB: fachadas, telhados, portas, janelas e materiais próprios.
-const cityHouseModelUrls=[
- 'https://cdn.3dassets.dev/assets/37064/v1/model.glb',
- 'https://cdn.3dassets.dev/assets/37063/v1/model.glb',
- 'https://cdn.3dassets.dev/assets/37062/v1/model.glb',
- 'https://cdn.3dassets.dev/assets/37065/v1/model.glb'
-];
-async function loadCityHouseModels(){
- document.getElementById('garageStatus').textContent='Carregando casas 3D e bairros...';
- const results=await Promise.allSettled(cityHouseModelUrls.map(url=>vehicleLoader.loadAsync(url)));
- const housePool=results.filter(r=>r.status==='fulfilled').map(r=>r.value.scene);
- if(!housePool.length){window.cityHouseModelsReady=false;return}
- for(let i=0;i<cityHousePlacements.length;i++){
-  const spot=cityHousePlacements[i],house=housePool[(i+spot.style)%housePool.length].clone(true);
-  house.scale.setScalar(1);house.rotation.y=spot.side===1?-Math.PI/2:Math.PI/2;house.updateMatrixWorld(true);
-  const bounds=new THREE.Box3().setFromObject(house),size=bounds.getSize(new THREE.Vector3());
-  const scale=9.5/Math.max(1,size.y);house.scale.setScalar(scale);house.updateMatrixWorld(true);
-  const scaledBounds=new THREE.Box3().setFromObject(house),center=scaledBounds.getCenter(new THREE.Vector3());
-  house.position.set(spot.x-center.x,-scaledBounds.min.y,spot.z-center.z);
-  house.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;polishMats(o)}});
-  scene.add(house);
- }
- window.cityHouseModelsReady=true;
+// Oficina principal posicionada junto ao ponto inicial da rodovia.
+const workshopPosition=new THREE.Vector3(roadCenter(65)+34,0,65),workshopGroup=new THREE.Group();
+const workshopWall=mat(0xb9b8ae,.92),workshopRoof=mat(0x3b454a,.9),workshopTrim=mat(0xe4e0d4,.8),workshopGlass=mat(0x315365,.25,.15),workshopDoor=mat(0x59636a,.8);
+function workshopBox(w,h,d,material,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;workshopGroup.add(m);return m}
+// Paredes laterais e fundo; a fachada fica aberta para os dois boxes de serviço.
+workshopBox(.4,8,19,workshopWall,11.3,4,0);workshopBox(23,8,.4,workshopWall,0,4,-9.3);workshopBox(23,8,.4,workshopWall,0,4,9.3);
+workshopBox(.55,8,.55,workshopWall,-11.3,4,-9.3);workshopBox(.55,8,.55,workshopWall,-11.3,4,0);workshopBox(.55,8,.55,workshopWall,-11.3,4,9.3);
+workshopBox(.55,.65,19,workshopRoof,-11.3,7.7,0);workshopBox(24,.65,20,workshopRoof,0,8.25,0);
+workshopBox(1,.25,24,workshopTrim,-12.2,8.65,0);
+const signCanvas=document.createElement('canvas');signCanvas.width=768;signCanvas.height=180;const signCtx=signCanvas.getContext('2d');signCtx.fillStyle='#17252c';signCtx.fillRect(0,0,768,180);signCtx.fillStyle='#f4c45e';signCtx.font='bold 76px Arial';signCtx.textAlign='center';signCtx.fillText('OFICINA',384,112);const signTex=new THREE.CanvasTexture(signCanvas);signTex.colorSpace=THREE.SRGBColorSpace;const signMesh=new THREE.Mesh(new THREE.PlaneGeometry(12,2.8),new THREE.MeshBasicMaterial({map:signTex}));signMesh.position.set(-11.82,7.3,1.8);signMesh.rotation.y=-Math.PI/2;workshopGroup.add(signMesh);
+workshopGroup.position.copy(workshopPosition);scene.add(workshopGroup);
+// Detalhes gratuitos e leves da oficina: cobertura, pilares, iluminação, sinalização e área de serviço.
+const workshopYellow=mat(0xe5b13e,.72),workshopDark=mat(0x202a30,.82),workshopLight=new THREE.MeshStandardMaterial({color:0xffe2a1,emissive:0xffc45b,emissiveIntensity:1.1});
+workshopBox(2.2,.28,21,workshopRoof,-12.7,6.15,0); // marquise sobre os boxes
+for(const z of [-8.2,8.2]){
+ workshopBox(.55,6.1,.55,workshopYellow,-12.45,3.05,z);
+ workshopBox(.72,.2,.72,workshopDark,-12.45,.1,z);
 }
+for(const z of [-5.5,-1.5,2.5,6.5]){
+ workshopBox(.12,.12,7.2,workshopDark,-11.27,5.65,z);
+ workshopBox(.16,.18,6.7,workshopLight,-11.18,5.55,z);
+}
+for(const bay of [-4.5,4.5]){
+ // Guias amarelas no piso e faixas de segurança nas laterais.
+ for(const side of [-1,1]){
+  workshopBox(.18,.035,8.5,workshopYellow,side*3.7,.22,bay);
+  for(let stripe=0;stripe<5;stripe++)workshopBox(.08,.045,.42,workshopYellow,side*4.05,.24,bay-3.5+stripe*1.7);
+ }
+ // Armário de ferramentas e bancada de manutenção.
+ workshopBox(2.8,1.25,.65,workshopDark,8.9,.75,bay+1.8);
+ workshopBox(3,.12,.8,workshopYellow,8.9,1.42,bay+1.8);
+ for(let drawer=0;drawer<3;drawer++)workshopBox(.06,.2,.04,workshopTrim,7.9+drawer*.85,.9,bay+1.43);
+ // Colunas de elevador automotivo dentro de cada box.
+ for(const liftX of [-1.5,3.8]){workshopBox(.35,3.4,.38,workshopYellow,liftX,1.7,bay-2.4);workshopBox(.35,3.4,.38,workshopYellow,liftX,1.7,bay+2.4);workshopBox(2.3,.16,.32,workshopDark,liftX+1.1,.85,bay-2.4);workshopBox(2.3,.16,.32,workshopDark,liftX+1.1,.85,bay+2.4);}
+}
+// Janelas laterais, luminárias externas e pneus empilhados como decoração.
+for(const z of [-6.5,6.5]){
+ workshopBox(.12,1.7,3.2,workshopGlass,11.57,5.2,z);
+ workshopBox(.2,.14,3.45,workshopTrim,11.62,6.08,z);
+ workshopBox(.2,.14,3.45,workshopTrim,11.62,4.32,z);
+ const lamp=workshopBox(.32,.18,.65,workshopLight,-12.9,7.1,z);
+ lamp.material=workshopLight;
+}
+for(let tire=0;tire<3;tire++){
+ const wheel=new THREE.Mesh(new THREE.TorusGeometry(.62,.2,8,18),mat(0x202326,.95));
+ wheel.rotation.y=Math.PI/2;wheel.position.set(9.9,.65+tire*.05,-6.8+tire*1.25);workshopGroup.add(wheel);
+}
+const apron=workshopBox(18,.12,15,concretePavement,-22,.02,0);
+for(let mark=0;mark<4;mark++)workshopBox(.16,.025,8,workshopYellow,-28+mark*4,.1,0);
 
 
-// Cordilheiras dos dois lados, com picos irregulares e camadas de profundidade.
-const mountainMats=[mat(0x65766f,1),mat(0x78847b,1),mat(0x596b68,1),mat(0x8a9188,1)];
-for(let side of [-1,1])for(let i=0;i<34;i++){
- const z=-620+i*37+(Math.random()-.5)*18,baseX=roadCenter(z)+side*(82+Math.random()*72),h=24+Math.random()*58,r=20+Math.random()*28;
- const peak=new THREE.Mesh(new THREE.ConeGeometry(r,h,5+Math.floor(Math.random()*3),1),mountainMats[i%mountainMats.length]);
- peak.position.set(baseX,h*.48-1,z);peak.rotation.y=Math.random()*Math.PI;peak.rotation.z=(Math.random()-.5)*.12;peak.scale.set(1.25,.9,1.5);peak.castShadow=true;peak.receiveShadow=true;scene.add(peak);
+ 
+// Bairros urbanos laterais no lugar das antigas cordilheiras.
+const roadsideCityWalls=[mat(0xc7c2b8,.92),mat(0xb8c5c8,.9),mat(0xd1c7b7,.92),mat(0x9daeb3,.9),mat(0xc3b6a8,.92),mat(0xaeb9ad,.92)];
+const roadsideGlass=mat(0x456575,.24,.18),roadsideTrim=mat(0xe0ded5,.8),roadsideRoof=mat(0x454c50,.92);
+for(const side of [-1,1]){
+ for(let i=0;i<30;i++){
+  const z=-650+i*44+(Math.random()-.5)*13;
+  const lane=i%3,baseX=roadCenter(z)+side*(258+lane*47+Math.random()*13);
+  const w=19+Math.random()*17,d=23+Math.random()*18,h=15+Math.random()*43;
+  const wall=roadsideCityWalls[(i+lane*2+(side>0?1:0))%roadsideCityWalls.length];
+  const building=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),wall);
+  body.position.y=h/2;body.castShadow=true;body.receiveShadow=true;building.add(body);
+  const roofDeck=new THREE.Mesh(new THREE.BoxGeometry(w+1,.7,d+1),roadsideRoof);
+  roofDeck.position.y=h+.3;building.add(roofDeck);
+  const parapet=new THREE.Mesh(new THREE.BoxGeometry(w+1,1.15,.65),roadsideTrim);
+  parapet.position.set(0,h+.85,-d/2);building.add(parapet);
+  const roadFace=-side*(w/2+.14);
+  const floors=Math.max(2,Math.floor((h-3)/4.2));
+  for(let floor=0;floor<floors;floor++)for(let col=0;col<2;col++){
+   const wz=-d*.25+col*d*.5,wy=2.5+floor*4.1;
+   const frame=new THREE.Mesh(new THREE.BoxGeometry(.24,2.45,3.05),roadsideTrim);
+   frame.position.set(roadFace,wy,wz);building.add(frame);
+   const glass=new THREE.Mesh(new THREE.BoxGeometry(.13,2.05,2.62),roadsideGlass);
+   glass.position.set(roadFace-side*.08,wy,wz);building.add(glass);
+   const mullion=new THREE.Mesh(new THREE.BoxGeometry(.1,2.08,.12),roadsideTrim);
+   mullion.position.set(roadFace-side*.16,wy,wz);building.add(mullion);
+  }
+  const shopfront=new THREE.Mesh(new THREE.BoxGeometry(.18,2.8,d*.68),roadsideGlass);
+  shopfront.position.set(roadFace,1.55,0);building.add(shopfront);
+  const awning=new THREE.Mesh(new THREE.BoxGeometry(2.4,.28,d*.72),mat(i%2?0x536d78:0x68735e,.85));
+  awning.position.set(roadFace-side*1.05,3.15,0);building.add(awning);
+  if(i%3===0){
+   const tank=new THREE.Mesh(new THREE.CylinderGeometry(1.35,1.35,2.5,12),mat(0xd6d9d5,.8));
+   tank.position.set(w*.23,h+1.9,d*.2);building.add(tank);
+   const tankBase=new THREE.Mesh(new THREE.BoxGeometry(4,.35,4),roadsideTrim);
+   tankBase.position.set(w*.23,h+1,d*.2);building.add(tankBase);
+  }
+  const sideStrip=new THREE.Mesh(new THREE.BoxGeometry(.45,h*.82,.35),roadsideTrim);
+  sideStrip.position.set(side*w*.48,h*.5,-d/2-.2);building.add(sideStrip);
+  building.position.set(baseX,0,z);scene.add(building);
+ }
+ // Ruas transversais e calçadas conectam os quarteirões à cidade.
+ for(let street=0;street<7;street++){
+  const z=-600+street*190;
+  const road=new THREE.Mesh(new THREE.BoxGeometry(82,.12,8),asphaltCity);
+  road.position.set(roadCenter(z)+side*315,.015,z);scene.add(road);
+  const sidewalkA=new THREE.Mesh(new THREE.BoxGeometry(82,.18,2.2),concretePavement);
+  sidewalkA.position.set(roadCenter(z)+side*315,.08,z-5.2);scene.add(sidewalkA);
+  const sidewalkB=sidewalkA.clone();sidewalkB.position.z=z+5.2;scene.add(sidewalkB);
+ }
 }
 // Posto de combustível na lateral da estrada.
 
@@ -503,7 +848,7 @@ window.prepareSelectedVehicle=async function(id){
   model.position.set(-scaledCenter.x,-scaledBounds.min.y,-scaledCenter.z);
   // GLB catalog models face +Z; the simulator road and camera use -Z as forward.
   model.rotation.y=Math.PI;
-  model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;polishMats(o)}});
+  model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
   if(loadedVehicleRoot){playerModelGroup.remove(loadedVehicleRoot);disposeVehicleRoot(loadedVehicleRoot)}
   playerModelGroup.add(model);loadedVehicleRoot=model;
   vehicleMixer=gltf.animations&&gltf.animations.length?new THREE.AnimationMixer(model):null;
@@ -634,19 +979,15 @@ refuelBtn.addEventListener('click',()=>{if(truck.position.distanceTo(station.pos
 function restartGame(){gameEnded=false;document.getElementById('gameover').style.display='none';truck.position.set(roadCenter(65),0,65);truck.rotation.y=Math.atan((roadCenter(66)-roadCenter(64))/2);speed=0;gear='D';steer=0;fuel=100;delivered=false;marker.visible=true;cruiseOn=false;cruiseBtn.textContent='LIMITADOR: OFF';document.getElementById('mission').innerHTML='ENTREGA 01<br>Leve a carga até o terminal no litoral.';traffic.forEach((car,i)=>{car.position.set(i%2?-4.8:4.8,-0,-440+i*68)});updateStats();drawMinimap()}document.getElementById('restart').addEventListener('click',restartGame);
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();if(k==='r')restartGame()});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 const dpadState={up:false,down:false,left:false,right:false};
-document.querySelectorAll('#dpad button').forEach(btn=>{const dir=btn.dataset.dir;const on=e=>{e.preventDefault();dpadState[dir]=true;btn.classList.add('pressed');if(dir==='up')speed=Math.max(speed,0);try{btn.setPointerCapture(e.pointerId)}catch(_){}};const off=e=>{dpadState[dir]=false;btn.classList.remove('pressed')};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);btn.addEventListener('lostpointercapture',off);btn.addEventListener('contextmenu',e=>e.preventDefault())});
+const steeringWheel=document.getElementById('steeringWheel'),wheelRotor=document.getElementById('wheelRotor');let wheelAngle=0,wheelStartAngle=0,pointerStartAngle=0,wheelPointer=null;const pointerAngle=e=>{const r=steeringWheel.getBoundingClientRect();return Math.atan2(e.clientY-r.top-r.height/2,e.clientX-r.left-r.width/2)*180/Math.PI};const normalizeAngle=a=>{while(a>180)a-=360;while(a<-180)a+=360;return a};function applyWheelAngle(a){wheelAngle=THREE.MathUtils.clamp(a,-135,135);wheelRotor.style.transform='rotate('+wheelAngle+'deg)';steeringWheel.setAttribute('aria-valuenow',String(Math.round(wheelAngle)));dpadState.left=wheelAngle<-7;dpadState.right=wheelAngle>7}steeringWheel.addEventListener('pointerdown',e=>{e.preventDefault();wheelPointer=e.pointerId;pointerStartAngle=pointerAngle(e);wheelStartAngle=wheelAngle;steeringWheel.classList.add('dragging');wheelRotor.style.transition='none';try{steeringWheel.setPointerCapture(e.pointerId)}catch(_){}});steeringWheel.addEventListener('pointermove',e=>{if(wheelPointer!==e.pointerId)return;e.preventDefault();applyWheelAngle(wheelStartAngle+normalizeAngle(pointerAngle(e)-pointerStartAngle))});function releaseWheel(e){if(wheelPointer!==null&&(e.pointerId===undefined||e.pointerId===wheelPointer)){wheelPointer=null;dpadState.left=false;dpadState.right=false;steeringWheel.classList.remove('dragging');wheelRotor.style.transition='transform .28s ease-out';applyWheelAngle(0)}}steeringWheel.addEventListener('pointerup',releaseWheel);steeringWheel.addEventListener('pointercancel',releaseWheel);steeringWheel.addEventListener('lostpointercapture',releaseWheel);
 // Arrastar na tela permite olhar para os lados e para cima/baixo.
 // Câmera presa ao eixo do caminhão: acompanha curvas sem ficar virando de lado ao toque.
 const cameraYaw=0,cameraPitch=0;
-// Ambiente procedural: céu físico (Sky) convertido em mapa de ambiente para reflexos e luz indireta.
-let envOK=false,envLast=-1e9,envTarget=null,envSky=null,pmrem=null;const envScene=new THREE.Scene(),envDir=new THREE.Vector3();
-if(SkyClass){try{pmrem=new THREE.PMREMGenerator(renderer);envSky=new SkyClass();envSky.scale.setScalar(450000);const su=envSky.material.uniforms;su.turbidity.value=6;su.rayleigh.value=1.6;su.mieCoefficient.value=.005;su.mieDirectionalG.value=.8;envScene.add(envSky);envOK=true}catch(e){envOK=false}}
-function updateSkyEnv(now,dir){if(!envOK||now-envLast<(innerWidth<700?8000:4000))return;envLast=now;try{envSky.material.uniforms.sunPosition.value.copy(dir);const rt=pmrem.fromScene(envScene);if(envTarget)envTarget.dispose();envTarget=rt;scene.environment=rt.texture}catch(e){envOK=false;scene.environment=null}}
 let last=performance.now();function loop(now){requestAnimationFrame(loop);try{const dt=Math.min((now-last)/1000,.04);last=now;
 const dayPhase=now*.000035,orbit=dayPhase%(Math.PI*2),sunY=Math.sin(orbit)*150+20,night=THREE.MathUtils.clamp((35-sunY)/100,0,1);
-const tkx=truck.position.x,tkz=truck.position.z;sunDisc.position.set(tkx+Math.cos(orbit)*190,sunY,tkz-260);moonDisc.position.set(tkx-Math.cos(orbit)*190,-sunY+20,tkz-260);starField.position.set(tkx,0,tkz);const snapStep=.5,sdx=Math.round(tkx/snapStep)*snapStep,sdz=Math.round(tkz/snapStep)*snapStep;sun.target.position.set(sdx,0,sdz);sun.position.set(sdx+Math.cos(orbit)*190,sunY,sdz-260);if(!sun.target.parent)scene.add(sun.target);sun.intensity=.25+2.0*(1-night);starField.visible=night>.55;scene.background.setRGB(.62*(1-night)+.035*night,.77*(1-night)+.055*night,.84*(1-night)+.12*night);scene.fog.color.copy(scene.background);renderer.setClearColor(scene.background);
-hemi.intensity=(envOK&&scene.environment)?.9+1.1*night:2.0;envDir.set(Math.cos(orbit)*190,sunY,-260).normalize();updateSkyEnv(now,envDir);
+sunDisc.position.set(Math.cos(orbit)*190,sunY,-260);moonDisc.position.set(-Math.cos(orbit)*190,-sunY+20,-260);sun.position.copy(sunDisc.position);sun.target.position.set(0,0,0);scene.add(sun.target);sun.intensity=.25+2.0*(1-night);starField.visible=night>.55;scene.background.setRGB(.62*(1-night)+.035*night,.77*(1-night)+.055*night,.84*(1-night)+.12*night);scene.fog.color.copy(scene.background);renderer.setClearColor(scene.background);
 if(gameEnded){renderer.render(scene,camera);return;}
+if(window.workshopMenuOpen){speed=0;throttle=0;brake=0;steer=0;updateStats();renderer.render(scene,camera);return;}
 const forwardInput=(keys.w||keys.arrowup||dpadState.up)?1:0;const reverseInput=(keys.s||keys.arrowdown||dpadState.down)?1:0;const turn=(keys.d||keys.arrowright||dpadState.right?1:0)-(keys.a||keys.arrowleft||dpadState.left?1:0);const gasInput=gear==='D'?Math.max(throttle,forwardInput):gear==='R'?Math.max(throttle,reverseInput):0;const brakeInput=Math.max(brake,keys[' ' ]?1:0,gear==='D'&&dpadState.down?1:0);
 if(brakeInput>.3)cruiseOn=false;
 steer=THREE.MathUtils.damp(steer,THREE.MathUtils.clamp(turn,-1,1),7,dt);
@@ -666,11 +1007,12 @@ ground.position.x=roadCenter(truck.position.z);ground.position.z=Math.max(truck.
 if(vehicleMixer)vehicleMixer.update(dt);
 const cockpit=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.28:2.45,-.35));const rearOffset=new THREE.Vector3(0,cameraHeight,cameraDistance);const rearCamera=truck.localToWorld(rearOffset);const target=firstPerson?cockpit:rearCamera;camera.position.lerp(target,1-Math.pow(firstPerson?.00002:.0007,dt));const cabForward=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.3:2.4,-55));const outsideLook=truck.localToWorld(new THREE.Vector3(0,vehicleIsCar?1.15:2.2,-5));camera.lookAt(firstPerson?cabForward:outsideLook);
 for(const car of traffic){car.position.z+=car.userData.dir*dt*(car.userData.speed+Math.sin(now*.0004)*1.2);const range=car.userData.range||520;if(car.position.z>truck.position.z+range)car.position.z=truck.position.z-range;if(car.position.z<truck.position.z-range)car.position.z=truck.position.z+range;if(Math.abs(car.position.x-truck.position.x)<2.65&&Math.abs(car.position.z-truck.position.z)<(car.userData.halfLength||2.6)+2.6){gameEnded=true;speed=0;throttle=0;brake=0;document.getElementById('gameover').style.display='grid';break}}
+const nearWorkshop=truck.position.distanceTo(workshopPosition)<18;const workshopButton=document.getElementById('workshopEnter');if(workshopButton)workshopButton.style.display=nearWorkshop&&Math.abs(speed)<.8&&!window.workshopMenuOpen?'block':'none';
 const nearStation=truck.position.distanceTo(station.position)<24;refuelBtn.style.display=nearStation&&Math.abs(speed)<.7?'block':'none';
 
 marker.rotation.y+=dt*.7;if(!delivered&&truck.position.distanceTo(marker.position)<15){delivered=true;document.getElementById('mission').innerHTML='ENTREGA CONCLUÍDA!<br>Carga entregue. Continue dirigindo.';marker.visible=false}
 updateStats();drawMinimap();renderer.render(scene,camera)}catch(err){const panel=document.getElementById('runtimeError');panel.style.display='block';panel.textContent='ERRO NO MOTOR 3D: '+(err&&err.stack?err.stack:(err&&err.message?err.message:String(err)));console.error(err)}}
-camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Motor 3D pronto. Escolha um dos 50 veículos e toque em JOGAR.';load.remove();requestAnimationFrame(loop);loadCityHouseModels().then(()=>{renderer.render(scene,camera)}).catch(err=>console.warn('Casas 3D opcionais não carregaram:',err));
+camera.position.set(0,10,88);camera.lookAt(0,2,65);renderer.render(scene,camera);if(renderer.info.render.calls===0)throw new Error('A cena 3D não desenhou nenhum objeto. Verifique o suporte WebGL do navegador.');drawMinimap();window.gameReady=true;document.documentElement.dataset.gameReady='true';document.body.dataset.threeReady='true';document.getElementById('garageStatus').textContent='Oficina pronta. Entre nela para escolher seu veículo.';load.remove();requestAnimationFrame(loop);window.cityHouseModelsReady=true;
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script>
 </body></html>
