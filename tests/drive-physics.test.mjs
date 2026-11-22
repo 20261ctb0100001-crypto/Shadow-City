@@ -139,10 +139,16 @@ test('steering uses a draggable virtual wheel and no directional arrow pad', asy
 
 test('truck has a higher acceleration and top speed after the update', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.ok(html.includes('vehicleIsCar?30.5:30.5') === false);
   assert.ok(html.includes('vehicleIsCar?27.8:30.5'));
   assert.ok(html.includes('vehicleIsCar?55.6:50'));
   assert.ok(html.includes('acceleration:vehicleIsCar?14:16'));
+  const { stepTruckPhysics } = await loadPhysics();
+  let state = { speed: 0, heading: 0 };
+  for (let i = 0; i < 100; i++) state = stepTruckPhysics(state, {
+    throttle: 1, brake: 0, turn: 0, gear: 'D', dt: 0.1,
+    offRoad: false, speedLimit: 50, acceleration: 16
+  });
+  assert.ok(state.speed > 41.7 && state.speed <= 50, 'truck must reach the new 180 km/h highway cap');
 });
 
 test('Pages deployment waits for artifact metadata propagation', async () => {
