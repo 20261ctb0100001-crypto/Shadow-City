@@ -706,7 +706,7 @@ const roadsideGlass=mat(0x456575,.24,.18),roadsideTrim=mat(0xe0ded5,.8),roadside
 for(const side of [-1,1]){
  for(let i=0;i<30;i++){
   const z=-650+i*44+(Math.random()-.5)*13;
-  const lane=i%3,baseX=roadCenter(z)+side*(258+lane*47+Math.random()*13);
+  const lane=i%3,baseX=roadCenter(z)+side*(228+lane*36+Math.random()*10);
   const w=19+Math.random()*17,d=23+Math.random()*18,h=15+Math.random()*43;
   const wall=roadsideCityWalls[(i+lane*2+(side>0?1:0))%roadsideCityWalls.length];
   const building=new THREE.Group();
