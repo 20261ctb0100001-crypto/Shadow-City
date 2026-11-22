@@ -189,7 +189,7 @@ test('selected GLB model replaces the procedural player vehicle and uses car or 
   assert.ok(html.includes('three/addons/loaders/GLTFLoader.js'));
   assert.ok(html.includes('playerModelGroup.add(model)'));
   assert.ok(html.includes('vehicleIsCar?55.6:50'));
-  assert.ok(html.includes('acceleration:vehicleIsCar?14:11.5'));
+  assert.ok(html.includes('acceleration:vehicleIsCar?14:16'));
   assert.ok(html.includes('brakeForce:vehicleIsCar?13:12'));
 });
 
