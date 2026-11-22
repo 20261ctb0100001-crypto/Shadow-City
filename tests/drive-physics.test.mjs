@@ -120,10 +120,29 @@ test('fullscreen and landscape locking are limited to mobile devices', async () 
   assert.ok(html.includes("screen.orientation.lock('landscape-primary')"));
 });
 
-test('delivery mission text matches the coastal destination marker', async () => {
+test('mission banner is removed and the four-city map opens from the minimap', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.ok(html.includes('Atravesse as quatro regiões urbanas e entregue a carga no porto de Santos.'));
-  assert.ok(!html.includes('Leve a carga até o posto marcado.'));
+  assert.doesNotMatch(html, /id="mission"/);
+  assert.ok(html.includes('id="minimap"'));
+  assert.ok(html.includes('id="cityMapOverlay"'));
+  assert.ok(html.includes('id="fullRouteMap"'));
+  assert.ok(html.includes("document.getElementById('minimap').addEventListener('click',openCityMap)"));
+  for (const city of ['Ponta Grossa', 'Curitiba', 'Florianópolis', 'Santos']) assert.ok(html.includes(city));
+});
+
+test('steering uses a draggable virtual wheel and no directional arrow pad', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('id="steeringWheel"'));
+  assert.ok(html.includes("steeringWheel.addEventListener('pointermove'"));
+  assert.doesNotMatch(html, /id="dpad"/);
+});
+
+test('truck has a higher acceleration and top speed after the update', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('vehicleIsCar?30.5:30.5') === false);
+  assert.ok(html.includes('vehicleIsCar?27.8:30.5'));
+  assert.ok(html.includes('vehicleIsCar?55.6:50'));
+  assert.ok(html.includes('acceleration:vehicleIsCar?14:16'));
 });
 
 test('Pages deployment waits for artifact metadata propagation', async () => {
