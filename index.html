@@ -232,6 +232,14 @@ function buildCity(name,centerZ,style){
  const roadMat=roadCity,sidewalkMat=sidewalk,lineMat=mat(0xe6dfb8,.9);
  const roadY=.018;
  const windowGeo=new THREE.BoxGeometry(1.05,1.25,.08),windows=new THREE.InstancedMesh(windowGeo,glassCity,18000),windowFrames=new THREE.InstancedMesh(new THREE.BoxGeometry(1.24,1.44,.1),frameMat,18000),garageDoors=new THREE.InstancedMesh(new THREE.BoxGeometry(5.4,2.35,.14),garageMat,240),windowDummy=new THREE.Object3D(),garageDummy=new THREE.Object3D();let windowCount=0,garageCount=0;
+ // Detalhes de fachada em instâncias: mais variedade sem milhares de chamadas de desenho.
+ const houseBalconies=new THREE.InstancedMesh(new THREE.BoxGeometry(3.8,.16,.62),mat(0x777f82,.75),2400);
+ const housePlanters=new THREE.InstancedMesh(new THREE.BoxGeometry(3.4,.48,.62),mat(0x76614a,.9),1200);
+ const houseRoofLines=new THREE.InstancedMesh(new THREE.BoxGeometry(.075,.055,30),mat(0x342f2c,.95),7200);
+ const houseSideWindows=new THREE.InstancedMesh(new THREE.BoxGeometry(1.25,1.5,.1),glassCity,4800);
+ const houseFencePosts=new THREE.InstancedMesh(new THREE.BoxGeometry(.22,1.05,.22),frameMat,7200);
+ const houseYardTrees=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1.15,1),mat(0x477448),2400);
+ const detailDummy=new THREE.Object3D();let balconyCount=0,planterCount=0,roofLineCount=0,sideWindowCount=0,fenceCount=0,yardTreeCount=0;
  for(const side of [-1,1]){
   // Cinco avenidas paralelas por lado, todas conectadas pelas ruas transversais.
   for(let lane=0;lane<parallelOffsets.length;lane++){
@@ -311,6 +319,26 @@ function buildCity(name,centerZ,style){
     for(const postX of [-1,1]){const post=new THREE.Mesh(new THREE.BoxGeometry(.13,2.15,.13),trimHouse);post.position.set(entryX+postX*1.48,1.08,frontZ-1.42);city.add(post)}
     const baseTrim=new THREE.Mesh(new THREE.BoxGeometry(width+.15,.28,.2),mat(0x8b8980,.95));baseTrim.position.set(x,.22,frontZ);city.add(baseTrim);
     for(const lampSide of [-1,1]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(.24,.42,.16),mat(0xe9d6a1,.45,.05));lamp.position.set(x+lampSide*(width*.42),2.9,frontZ-.18);city.add(lamp)}
+    // Varandas pequenas com guarda-corpo, floreiras e acabamento de telhado.
+    for(let win=0;win<2;win++){
+     const wx=x-width*.25+win*width*.5;
+     detailDummy.position.set(wx,1.12,frontZ-.42);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseBalconies.setMatrixAt(balconyCount++,detailDummy.matrix);
+    }
+    detailDummy.position.set(x,0.55,frontZ-.72);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();housePlanters.setMatrixAt(planterCount++,detailDummy.matrix);
+    for(const roofSide of [-1,1])for(let line=0;line<3;line++){
+     detailDummy.position.set(x+roofSide*(width*.13+line*2.1),h+1.25,z);detailDummy.rotation.set(0,0,roofSide===1?-slope:slope);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseRoofLines.setMatrixAt(roofLineCount++,detailDummy.matrix);
+    }
+    // Janelas laterais, molduras e pequenas grades nos limites dos jardins.
+    for(const sideWall of [-1,1])for(let win=0;win<2;win++){
+     detailDummy.position.set(x+sideWall*(width/2+.08),2.5,z-depth*.25+win*depth*.5);detailDummy.rotation.set(0,sideWall===1?Math.PI/2:-Math.PI/2,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseSideWindows.setMatrixAt(sideWindowCount++,detailDummy.matrix);
+    }
+    for(let post=0;post<6;post++){
+     const px=x-width*.55+post*(width*1.1/5);
+     detailDummy.position.set(px,.53,frontZ-5.1);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseFencePosts.setMatrixAt(fenceCount++,detailDummy.matrix);
+    }
+    for(const shrub of [-1,1]){
+     detailDummy.position.set(x+shrub*(width*.42),1.05,frontZ-3.1);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseYardTrees.setMatrixAt(yardTreeCount++,detailDummy.matrix);
+    }
    }
    // Janelas repetidas em instâncias para manter a cidade leve no celular.
    const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
@@ -366,7 +394,10 @@ function buildCity(name,centerZ,style){
    }
   }
  }
- windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;windowFrames.count=windowCount;windowFrames.instanceMatrix.needsUpdate=true;garageDoors.count=garageCount;garageDoors.instanceMatrix.needsUpdate=true;city.add(windows,windowFrames,garageDoors);
+ windows.count=windowCount;windows.instanceMatrix.needsUpdate=true;windowFrames.count=windowCount;windowFrames.instanceMatrix.needsUpdate=true;garageDoors.count=garageCount;garageDoors.instanceMatrix.needsUpdate=true;
+ for(const [mesh,count] of [[houseBalconies,balconyCount],[housePlanters,planterCount],[houseRoofLines,roofLineCount],[houseSideWindows,sideWindowCount],[houseFencePosts,fenceCount],[houseYardTrees,yardTreeCount]]){mesh.count=count;mesh.instanceMatrix.needsUpdate=true;city.add(mesh)}
+ // Modelos GLB também recebem calçada de acesso e paisagismo simples ao redor.
+city.add(windows,windowFrames,garageDoors);
  // Marcos urbanos próprios de cada destino.
  if(style===0){
   const landmark=new THREE.Group();
@@ -483,6 +514,14 @@ async function loadCityHouseModels(){
   house.position.set(spot.x-center.x,-scaledBounds.min.y,spot.z-center.z);
   house.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
   scene.add(house);
+  const garden=new THREE.Group();
+  const gardenMat=mat(0x477448,.95),pathMat=concretePavement;
+  const path=new THREE.Mesh(new THREE.BoxGeometry(3.2,.12,8),pathMat);path.position.set(0,.06,12);garden.add(path);
+  for(const side of [-1,1]){
+   const hedge=new THREE.Mesh(new THREE.BoxGeometry(1.1,1.05,12),gardenMat);hedge.position.set(side*8,.52,3);garden.add(hedge);
+   for(let shrub=0;shrub<3;shrub++){const bush=new THREE.Mesh(new THREE.IcosahedronGeometry(1.05,1),gardenMat);bush.position.set(side*10,.85,-5+shrub*5);garden.add(bush)}
+  }
+  garden.position.set(spot.x,0,spot.z);scene.add(garden);
  }
  window.cityHouseModelsReady=true;
 }
