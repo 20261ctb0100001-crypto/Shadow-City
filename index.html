@@ -363,6 +363,45 @@ function buildCity(name,centerZ,style){
      detailDummy.position.set(x+shrub*(width*.42),1.05,frontZ-3.1);detailDummy.rotation.set(0,0,0);detailDummy.scale.set(1,1,1);detailDummy.updateMatrix();houseYardTrees.setMatrixAt(yardTreeCount++,detailDummy.matrix);
     }
    }
+   // Fachada principal voltada para a rodovia: portas, garagem e janelas visíveis de quem dirige.
+   if(!isTower&&!isModelHouse){
+    const roadFaceX=x-side*(width/2+.16),faceTrim=frameMat;
+    const roadWindowZ1=z-depth*.27,roadWindowZ2=z+depth*.27;
+    for(const wz of [roadWindowZ1,roadWindowZ2]){
+     const surround=new THREE.Mesh(new THREE.BoxGeometry(.22,2.35,3.55),faceTrim);
+     surround.position.set(roadFaceX,Math.min(h-1.35,2.8),wz);city.add(surround);
+     const pane=new THREE.Mesh(new THREE.BoxGeometry(.12,1.9,3.05),glassCity);
+     pane.position.set(roadFaceX-side*.14,Math.min(h-1.35,2.8),wz);city.add(pane);
+     const sill=new THREE.Mesh(new THREE.BoxGeometry(.48,.18,3.8),mat(0xddd7c9,.8));
+     sill.position.set(roadFaceX-side*.2,1.58,wz);city.add(sill);
+     const mullion=new THREE.Mesh(new THREE.BoxGeometry(.14,1.95,.12),faceTrim);
+     mullion.position.set(roadFaceX-side*.22,Math.min(h-1.35,2.8),wz);city.add(mullion);
+    }
+    const roadDoorZ=z+depth*.02;
+    const doorFrame=new THREE.Mesh(new THREE.BoxGeometry(.24,2.95,2.05),faceTrim);
+    doorFrame.position.set(roadFaceX,1.55,roadDoorZ);city.add(doorFrame);
+    const roadDoor=new THREE.Mesh(new THREE.BoxGeometry(.14,2.62,1.62),mat(0x59402f,.82));
+    roadDoor.position.set(roadFaceX-side*.17,1.42,roadDoorZ);city.add(roadDoor);
+    const doorGlass=new THREE.Mesh(new THREE.BoxGeometry(.08,.72,.72),glassCity);
+    doorGlass.position.set(roadFaceX-side*.26,2.05,roadDoorZ);city.add(doorGlass);
+    const roadGarageZ=z-depth*.31;
+    const garageFrame=new THREE.Mesh(new THREE.BoxGeometry(.3,2.9,6.8),faceTrim);
+    garageFrame.position.set(roadFaceX,1.52,roadGarageZ);city.add(garageFrame);
+    const roadGarage=new THREE.Mesh(new THREE.BoxGeometry(.16,2.55,6.35),garageMat);
+    roadGarage.position.set(roadFaceX-side*.2,1.42,roadGarageZ);city.add(roadGarage);
+    for(let stripe=0;stripe<4;stripe++){
+     const groove=new THREE.Mesh(new THREE.BoxGeometry(.08,.09,6.2),mat(0x41494c,.9));
+     groove.position.set(roadFaceX-side*.3,.55+stripe*.56,roadGarageZ);city.add(groove);
+    }
+    const porchRoof=new THREE.Mesh(new THREE.BoxGeometry(2.6,.28,depth*.82),houseRoofMat);
+    porchRoof.position.set(roadFaceX-side*1.35,h-.2,z);city.add(porchRoof);
+    for(const postZ of [z-depth*.38,z+depth*.38]){
+     const porchPost=new THREE.Mesh(new THREE.BoxGeometry(2.3,h*.48,.22),faceTrim);
+     porchPost.position.set(roadFaceX-side*1.25,(h*.48)/2,postZ);city.add(porchPost);
+    }
+    const facadeBand=new THREE.Mesh(new THREE.BoxGeometry(.28,.32,depth+.4),mat(colors[(row+style+2)%colors.length],.8));
+    facadeBand.position.set(roadFaceX, h-.35,z);city.add(facadeBand);
+   }
    // Janelas repetidas em instâncias para manter a cidade leve no celular.
    const cols=Math.max(3,Math.floor(width/4.5)),floors=Math.max(1,Math.floor((h-2)/3.2));
    for(let floor=0;floor<floors;floor++)for(let col=0;col<cols;col++){
