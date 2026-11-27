@@ -201,6 +201,20 @@ const load=document.getElementById('load');
 let THREE,GLTFLoader,vehicleLoader;
 try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')}catch(e){try{THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js')}catch(e2){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível baixar o motor 3D. Confira a conexão e atualize a página.';load.textContent='Falha ao carregar o motor 3D';throw e2}}
 try{({GLTFLoader}=await import('three/addons/loaders/GLTFLoader.js'));vehicleLoader=new GLTFLoader()}catch(e){const status=document.getElementById('garageStatus');if(status)status.textContent='Não foi possível iniciar o carregador dos veículos 3D.';throw e}
+// Compatibilidade WebGL para navegadores móveis que retornam null nos logs do shader.
+function normalizeWebGLInfoLogs(){
+ for(const Ctx of [window.WebGLRenderingContext,window.WebGL2RenderingContext]){
+  if(!Ctx||!Ctx.prototype)continue;
+  for(const method of ['getProgramInfoLog','getShaderInfoLog']){
+   const original=Ctx.prototype[method];
+   if(typeof original!=='function'||original.__safeStringResult)continue;
+   const wrapped=function(...args){const result=original.apply(this,args);return typeof result==='string'?result:''};
+   wrapped.__safeStringResult=true;
+   try{Ctx.prototype[method]=wrapped}catch(_){}
+  }
+ }
+}
+normalizeWebGLInfoLogs();
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc3d2);scene.fog=new THREE.Fog(0x9fc3d2,150,900);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1200);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<700?1.5:2));renderer.domElement.id='gameCanvas';renderer.domElement.style.position='fixed';renderer.domElement.style.inset='0';renderer.domElement.style.width='100vw';renderer.domElement.style.height='100vh';renderer.domElement.style.zIndex='1';renderer.domElement.style.pointerEvents='none';document.body.appendChild(renderer.domElement);renderer.setSize(innerWidth,innerHeight,false);renderer.domElement.width=Math.round(innerWidth*renderer.getPixelRatio());renderer.domElement.height=Math.round(innerHeight*renderer.getPixelRatio());renderer.setClearColor(0x9fc3d2,1);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
